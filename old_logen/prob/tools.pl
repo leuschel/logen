@@ -6,7 +6,7 @@
 	              clever_and/3]).
 
 :- use_module(library(lists)).
-
+:- use_module(library(messages)).
 
 clever_and(true,X,X) :- !.
 clever_and(X,true,X) :- !.
@@ -16,12 +16,12 @@ clever_and(X,Y,'And'([],[X,Y])).
 print_error(Error) :-
 	current_output(X),
 	set_output(user_error),
-	(var(Error) -> print_message(error,'_') ; print_message(error,Error)),
+	(var(Error) -> show_message(error,'_') ; show_message(error,Error)),
 	set_output(X).
 print_message(Msg) :-
 	current_output(X),
 	set_output(user),
-	(var(Msg) -> print_message(informational,'_') ; print_message(informational,Msg)),
+	(var(Msg) -> show_message(informational,'_') ; show_message(informational,Msg)),
 	set_output(X).
 print_short_msg(Msg) :-
 	current_output(X),

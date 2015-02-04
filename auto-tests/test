@@ -23,9 +23,9 @@ echo -n Running test case [$Testname]...
 if [ -n "$VERBOSE_LOGEN_TEST" ]
 then
   echo -n $Orig...
-  ../logen $Orig -c -o $Testname.gx -vv -d"$@"
+  ../cogen $Orig -c -o $Testname.gx -vv -d"$@"
 else
-  ../logen $Orig -c -o $Testname.gx -s "$@"
+  ../cogen --logen_dir ../ $Orig -c -o $Testname.gx -s "$@"
 fi
 
 if [ $? != 0 ] 

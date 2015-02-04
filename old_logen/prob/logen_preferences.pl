@@ -14,12 +14,16 @@
     ]).
     
 :- use_module(tools).
-:- use_module(error_manager).   
+:- use_module('error_manager').   
 :- use_module(library(lists)).
 
 :- dynamic change_flag/0.
 :- dynamic obsolete_preference/1.
 
+
+on_exception(Catcher, Goal, Recovery) :-
+    catch(Goal, Catcher, Recovery).
+        
 assert_change_flag :- assert(change_flag).
 
 init_preferences :- retractall(change_flag),reset_to_defaults, check_preferences.
@@ -38,7 +42,8 @@ check_preferences :- print_message('Preferences Checked').
 init_and_load_preferences(File) :- init_preferences, load_preferences(File).
 
 load_preferences(File) :- print_message(load_preferences(File)),
-   on_exception(_Exc,see(File),(print_message('cannot open preference file'),fail)),
+   %on_exception(_Exc,see(File),(print_message('cannot open preference file')),fail),
+   on_exception(see(File),(print_message('cannot open preference file')),fail),
    read_preferences, seen.
 
 
@@ -229,7 +234,9 @@ set_preference(Pref,Val1) :-
                   (assert_change_flag,
                    preference_update_action(Pref))).
 
-:- use_module(library(charsio)).
+%:- use_module(library(charsio)).
+:- use_module(sicstus_charsio).
+
 
 tcltk_get_preference(Pref,Val) :- /* same as get_preference, but convert non-atomic into atoms */
    get_preference(Pref,V),

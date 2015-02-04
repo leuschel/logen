@@ -44,7 +44,7 @@ user:portray(call(A)) :-
 :- use_module('run_binsolve').
 :- use_module('run_binmemo').
 :- use_module('prob/logen_preferences.pl').
-:- use_module('prob/error_manager.pl').
+:- use_module('prob/error_manager_prob.pl').
 :- use_module('prob/tools.pl').
 %:- use_module('cogen-interface.pl').
 :- use_module(bta,[annotateFile/3]).

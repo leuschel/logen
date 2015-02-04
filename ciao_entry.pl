@@ -1,3 +1,4 @@
+:- module(ciao_entry,_).
 
 /* Main entry file for Logen */
 /* use ciaoc -S ciao_entry.pl  to create a stand-alone version of Logen */
@@ -5,11 +6,13 @@
 :- use_module('tools/error_manager.pl', [add_error/3, add_message/4,add_exception/4,
              count_errors_occured/1,set_verbosity_level/2]).
 :- use_module('cogen.pl', [cogen_run/3, set_cogen_relative_dir/1, check_specialisation_query/1]).
-:- use_module('tools/ciao_tools.pl', [string_concatenate/3, read_from_chars/2,format_to_chars/3]).
+:- use_module('tools/ciao_tools.pl', _).
 
 :- use_module('bta/simple_bta.pl').
 
-:- use_module(library(filenames),[no_path_file_name/2]).
+:- use_module('old_logen/logen_messages').
+
+:- use_module(library(pathnames),[path_basename/2]).
 
 :- include(runtime_checks_perform).
 
@@ -161,7 +164,7 @@ generate_gx_file(File,Options,GXFile) :-
 
 specialise_using_gx_from_module(GXFile, Query,Opts) :-
 	use_module(GXFile,[main_gx/1]),
-	no_path_file_name(GXFile,Module),
+	path_basename(GXFile,Module),
 	 (member(spec_file(File),Opts) ->
 	     Args = [Query,'-o',File|Opts]
 	;

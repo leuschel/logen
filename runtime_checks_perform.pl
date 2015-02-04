@@ -12,5 +12,5 @@
 :- load_compilation_module('runtime_checks_perform_expand').
 %:- load_compilation_module('runtime_checks_ignore_expand').
 
-:- add_sentence_trans(ignore_mnf/3).
+:- add_sentence_trans(runtime_checks_perform_expand:ignore_mnf/3,10).
 

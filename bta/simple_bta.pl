@@ -2,7 +2,7 @@
 :- use_module('../gximports/safe_call').
 :- use_module(builtin_db).
 
-:- use_module(annmeta,[declmeta/3]).
+:- use_module('../annmeta',[declmeta/3]).
 :- use_module('../tools/error_manager.pl', [add_error/3,add_message/4]).
 
 %main([PL,ANN]) :-

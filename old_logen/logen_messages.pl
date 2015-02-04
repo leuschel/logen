@@ -6,6 +6,7 @@
 	    print_indentation/0,
 	    increase_indentation/0, decrease_indentation/0]).
 
+:- use_module(library(messages)).
 :- dynamic indent_level/1.
 
 indent_level(0).
@@ -27,7 +28,7 @@ print_error(Error) :-
 print_message(Msg) :-
 	current_output(X),
 	set_output(user),
-	print_message(informational,Msg),
+	show_message(informational,Msg),
 	set_output(X).
 
 print_short_msg(Msg) :-
