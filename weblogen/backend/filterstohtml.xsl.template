@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<!DOCTYPE xsl:stylesheet 
+[ 
+<!ENTITY nbsp "&#160;"> <!-- white space in XSL -->
+]>   
+<xsl:stylesheet version = '1.0'
+	xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
+
+	<xsl:output method="html" media-type="text/html"
+				indent="no" encoding="UTF8"/>
+
+	<xsl:template match="/">
+		<xsl:apply-templates/>
+	</xsl:template>
+
+	<xsl:template match="source">
+	<!-- ignore source as we just want the filters -->
+	</xsl:template>
+
+	<xsl:template match="nbsp">
+		<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="filters">
+		<pre id="filters">
+		<xsl:apply-templates mode="p1"/>
+		</pre>
+		<script type="text/javascript">
+		<xsl:apply-templates match="filter" mode="p2"/>
+		</script>
+		<div style="display: none">
+		<xsl:apply-templates match="wholefilter[badfilter/replacement]" mode="p3"/>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="wholefilter" mode="p3">
+		<xsl:element name="span">
+			<xsl:attribute name="id">
+				<xsl:text>replace</xsl:text>
+				<xsl:number level="any" from="/" count="wholefilter"/>
+			</xsl:attribute>
+			<xsl:apply-templates match="badfilter/replacement" mode="p1"/>
+		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="unsafe|complex|%FILTERS%" mode="p1">
+		<xsl:element name="span">
+			<xsl:attribute name="class">
+				<xsl:value-of select="name()"/>
+			</xsl:attribute>
+
+			<xsl:attribute name="id">
+				<xsl:text>filt</xsl:text>
+				<xsl:number level="any" from="/" count="*"/>
+			</xsl:attribute>
+
+			<xsl:attribute name="onclick">
+				<xsl:text>return dropdownmenu(this, event, true)</xsl:text>
+			</xsl:attribute>
+			<xsl:attribute name="onmouseout">
+				<xsl:text>delayhidemenu();</xsl:text>
+			</xsl:attribute>
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template> 
+
+	<!-- put the whole filter in a span so it's easy to delete -->
+	<xsl:template match="wholefilter" mode="p1">
+		<xsl:element name="span">
+			<xsl:attribute name="id">
+				<xsl:text>wholefilt</xsl:text>
+				<xsl:number level="any" from="/" count="wholefilter"/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="p1"/>
+		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="badfilter" mode="p1">
+		<xsl:element name="span">
+			<xsl:attribute name="class">
+			<xsl:text>badfilter</xsl:text>
+			</xsl:attribute>
+			<xsl:apply-templates mode="p1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="badfilter/replacement" mode="p1">
+	</xsl:template>
+
+	<xsl:template match="directive" mode="p1">
+		<xsl:element name="span">
+			<xsl:attribute name="class">
+				<xsl:value-of select="name()"/>
+			</xsl:attribute>
+			<xsl:attribute name="onclick">
+				<xsl:text>return dropdownmenu(this, event, true, </xsl:text>
+				<xsl:value-of select="@arity"/>
+				<xsl:text>)</xsl:text>
+			</xsl:attribute>
+			<xsl:attribute name="onmouseout">
+				<xsl:text>delayhidemenu();</xsl:text>
+			</xsl:attribute>
+
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template> 
+
+	<xsl:template match="filter|head|comment|list" mode="p1">
+		<xsl:element name="span">
+			<xsl:attribute name="class">
+				<xsl:value-of select="name()"/>
+			</xsl:attribute>
+
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template> 
+	
+	<xsl:template match="text()|%FILTERS%|head|comment|list" mode="p2">
+	</xsl:template>
+
+	<xsl:template match="filter" mode="p2">
+		addFilterToHash('<xsl:value-of select="."/>', <xsl:value-of select="@arity"/>);
+	</xsl:template> 
+
+</xsl:stylesheet> 

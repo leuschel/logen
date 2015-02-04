@@ -1,0 +1,132 @@
+(:-module(valcont2,[])).
+(:-use_module(memory)).
+(:-use_module(dcg)).
+(:-use_module(lex,[lex/2])).
+logen(example1, example1(A,B,C)) :-
+        logen(call, program(comm_list(D),'example1.tree',[z,=,1,;,w,=,x,;,loop,while,w,>,0,z,=,z,*,y,;,w,=,w,-,1,endloop,while,'.'],[])),
+        logen(rescall, write(D)),
+        logen(rescall, nl),
+        logen(unfold, prog_eval(D,A,B,C)).
+logen(example2, example2(A,B,C)) :-
+        logen(call, program(comm_list(D),'example2.tree',[z,=,1,;,w,=,x,;,if,w,>,0,then,z,=,z,*,y,;,w,=,w,-,1,endif,'.'],[])),
+        logen(rescall, write(D)),
+        logen(rescall, nl),
+        logen(unfold, prog_eval(D,A,B,C)).
+logen(example3, example3(A,B,C)) :-
+        logen(call, program(comm_list(D),'example3.tree',[z,=,1,;,w,=,x,;,jmp,label,;,loop,while,w,>,0,z,=,z,*,y,;,label,:,w,=,w,-,1,endloop,while,;,z,=,7,'.'],[])),
+        logen(rescall, write(D)),
+        logen(rescall, nl),
+        logen(unfold, prog_eval(D,A,B,C)).
+logen(example4, example4(A,B,C)) :-
+        logen(call, program(comm_list(D),'example4.tree',[z,=,1,;,w,=,x,;,loop,while,w,>,0,z,=,z,*,y,;,w,=,w,-,1,;,jmp,label,endloop,while,;,label,:,z,=,8,;,z,=,7,'.'],[])),
+        logen(rescall, write(D)),
+        logen(rescall, nl),
+        logen(unfold, prog_eval(D,A,B,C)).
+logen(example5, example5(A,B,C)) :-
+        logen(call, program(comm_list(D),'example5.tree',[z,=,1,;,w,=,y,;,loop,while,x,>,1,y,=,w,;,loop,while,y,>,1,z,=,z,*,w,;,y,=,y,-,1,endloop,while,;,x,=,x,-,1,endloop,while,;,z,=,z,+,1,'.'],[])),
+        logen(rescall, write(D)),
+        logen(rescall, nl),
+        logen(unfold, prog_eval(D,A,B,C)).
+logen(run_file, run_file(A,B,C,D)) :-
+        resif(logen(call,lex(A,E)), (logen(call,atom_concat(A,'.tree',F)),resif(logen(call,program(comm_list(G),F,E,[])),logen(unfold,prog_eval(G,B,C,D)),(logen(rescall,print(parse_failed(A))),logen(rescall,nl)))), (logen(rescall,print(lex_failed(A))),logen(rescall,nl))).
+logen(ex1, ex1(A,B,C)) :-
+        logen(unfold, run_file('pascal/example1.p',A,B,C)).
+logen(prog_eval, prog_eval([],_,_,0)).
+logen(prog_eval, prog_eval(A,B,C,D)) :-
+        logen(rescall, initialize_store(E)),
+        logen(rescall, update(x,B,E,F)),
+        logen(rescall, update(y,C,F,G)),
+        logen(unfold, comm_list_eval(A,A,G,H)),
+        logen(rescall, access(z,H,D)).
+logen(comm_list_eval, comm_list_eval([],_,A,B)) :-
+        logen(rescall, B=A).
+logen(comm_list_eval, comm_list_eval(A,B,C,D)) :-
+        logen(call, A=[_|_]),
+        logen(unfold, comm_eval(A,E,B,C,F)),
+        logen(unfold, comm_list_eval(E,B,F,D)).
+logen(comm_eval, comm_eval([(_,abort)|_],[],_,A,B)) :-
+        logen(rescall, B=A).
+logen(comm_eval, comm_eval([(_,while(A,B))|C],[],D,E,F)) :-
+        logen(unfold, append(B,[(www,while(A,B))|C],G)),
+        logen(unfold, bool_while_eval(A,G,C,D,E,F)).
+logen(comm_eval, comm_eval([(_,ce(A,B,C))|D],[],E,F,G)) :-
+        logen(unfold, append(B,D,H)),
+        logen(unfold, append(C,D,I)),
+        logen(unfold, bool_eval(A,H,I,E,F,G)).
+logen(comm_eval, comm_eval([(_,jmp(A))|_],B,C,D,E)) :-
+        logen(unfold, find_label(A,C,B)),
+        logen(rescall, !),
+        logen(rescall, E=D).
+logen(comm_eval, comm_eval([(_,assign(id(A),B))|C],C,_,D,E)) :-
+        logen(unfold, expr(B,D,F)),
+        logen(rescall, update(A,F,D,E)).
+logen(expr, expr(add(A,B),C,D)) :-
+        logen(unfold, expr(A,C,E)),
+        logen(unfold, expr(B,C,F)),
+        logen(rescall, D is E+F).
+logen(expr, expr(sub(A,B),C,D)) :-
+        logen(unfold, expr(A,C,E)),
+        logen(unfold, expr(B,C,F)),
+        logen(rescall, D is E-F).
+logen(expr, expr(multi(A,B),C,D)) :-
+        logen(unfold, expr(A,C,E)),
+        logen(unfold, expr(B,C,F)),
+        logen(rescall, D is E*F).
+logen(expr, expr(id(A),B,C)) :-
+        logen(rescall, access(A,B,C)).
+logen(expr, expr(num(A),_,A)).
+logen(bool_while_eval, bool_while_eval(A,B,C,D,E,F)) :-
+        logen(unfold, bool_eval(A,B,C,D,E,F)).
+logen(bool_eval, bool_eval(great(A,B),C,D,E,F,G)) :-
+        logen(unfold, expr(A,F,H)),
+        logen(unfold, expr(B,F,I)),
+        resif(logen(rescall,H>I), logen(unfold,comm_list_eval(C,E,F,G)), logen(unfold,comm_list_eval(D,E,F,G))).
+logen(bool_eval, bool_eval(less(A,B),C,D,E,F,G)) :-
+        logen(unfold, expr(A,F,H)),
+        logen(unfold, expr(B,F,I)),
+        resif(logen(rescall,H<I), logen(unfold,comm_list_eval(C,E,F,G)), logen(unfold,comm_list_eval(D,E,F,G))).
+logen(bool_eval, bool_eval(equal(A,B),C,D,E,F,G)) :-
+        logen(unfold, expr(A,F,H)),
+        logen(unfold, expr(B,F,I)),
+        resif(logen(rescall,H==I), logen(unfold,comm_list_eval(C,E,F,G)), logen(unfold,comm_list_eval(D,E,F,G))).
+logen(find_label, find_label(A,[(A,B)|C],[(A,B)|C])).
+logen(find_label, find_label(A,[(_,ce(_,B,C))|D],E)) :-
+        (   logen(unfold, find_label(A,B,F))
+        ;   logen(unfold, find_label(A,C,F))
+        ),
+        logen(unfold, append(F,D,E)).
+logen(find_label, find_label(A,[(_,ce(_,B))|C],D)) :-
+        logen(unfold, find_label(A,B,E)),
+        logen(unfold, append(E,C,D)).
+logen(find_label, find_label(A,[(B,while(C,D))|E],F)) :-
+        logen(unfold, find_label(A,D,G)),
+        logen(unfold, append(G,[(B,while(C,D))|E],F)).
+logen(find_label, find_label(A,[_|B],C)) :-
+        logen(unfold, find_label(A,B,C)).
+logen(append, append([],A,A)).
+logen(append, append([A|B],C,[A|D])) :-
+        logen(unfold, append(B,C,D)).
+:- filter
+        example1(dynamic, dynamic, dynamic).
+:- filter
+        example2(dynamic, dynamic, dynamic).
+:- filter
+        example3(dynamic, dynamic, dynamic).
+:- filter
+        example4(dynamic, dynamic, dynamic).
+:- filter
+        example5(dynamic, dynamic, dynamic).
+:- filter
+        run_file(static, dynamic, dynamic, dynamic).
+:- filter
+        ex1(dynamic, dynamic, dynamic).
+:- filter
+        prog_eval(static, dynamic, dynamic, dynamic).
+:- filter
+        fix_loop(static, dynamic, static, dynamic, dynamic).
+:- filter
+        comm_list_eval(static, static, dynamic, dynamic).
+:- filter
+        comm_eval(static, dynamic, static, dynamic, dynamic).
+:- filter
+        bool_while_eval(static, static, static, static, dynamic, dynamic).

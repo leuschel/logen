@@ -1,0 +1,2 @@
+gensym(1).
+table(solve_file('/Users/leuschel/svn_root/svnexternal_cobra/TEX/size_change_bta/prolog_code/tests/ctl.pl.ann'), solve_file__0, [crossmodule]).

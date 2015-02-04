@@ -1,0 +1,160 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen ex_depth.pl "solve([inboth(X,Y,Z)],0,Depth)."
+ % Generating GX File
+ % done
+ % Finished running cogen in 44.71499999665041 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for solve([inboth(_,_,_)],0,_)
+
+/* solve([inboth(C,D,E)],A,B) :- solve__0(E,D,C,A,B). */
+solve__0(E,D,C,A,B) :-
+        solve__1(C,D,C,E,s(A),B).
+
+/* solve([member(C,D),member(E,F)],A,B) :- solve__1(C,D,E,F,A,B). */
+solve__1(C,[C|_],D,[D|_],A,B) :-
+        solve__2(s(A),E),
+        solve__2(s(E),B).
+solve__1(C,[C|_],D,[_|E],A,B) :-
+        solve__2(s(A),F),
+        solve__3(E,D,s(F),B).
+solve__1(C,[_|E],D,[D|_],A,B) :-
+        solve__3(E,C,s(A),F),
+        solve__2(s(F),B).
+solve__1(C,[_|E],D,[_|F],A,B) :-
+        solve__3(E,C,s(A),G),
+        solve__3(F,D,s(G),B).
+
+/* solve([],A,B) :- solve__2(A,B). */
+solve__2(A,A).
+
+/* solve([member(C,D)],A,B) :- solve__3(D,C,A,B). */
+solve__3([C|_],C,A,B) :-
+        solve__2(s(A),B).
+solve__3([_|D],C,A,B) :-
+        solve__3(D,C,s(A),B).
+/* Specialisation time 1.699999999802276 ms (runtime) */
+[Mottisfont:logen/examples/experiments] leuschel% logen ex_depth.pl "solve([inboth(X,Y,Z)],0,Depth)." -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 67.71499999492735 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for solve([inboth(_,_,_)],0,_)
+
+/* solve([inboth(C,D,E)],A,B) :- solve__0(E,D,C,A,B). */
+solve__0(E,D,C,A,B) :-
+        solve__1(C,D,C,E,s(A),B).
+
+/* solve([member(C,D),member(E,F)],A,B) :- solve__1(C,D,E,F,A,B). */
+solve__1(C,[C|_],D,[D|_],A,B) :-
+        solve__2(s(A),E),
+        solve__2(s(E),B).
+solve__1(C,[C|_],D,[_|E],A,B) :-
+        solve__2(s(A),F),
+        solve__3(E,D,s(F),B).
+solve__1(C,[_|E],D,[D|_],A,B) :-
+        solve__3(E,C,s(A),F),
+        solve__2(s(F),B).
+solve__1(C,[_|E],D,[_|F],A,B) :-
+        solve__3(E,C,s(A),G),
+        solve__3(F,D,s(G),B).
+        
+        
+        
+        
+        
+        
+        [Minimax:logen/examples/experiments] leuschel% logen ex_depth_nonterm.pl "solve([inboth(X,Y,Z)],0,Depth)." -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 116.1729999912974 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for solve([inboth(_,_,_)],0,_)
+
+<| HOMEOMORPHIC WARNING|> : MEMO Atom solve([member(A,B)],s(s(s(0))),C),
+History: [solve([member(D,E)],s(s(0)),F),solve([member(G,H),member(I,J)],s(0),K),solve([inboth(L,M,N)],0,O)]
+
+Type 'c' to continue with memoisation, 'F' to fail, 'C' to continue without further intervention, anything else to abort:
+|: F
+*** WARNING: User prevented a memo entry being added! ***
+*** Generated code is probably incorrect! ***
+
+
+/* solve([inboth(B,C,D)],0,A) :- solve__0(D,C,B,A). */
+solve__0(D,C,B,A) :-
+        solve__1(B,C,B,D,A).
+
+/* solve([member(B,C),member(D,E)],s(0),A) :- solve__1(B,C,D,E,A). */
+solve__1(_,_,_,_,_) :-
+        fail.
+
+/* solve([],s(s(0)),A) :- solve__2(A). */
+solve__2(s(s(0))).
+
+/* solve([member(B,C)],s(s(0)),A) :- solve__3(C,B,A). */
+solve__3([B|_],B,A) :-
+        solve__4(A).
+
+/* solve([],s(s(s(0))),A) :- solve__4(A). */
+solve__4(s(s(s(0)))).
+/* ------------------------------------------ */
+/* Error(s) occurred during specialization !! */
+/* ------------------------------------------ */
+/* Specialisation time 7.591999999291371 ms (runtime) */
+[Minimax:logen/examples/experiments] leuschel% 
+
+
+[Minimax:logen/examples/experiments] leuschel% logen ex_depth_nonterm_local.pl "solve([inboth(X,Y,Z)],0,Depth)." -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 114.7199999914063 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for solve([inboth(_,_,_)],0,_)
+
+<| HOMEOMORPHIC WARNING |> : UNFOLDING solve([member(A,B)],s(s(s(C))),D),
+History: [solve([member(E,F)],s(s(G)),H),solve([member(I,J),member(I,K)],s(L),M),solve([inboth(N,O,P)],Q,R)]
+
+Type 'c' to continue unfold, 'F' to fail branch, 'C' to continue without further intervention, anything else to abort:
+|: F
+*** WARNING: User forced a branch to fail! ***
+*** Generated code is probably incorrect! ***
+
+
+<| HOMEOMORPHIC WARNING |> : UNFOLDING solve([member(A,B)],s(s(s(s(C)))),D),
+History: [solve([member(E,F)],s(s(s(G))),H),solve([member(I,J),member(I,K)],s(L),M),solve([inboth(N,O,P)],Q,R)]
+
+Type 'c' to continue unfold, 'F' to fail branch, 'C' to continue without further intervention, anything else to abort:
+|: F
+*** WARNING: User forced a branch to fail! ***
+*** Generated code is probably incorrect! ***
+
+
+<| HOMEOMORPHIC WARNING |> : UNFOLDING solve([member(A,B)],s(s(s(C))),D),
+History: [solve([member(E,F)],s(s(G)),H),solve([member(I,J),member(I,K)],s(L),M),solve([inboth(N,O,P)],Q,R)]
+
+Type 'c' to continue unfold, 'F' to fail branch, 'C' to continue without further intervention, anything else to abort:
+|: F
+*** WARNING: User forced a branch to fail! ***
+*** Generated code is probably incorrect! ***
+
+
+/* solve([inboth(C,D,E)],A,B) :- solve__0(E,D,C,A,B). */
+solve__0([B|_],[B|_],B,A,s(s(s(A)))).
+solve__0([B|_],[_,B|_],B,A,s(s(s(s(A))))).
+/* ------------------------------------------ */
+/* Error(s) occurred during specialization !! */
+/* ------------------------------------------ */
+/* Specialisation time 14.27899999866724 ms (runtime) */
+    
+
+/* solve([],A,B) :- solve__2(A,B). */
+solve__2(A,A).
+
+/* solve([member(C,D)],A,B) :- solve__3(D,C,A,B). */
+solve__3([C|_],C,A,B) :-
+        solve__2(s(A),B).
+solve__3([_|D],C,A,B) :-
+        solve__3(D,C,s(A),B).
+/* Specialisation time 2.251999999789815 ms (runtime) */

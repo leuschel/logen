@@ -1,0 +1,18 @@
+%% Logen Annotation File
+(:-module(index_test,[])).
+logen(0, index_test(f(_),A,B)) :-
+        logen(unfold, p(A,B)).
+logen(1, p(a,1)).
+logen(2, p(b,2)).
+logen(3, p(c,3)).
+logen(4, p(d,4)).
+logen(5, p(e,5)).
+logen(6, p(f,6)).
+logen(7, p(g,7)).
+logen(8, p(h,8)).
+logen(9, p(i,9)).
+logen(10, p(j,10)).
+:- filter
+        index_test(nonvar, dynamic, dynamic).
+:- filter
+        p(dynamic, dynamic).

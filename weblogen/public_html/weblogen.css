@@ -1,0 +1,205 @@
+body
+{
+	margin-left: 20px;
+}
+
+hr
+{
+	margin-left: -10px;
+}
+
+pre
+{
+	margin-left: 10px;
+}
+
+p
+{
+	margin-left: 5px;
+}
+
+h1, h2
+{
+	font-family: sans-serif;
+}
+
+.code
+{
+	font-family: monospace;
+	font-weight: bold;
+}
+
+#dropmenudiv{
+	position:absolute;
+	border:1px solid black;
+	border-bottom-width: 0;
+	font:normal 12px Verdana;
+	line-height:18px;
+	z-index:100;
+}
+
+#dropmenudiv a.selected
+{
+	background-color: red;
+}
+
+#dropmenudiv a.selected:hover
+{
+	background-color: white;
+}
+
+#dropmenudiv a{
+	width: 100%;
+	display: block;
+	text-indent: 3px;
+	border-bottom: 1px solid black;
+	padding: 1px 0;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#dropmenudiv a:hover{ /*hover background color*/
+	background-color: yellow;
+	cursor: default;
+}
+
+
+#dhtmltooltip{
+position: absolute;
+width: 150px;
+border: 2px solid black;
+padding: 2px;
+background-color: lightyellow;
+visibility: hidden;
+z-index: 100;
+/*Remove below line to remove shadow. Below line should always appear last within this CSS*/
+filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+}
+
+div.box
+{
+        background-color: #f0f0fa;
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 4px;
+        border: dashed 1px black;
+		font-family: monospace;
+}
+
+div.log
+{ 
+        display: none;
+        background-color: #f0f0fa;
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 4px;
+        border: dashed 1px black;
+		font-family: monospace;
+}
+
+div.annmethod
+{ 
+        display: none;
+        background-color: #e0e0f0;
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 4px;
+        border: dashed 1px black;
+}
+
+td.selected
+{
+  text-align: center; 
+  width: 25%; 
+  background-color:  #4066b3;
+}
+
+td.unselected
+{ 
+  width: 25%; 
+  text-align: center; 
+  background-color:  #e0e0f0;
+  
+}
+
+td.unselected a
+{ 
+  color: #000000;
+}
+
+td.selected a
+{ 
+  color: #ffffff;
+}
+
+
+
+td.AppHeader
+{ 
+
+        font-size: 36px;
+        text-align: center;
+  background-color: #e0e0f0;
+}
+
+td.AppMain
+{  
+  padding: 10px;
+  background-color: #e0e0f0;
+}
+
+.AppFooter
+{
+	font-style: italic;
+	font-size: 12px;	
+/*  background-color: #e0e0f0;*/
+}
+
+.paneheading
+{
+	font-weight: bold;
+}
+
+.codeframe
+{
+	border: 1px solid black;
+	background-color: #f0f0fa;
+	overflow: auto;
+	height: 300px;
+	width: 100%;
+}
+
+#buglist tr th
+{
+	text-align: right;
+	padding-right: 4px;
+}
+
+#hintbox
+{ /*CSS for pop up hint box */
+	position:absolute;
+	top: 0;
+	background-color: lightyellow;
+	width: 150px; /*Default width of hint.*/ 
+	padding: 3px;
+	border:1px solid black;
+	font:normal 11px Verdana;
+	line-height:18px;
+	z-index:100;
+	border-right: 3px solid black;
+	border-bottom: 3px solid black;
+	visibility: hidden;
+}
+
+.hintanchor
+{ /*CSS for link that shows hint onmouseover*/
+	font-weight: bold;
+	color: navy;
+	margin: 3px 8px;
+}
+
+a.tooltip
+{
+	font-size: 10pt;
+	font-weight: bold;
+}

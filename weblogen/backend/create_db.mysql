@@ -1,0 +1,14 @@
+create table Bugs
+(
+	bugid int primary key auto_increment not null,
+	stage int not null,
+	status int not null,
+	email char(80) not null,
+	sdate datetime not null,
+	errortext mediumtext,
+	plfile mediumtext,
+	annfile mediumtext,
+	comment text not null,
+	goal varchar(160)
+);
+

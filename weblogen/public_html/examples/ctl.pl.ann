@@ -1,0 +1,69 @@
+(:-module(ctl,[])).
+
+logen(sat/2,sat(_,true)).
+logen(sat/2,sat(_,false)) :-
+        logen(call,fail).
+logen(sat/2,sat(A,p(B))) :-
+        logen(unfold,prop(A,B)).
+logen(sat/2,sat(A,and(B,C))) :-
+        logen(unfold,sat(A,B)),
+        logen(unfold,sat(A,C)).
+logen(sat/2,sat(A,or(B,_))) :-
+        logen(unfold,sat(A,B)).
+logen(sat/2,sat(A,or(_,B))) :-
+        logen(unfold,sat(A,B)).
+logen(sat/2,sat(A,not(B))) :-
+        resnot(logen(unfold,sat(A,B))).
+logen(sat/2,sat(A,en(B))) :-
+        logen(unfold,trans(_,A,C)),
+        logen(unfold,sat(C,B)).
+logen(sat/2,sat(A,an(B))) :-
+        resnot(logen(unfold,sat(A,en(not(B))))).
+logen(sat/2,sat(A,eu(B,C))) :-
+        logen(memo,sat_eu(A,B,C)).
+logen(sat/2,sat(A,au(B,C))) :-
+        logen(unfold,sat(A,not(eu(not(C),and(not(B),not(C)))))),
+        logen(unfold,sat_noteg(A,not(C))).
+logen(sat/2,sat(A,ef(B))) :-
+        logen(unfold,sat(A,eu(true,B))).
+logen(sat/2,sat(A,af(B))) :-
+        logen(memo,sat_noteg(A,not(B))).
+logen(sat/2,sat(A,eg(B))) :-
+        resnot(logen(unfold,sat_noteg(A,B))).
+logen(sat/2,sat(A,ag(B))) :-
+        logen(unfold,sat(A,not(ef(not(B))))).
+logen(sat_eu/3,sat_eu(A,_,B)) :-
+        logen(unfold,sat(A,B)).
+logen(sat_eu/3,sat_eu(A,B,C)) :-
+        logen(unfold,sat(A,B)),
+        logen(unfold,trans(_,A,D)),
+        logen(memo,sat_eu(D,B,C)).
+logen(sat_noteg/2,sat_noteg(A,B)) :-
+        logen(unfold,sat(A,not(B))).
+logen(sat_noteg/2,sat_noteg(A,B)) :-
+        resnot((logen(unfold, trans(_,A,C)),resnot(logen(memo,sat_noteg(C,B))))).
+logen(trans/3,trans(enter_cs,[s(A),s(B),C,D,E],[A,B,s(C),D,E])).
+logen(trans/3,trans(exit_cs,[A,B,s(C),D,E],[A,s(B),C,s(D),E])).
+logen(trans/3,trans(restart,[A,B,C,s(D),E],[s(A),B,C,D,s(E)])).
+logen(prop/2,prop([_,_,s(s(_)),_,_],unsafe)).
+logen(prop/2,prop([0,_,0,0,_],deadlock)).
+logen(prop/2,prop([_,0,0,0,_],deadlock)).
+
+logen(init/1,init(X,[X,s(0),0,0,0])).
+
+logen(isat/1,isat(X,F)) :-
+   logen(unfold,init(X,IS)),
+   logen(unfold,sat(IS,F)).
+   
+%:- type state ---> type(list(dynamic)).
+:- filter
+        isat(dynamic,static).
+:- filter
+        sat(type(list(dynamic)),static).
+%        sat(type(state),static).
+:- filter
+%        sat_eu(type(state),static,static).
+        sat_eu(type(list(dynamic)),static,static).
+:- filter
+        sat_noteg(type(list(dynamic)),static).
+%        sat_noteg(type(state),static).

@@ -1,0 +1,51 @@
+
+%:- include('../logen_source/logen').
+
+%%% NAMED FILTERS......
+
+%:- residual map/3.
+:- filter(map(static, dynamic, dynamic)).
+logen(1,map(_,[],[])).
+logen(2, map(A,[B|C], [D|E])) :-
+	logen(call, F =..[A,B,D]),
+	logen(mcall,call(F)),
+	logen(memo, map(A,C,E)).
+
+%:- filter reduce(static, dynamic, dynamic, dynamic).
+%:- residual reduce/4.
+logen(3,reduce(_,A,[],A)).
+logen(4,reduce(A,B,[C|D],E)) :-
+     logen(memo, reduce(A,B,D,F)),
+     logen(call, G=..[A,C,F,E]),
+     logen(ucall,call(G)).
+
+
+
+%:- filter q(dynamic, dynamic).
+%:- residual q/2.
+logen(5, q(a,b)).
+logen(6, q(b,c)).
+logen(7, q(c,d)).
+logen(8, q(d,e)).
+
+%:- filter reduce_add(dynamic,dynamic).
+%:- residual reduce_add/2.
+logen(9, reduce_add(A,B)) :-
+	logen(unfold, reduce(add,0,A,B)).
+
+%:- filter add(dynamic, dynamic, dynamic).
+%:- residual add/3.
+logen(10, add(A,B,C)) :-
+	logen(rescall, C is A+B).
+
+%:- filter rev(dynamic, dynamic).
+%:- residual rev/2.
+logen(11, rev(A,B)) :-
+	logen(memo, rev(A,[],B)).
+
+%:- filter rev(dynamic, dynamic, dynamic).
+%:- residual rev/3.
+logen(12, rev([],A,A)).
+logen(13, rev([A|B], C,D)).
+
+

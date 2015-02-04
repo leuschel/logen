@@ -1,0 +1,15 @@
+(:-module(builtin_test,[])).
+logen(gen_name, gen_name(A,B)) :-
+        logen(call, atom_chars(A,C)),
+        logen(call, append(C,['.',p,l],D)),
+        logen(call, atom_chars(B,D)).
+logen(test, test(A)) :-
+        logen(unfold, gen_name(builtin_test,A)),
+        logen(call, print(see(A))),
+        logen(call, nl),
+        logen(call, see(A)),
+        logen(call, seen),
+        logen(call, print(done)),
+        logen(call, nl).
+:- filter
+        test(dynamic).

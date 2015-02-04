@@ -1,0 +1,5 @@
+test(R)
+solve_atom(square(X,Y))
+solve_atom(dapp(X,Y,Z,Res))
+solve_literal(not(not(dapp(X,Y,Z,Res))))
+   

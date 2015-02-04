@@ -1,0 +1,9 @@
+out.ann
+_filter.tmp
+_temp_bta.ann
+logenbta.tmp
+prologport
+prologstderr
+prologstdout
+*.sav
+logen_preferences.pl

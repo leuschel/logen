@@ -1,0 +1,1 @@
+comm_list([(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))]).

@@ -1,0 +1,17 @@
+(:-module(inter_simple,[])).
+logen(int, int(cst(A),A)).
+logen(int, int(A+B,_)) :-
+        logen(unfold, int(A,_)),
+        logen(unfold, int(B,_)).
+logen(int, int(A-B,_)) :-
+        logen(unfold, int(A,_)),
+        logen(unfold, int(B,_)).
+logen(int, int(fun(A),B)) :-
+        logen(unfold, def(A,C)),
+        logen(memo, int(C,B)).
+logen(def, def(rec,fun(rec))).
+logen(def, def(rec,fun(rec))).
+:- filter
+        def(static, dynamic).
+:- filter
+        int(static, dynamic).

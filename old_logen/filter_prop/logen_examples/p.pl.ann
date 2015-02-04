@@ -1,0 +1,19 @@
+logen(p,p(_)).
+
+
+:- filter p(static).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,120 @@
+ready('/tmp/sp_tmpnam_Xhd1mU').
+query(test(_), iterations(100000)).
+original-bench(620,100000,9891).
+starting([memo,unfold,unfold,unfold,unfold], [nonvar,dynamic,nonvar,(type list(nonvar)),dynamic]).
+mutations(6).
+hit(1).
+hit(2).
+hit(3).
+hit(4).
+hit(5).
+hit(6).
+mutations(16).
+hit(7).
+hit(8).
+hit(9).
+hit(10).
+hit(11).
+hit(12).
+hit(13).
+hit(14).
+hit(15).
+mutations(16).
+hit(16).
+hit(17).
+hit(18).
+hit(19).
+hit(20).
+hit(21).
+hit(22).
+completed(walltime, 164360).
+ready('/tmp/sp_tmpnam_Xhd1mU').
+query(test(_), iterations(0)).
+original-bench(0,0,9891).
+starting([memo,unfold,unfold,unfold,unfold], [nonvar,dynamic,nonvar,(type list(nonvar)),dynamic]).
+mutations(6).
+hit(1).
+hit(2).
+hit(3).
+hit(4).
+hit(5).
+hit(6).
+mutations(17).
+hit(7).
+hit(8).
+hit(9).
+hit(10).
+hit(11).
+hit(12).
+hit(13).
+hit(14).
+completed(walltime, 80100).
+ready('/tmp/sp_tmpnam_Xhd1mU').
+query(test(_), iterations(100000)).
+original-bench(640,100000,9891).
+starting([memo,unfold,unfold,unfold,unfold], [nonvar,dynamic,nonvar,(type list(nonvar)),dynamic]).
+mutations(6).
+hit(1).
+hit(2).
+hit(3).
+hit(4).
+hit(5).
+hit(6).
+mutations(17).
+hit(7).
+hit(8).
+hit(9).
+hit(10).
+hit(11).
+hit(12).
+hit(13).
+hit(14).
+mutations(16).
+hit(15).
+hit(16).
+hit(17).
+hit(18).
+hit(19).
+hit(20).
+hit(21).
+mutations(15).
+hit(22).
+hit(23).
+hit(24).
+completed(walltime, 154830).
+
+
+ Testing vanilla with score function time, completed in 164360ms tried 22 mutations with answers:
+ann([memo,unfold,unfold,memo,memo],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9092).
+ann([memo,memo,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9159).
+ann([memo,unfold,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(380,100000,8938).
+
+
+ Testing vanilla with score function size, completed in 80100ms tried 14 mutations with answers:
+ann([memo,unfold,unfold,unfold,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(0,0,8369).
+ann([memo,unfold,unfold,unfold,memo],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(0,0,8523).
+ann([memo,memo,unfold,unfold,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(0,0,8713).
+
+
+ Testing vanilla with score function size_time, completed in 154830ms tried 24 mutations with answers:
+ann([memo,unfold,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,8938).
+ann([memo,memo,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9159).
+ann([memo,memo,unfold,memo,memo],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9313).
+
+
+ Testing vanilla with score function time, completed in 164360ms tried 22 mutations with answers:
+ann([memo,unfold,unfold,memo,memo],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9092).
+ann([memo,memo,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9159).
+ann([memo,unfold,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(380,100000,8938).
+
+
+ Testing vanilla with score function size, completed in 80100ms tried 14 mutations with answers:
+ann([memo,unfold,unfold,unfold,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(0,0,8369).
+ann([memo,unfold,unfold,unfold,memo],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(0,0,8523).
+ann([memo,memo,unfold,unfold,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(0,0,8713).
+
+
+ Testing vanilla with score function size_time, completed in 154830ms tried 24 mutations with answers:
+ann([memo,unfold,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,8938).
+ann([memo,memo,unfold,memo,unfold],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9159).
+ann([memo,memo,unfold,memo,memo],[nonvar,dynamic,nonvar,(type list(nonvar)),dynamic])-bench(370,100000,9313).

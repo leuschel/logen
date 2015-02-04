@@ -1,0 +1,90 @@
+query(match([a,a,c],[a,a,a,a,a,a,a,a,a,a,a,a,a,a,d,a,a,a,a,c]), iterations(100000)).
+original-bench(790,100000,1026).
+completed(walltime, 29990).
+query(match([a,a,c],[a,a,a,a,a,a,a,a,a,a,a,a,a,a,d,a,a,a,a,c]), iterations(0)).
+original-bench(0,0,1026).
+completed(walltime, 27170).
+query(match([a,a,c],[a,a,a,a,a,a,a,a,a,a,a,a,a,a,d,a,a,a,a,c]), iterations(100000)).
+original-bench(750,100000,1026).
+completed(walltime, 31820).
+query(what_to_do_today(first_of_may,windy,_), iterations(1000000)).
+original-bench(670,1000000,4089).
+completed(walltime, 19400).
+query(what_to_do_today(first_of_may,windy,_), iterations(0)).
+original-bench(0,0,4089).
+completed(walltime, 21130).
+query(what_to_do_today(first_of_may,windy,_), iterations(1000000)).
+original-bench(410,1000000,2239).
+completed(walltime, 19090).
+query(match(*([a|b+c]),[a,c,a,b,a,c,a,b]), iterations(1000000)).
+original-bench(3580,1000000,1610).
+completed(walltime, 57660).
+query(match(*([a|b+c]),[a,c,a,b,a,c,a,b]), iterations(0)).
+original-bench(0,0,1610).
+completed(walltime, 40270).
+query(match(*([a|b+c]),[a,c,a,b,a,c,a,b]), iterations(1000000)).
+original-bench(3590,1000000,1610).
+completed(walltime, 79410).
+query(unify(struct(f,[var(1),var(2)]),struct(f,[var(3),var(3)]),_), iterations(100000)).
+original-bench(530,100000,4062).
+completed(walltime, 967950).
+
+
+ Testing match with score function time, completed in 29990ms tried 14 mutations with answers:
+ann([unfold,rescall,memo,unfold],[static,dynamic,static,dynamic,static,dynamic])-bench(420,100000,2204).
+ann([memo,rescall,memo,unfold],[static,dynamic,static,dynamic,static,dynamic])-bench(460,100000,1476).
+ann([memo,rescall,memo,memo],[static,dynamic,static,dynamic,static,dynamic])-bench(520,100000,1944).
+
+
+ Testing match with score function size, completed in 27170ms tried 15 mutations with answers:
+ann([memo,rescall,memo,memo],[dynamic,dynamic,static,dynamic,static,dynamic])-bench(0,0,1237).
+ann([memo,rescall,memo,unfold],[static,dynamic,static,dynamic,static,dynamic])-bench(0,0,1476).
+ann([unfold,rescall,memo,memo],[dynamic,dynamic,static,dynamic,static,dynamic])-bench(0,0,1501).
+
+
+ Testing match with score function size_time, completed in 31820ms tried 15 mutations with answers:
+ann([memo,rescall,memo,unfold],[static,dynamic,static,dynamic,static,dynamic])-bench(430,100000,1476).
+ann([memo,rescall,memo,memo],[static,dynamic,static,dynamic,static,dynamic])-bench(540,100000,1944).
+ann([memo,rescall,memo,memo],[dynamic,dynamic,static,dynamic,static,dynamic])-bench(860,100000,1237).
+
+
+ Testing advisor with score function time, completed in 19400ms tried 10 mutations with answers:
+ann([unfold,unfold,unfold,unfold],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(260,1000000,2307).
+ann([unfold,unfold,unfold,memo],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(280,1000000,1993).
+ann([unfold,unfold,memo,unfold],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(290,1000000,1993).
+
+
+ Testing advisor with score function size, completed in 21130ms tried 13 mutations with answers:
+ann([unfold,unfold,unfold,memo],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(0,0,1993).
+ann([unfold,unfold,memo,unfold],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(0,0,1993).
+ann([unfold,memo,memo,unfold],[static,dynamic,dynamic,dynamic,static,dynamic,dynamic,static,dynamic,dynamic])-bench(0,0,2087).
+
+
+ Testing advisor with score function size_time, completed in 19090ms tried 10 mutations with answers:
+ann([unfold,unfold,unfold,unfold],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(250,1000000,2307).
+ann([unfold,unfold,unfold,memo],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(290,1000000,1993).
+ann([unfold,unfold,memo,unfold],[static,dynamic,dynamic,dynamic,static,static,dynamic,static,dynamic,dynamic])-bench(290,1000000,1993).
+
+
+ Testing regexp with score function time, completed in 57660ms tried 19 mutations with answers:
+ann([unfold,call,unfold,unfold,unfold,unfold,memo],[static,dynamic,static,dynamic,dynamic])-bench(790,1000000,1407).
+ann([memo,call,unfold,unfold,unfold,unfold,memo],[static,dynamic,static,dynamic,dynamic])-bench(850,1000000,1559).
+ann([unfold,call,unfold,memo,unfold,unfold,memo],[static,dynamic,static,dynamic,dynamic])-bench(1100,1000000,1624).
+
+
+ Testing regexp with score function size, completed in 40270ms tried 24 mutations with answers:
+ann([unfold,call,unfold,unfold,unfold,unfold,memo],[static,dynamic,static,dynamic,dynamic])-bench(0,0,1407).
+ann([memo,call,unfold,unfold,unfold,memo,memo],[static,dynamic,static,dynamic,dynamic])-bench(0,0,1452).
+ann([unfold,call,unfold,unfold,unfold,memo,memo],[static,dynamic,static,dynamic,dynamic])-bench(0,0,1533).
+
+
+ Testing regexp with score function size_time, completed in 79410ms tried 24 mutations with answers:
+ann([unfold,call,unfold,unfold,unfold,unfold,memo],[static,dynamic,static,dynamic,dynamic])-bench(800,1000000,1407).
+ann([memo,call,unfold,unfold,unfold,unfold,memo],[static,dynamic,static,dynamic,dynamic])-bench(860,1000000,1559).
+ann([memo,call,unfold,unfold,unfold,memo,memo],[static,dynamic,static,dynamic,dynamic])-bench(1190,1000000,1452).
+
+
+ Testing gunify with score function size_time, completed in 967950ms tried 490 mutations with answers:
+ann([unfold,unfold,unfold,unfold,unfold,memo,unfold,unfold,unfold,call,unfold,unfold,unfold,call,call,unfold,rescall,rescall,memo,memo,memo,memo,memo,memo],[nonvar,dynamic,dynamic,dynamic,dynamic,nonvar,nonvar,dynamic,nonvar,nonvar,nonvar,dynamic,dynamic,static,static,dynamic,dynamic,dynamic,dynamic,dynamic,dynamic,nonvar,dynamic,nonvar,dynamic,dynamic,static,dynamic,dynamic,dynamic,dynamic])-bench(140,100000,5106).
+ann([unfold,unfold,unfold,unfold,unfold,memo,unfold,unfold,unfold,call,unfold,unfold,unfold,call,call,unfold,rescall,rescall,memo,memo,memo,memo,memo,unfold],[nonvar,dynamic,dynamic,dynamic,dynamic,nonvar,nonvar,dynamic,nonvar,nonvar,nonvar,dynamic,dynamic,static,static,dynamic,dynamic,dynamic,dynamic,dynamic,dynamic,nonvar,dynamic,nonvar,dynamic,dynamic,static,dynamic,dynamic,dynamic,dynamic])-bench(140,100000,5106).
+ann([unfold,unfold,unfold,unfold,unfold,memo,unfold,unfold,unfold,call,unfold,unfold,unfold,call,call,unfold,call,rescall,memo,memo,memo,memo,memo,memo],[nonvar,dynamic,dynamic,dynamic,dynamic,nonvar,nonvar,dynamic,nonvar,nonvar,nonvar,dynamic,dynamic,static,static,dynamic,dynamic,dynamic,dynamic,dynamic,dynamic,nonvar,dynamic,nonvar,dynamic,dynamic,static,dynamic,dynamic,dynamic,dynamic])-bench(140,100000,5106).

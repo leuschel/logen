@@ -1,0 +1,7 @@
+*.ann_backup
+*.spec
+*.gx
+*.memo
+*.pref
+*.ql
+*.types

@@ -1,0 +1,19 @@
+(:-module(rev,[])).
+logen(rev, rev(A,B)) :-
+        logen(online, rev(A,[],B)).
+logen(rev, rev([],A,A)).
+logen(rev, rev([A|B],C,D)) :-
+        logen(online, rev(B,[A|C],D)).
+logen(rev2, rev2(A,B)) :-
+        logen(online, rev2(A,[],B)).
+logen(rev2, rev2([],A,A)).
+logen(rev2, rev2([A|B],C,D)) :-
+        logen(online, rev2(B,[A|C],D)).
+:- filter
+        rev(online, online).
+:- filter
+        rev(online, online, online).
+:- filter
+        rev2(static, dynamic).
+:- filter
+        rev2(static, static, dynamic).

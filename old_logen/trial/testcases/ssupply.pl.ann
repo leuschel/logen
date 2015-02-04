@@ -1,0 +1,75 @@
+%% Logen Annotation File
+(:-module(ssupply,[])).
+logen(0, ssupply(A,B,C)) :-
+        logen(unfold, london_red_heavy_parts(B,_,_)),
+        logen(unfold, best_suppliers(A,_,_,_)),
+        logen(unfold, supply(A,B,C)).
+logen(1, best_suppliers(A,B,C,D)) :-
+        logen(unfold, good_suppliers(A,B,C,D)),
+        logen(unfold, good_cities(E)),
+        logen(call, E=D).
+logen(2, good_suppliers(A,B,C,D)) :-
+        logen(unfold, suppliers(A,B,C,D)),
+        logen(call, C>10).
+logen(3, london_red_heavy_parts(A,B,C)) :-
+        logen(unfold, london_red_parts(A,B,C)),
+        logen(unfold, london_heavy_weights(D,B,_,C)),
+        logen(call, A=D).
+logen(4, london_red_parts(A,B,C)) :-
+        logen(unfold, red_parts(A,B,C,D)),
+        logen(call, D=london).
+logen(5, red_parts(A,B,C,D)) :-
+        logen(unfold, parts(A,B,E,C,D)),
+        logen(call, E=red).
+logen(6, london_heavy_weights(A,B,C,D)) :-
+        logen(unfold, heavy_weights(A,B,C,D,E)),
+        logen(call, E=london).
+logen(7, heavy_weights(A,B,C,D,E)) :-
+        logen(unfold, parts(A,B,C,D,E)),
+        logen(call, D>10).
+logen(8, good_cities(paris)).
+logen(9, good_cities(london)).
+logen(10, good_cities(hongkong)).
+logen(11, good_cities(regina)).
+logen(12, good_cities(saskatoon)).
+logen(13, supply(s1,p1,300)).
+logen(14, supply(s1,p2,200)).
+logen(15, supply(s1,p3,400)).
+logen(16, supply(s2,p1,300)).
+logen(17, supply(s2,p2,400)).
+logen(18, supply(s3,p1,400)).
+logen(19, supply(s4,p1,200)).
+logen(20, supply(s5,p1,500)).
+logen(21, supply(s5,p2,400)).
+logen(22, parts(p1,nut,red,12,london)).
+logen(23, parts(p2,bolt,green,17,paris)).
+logen(24, parts(p3,screw,blue,17,rome)).
+logen(25, suppliers(s1,smith,20,london)).
+logen(26, suppliers(s2,jones,10,paris)).
+logen(27, suppliers(s3,blake,30,paris)).
+logen(28, suppliers(s4,clark,20,london)).
+logen(29, suppliers(s5,adams,30,athens)).
+:- filter
+        best_suppliers(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        good_cities(dynamic).
+:- filter
+        good_suppliers(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        heavy_weights(dynamic, static, dynamic, static, dynamic).
+:- filter
+        london_heavy_weights(dynamic, static, dynamic, static).
+:- filter
+        london_red_heavy_parts(dynamic, dynamic, dynamic).
+:- filter
+        london_red_parts(dynamic, dynamic, dynamic).
+:- filter
+        parts(dynamic, dynamic, dynamic, dynamic, dynamic).
+:- filter
+        red_parts(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        ssupply(dynamic, dynamic, dynamic).
+:- filter
+        suppliers(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        supply(static, static, dynamic).

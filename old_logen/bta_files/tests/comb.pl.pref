@@ -1,0 +1,8 @@
+entry=:- filter big(dynamic,dynamic).
+entry=:- filter int(static, dynamic).
+entry=:- filter test(dynamic).
+entry=:- filter match(static,dynamic).
+goal=big(s(0),[a,a,a,b])
+norm=term
+iter=50000
+benchmark=big(s(0),[a,a,a,b])

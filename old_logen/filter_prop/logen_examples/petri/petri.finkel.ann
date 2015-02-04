@@ -1,0 +1,26 @@
+/* file: petri.finkel.ann */
+
+static_consult([]).
+
+
+residual(reachable(A)).
+filter(reachable(A),[dynamic]).
+ann_clause(reachable(R),(unfold(initial_marking(B)),memo(reachable(A,B,R)))).
+
+filter(initial_marking(A),[dynamic]).
+filter(initial_marking(A),[dynamic]).
+ann_clause(initial_marking([s(0),0,0,0,0]),true).
+
+
+residual(reachable(A,B,R)).
+filter(reachable(A,B,R),[dynamic,type(list(dynamic)),dynamic]).
+ann_clause(reachable([],A,A),true).
+ann_clause(reachable([A|B],C,R),(unfold(trans(A,C,D)),memo(reachable(B,D,R)))).
+
+filter(trans(A,B,C),[dynamic,type(list(dynamic)),dynamic]).
+ann_clause(trans(t1,[s(A),B,C,D,E],[A,s(B),C,D,E]),true).
+ann_clause(trans(t2,[s(A),B,C,D,E],[A,B,C,s(D),E]),true).
+ann_clause(trans(t3,[A,s(B),C,D,E],[A,B,s(s(C)),D,E]),true).
+ann_clause(trans(t4,[A,B,s(C),D,E],[A,s(B),C,D,E]),true).
+ann_clause(trans(t5,[A,B,C,s(D),E],[A,B,C,D,s(s(E))]),true).
+ann_clause(trans(t6,[A,B,C,D,s(E)],[A,B,C,s(D),E]),true).

@@ -1,0 +1,8 @@
+logen(p/2,p([],[])).
+logen(p/2,p([a|A],[b|B])) :-
+        logen(memo,p(A,B)).
+logen(p/2,p([b|_],[])).
+:- filter
+        p(type(sd_list),dynamic).
+
+:- type sd_list ---> (struct(.,[static,type(list(dynamic))]) ; type(list(dynamic))).

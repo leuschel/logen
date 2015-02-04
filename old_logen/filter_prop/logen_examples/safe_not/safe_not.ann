@@ -1,0 +1,80 @@
+/* file: safe_not/safe_not.ann */
+
+:- multifile residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+static_consult([]).
+
+
+residual(strue(A)).
+filter(strue(A),[dynamic]).
+ann_clause(1,strue(\+(A)),unfold(snot(A))).
+ann_clause(2,strue(A),','(';'(unfold(negate(A,B)),unfold(negate(B,A))),semicall(A))).
+/*ann_clause(2,strue(=(X,Y)),call(=(X,Y))).*/
+ann_clause(3,strue(or(A,B)),unfold(strue(A))).
+ann_clause(4,strue(or(A,B)),','(rescall(print(B)),','(rescall(nl),unfold(strue(B))))).
+ann_clause(5,strue(and(A,B)),','(unfold(strue(A)),unfold(strue(B)))).
+ann_clause(6,strue(unfold(A)),memo(sunfold(A))).
+ann_clause(7,strue(when(A,B)),unfold(when(A,strue(B)))).
+ann_clause(8,strue(call(A)),rescall(call(A))).
+
+residual(snot(A)).
+filter(snot(A),[dynamic]).
+ann_clause(9,snot(\+(A)),unfold(strue(A))).
+ann_clause(10,snot(A),','(';'(unfold(negate(A,B)),unfold(negate(B,A))),rescall(B))).
+ann_clause(11,snot(and(A,B)),unfold(snot(A))).
+ann_clause(12,snot(and(A,B)),','(unfold(strue(A)),unfold(snot(B)))).
+ann_clause(13,snot(or(A,B)),','(unfold(snot(A)),unfold(snot(B)))).
+ann_clause(14,snot(unfold(A)),memo(nunfold(A))).
+ann_clause(15,snot(when(A,B)),unfold(when(A,snot(B)))).
+ann_clause(16,snot(call(A)),resnot(call(A))).
+
+residual(negate(A,B)).
+filter(negate(A,B),[dynamic,dynamic]).
+ann_clause(17,negate(A = B,'\\='(A,B)),true).
+ann_clause(18,negate(true,fail),true).
+
+residual(sunfold(A)).
+filter(sunfold(A),[nonvar]).
+ann_clause(19,sunfold(A),','(unfold(claus(A,B)),unfold(strue(B)))).
+
+residual(nunfold(A)).
+filter(nunfold(A),[nonvar]).
+ann_clause(20,nunfold(A),','(unfold(claus(A,B)),unfold(snot(B)))).
+
+residual(claus(A,B)).
+filter(claus(A,B),[dynamic,dynamic]).
+ann_clause(21,claus(q(A),or(A = a,A = b)),true).
+ann_clause(22,claus(p(A),when(nonvar(A),or(call(A = []),and(call(A = ([B|C])),unfold(p(C)))))),true).
+ann_clause(23,claus(mem(A,B),or(and(B = ([C|D]),A = C),
+                       and(B = ([C|E]),unfold(mem(A,E))))),true).
+ann_clause(24,claus(mem2(A,B),or(and(B = ([C|D]),A = C),and(B = ([C|E]),and('\='(A,C),unfold(mem2(A,E)))))),true).
+
+residual(test(A)).
+filter(test(A),[dynamic]).
+ann_clause(25,test(A),','(unfold(snot(unfold(p(A)))),call(A = ([B|C])))).
+
+residual(not_mem(A,B)).
+filter(not_mem(A,B),[dynamic,dynamic]).
+ann_clause(26,not_mem(A,B),memo(nunfold(mem(A,B)))).
+
+residual(mem(A,B)).
+filter(mem(A,B),[dynamic,dynamic]).
+ann_clause(27,mem(A,B),memo(sunfold(mem(A,B)))).
+
+residual(s).
+filter(s,[]).
+ann_clause(28,s,unfold(mem(1,[2,1]))).
+
+residual(t).
+filter(t,[]).
+ann_clause(29,t,unfold(not_mem(1,[2,3]))).
+ann_clause(30,t,unfold(mem(1,[3,2,1,4]))).
+
+residual(q(A)).
+filter(q(A),[dynamic]).
+ann_clause(31,q(A),memo(sunfold(q(A)))).
+
+residual(nq(A)).
+filter(nq(A),[dynamic]).
+ann_clause(32,nq(A),memo(nunfold(q(A)))).

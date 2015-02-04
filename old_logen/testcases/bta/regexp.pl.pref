@@ -1,0 +1,8 @@
+entry=:-filter match(static,dynamic).
+norm=term
+goal=match(.(*(+(a,b)),.(a,.(b,a))),X)
+goal=match(*(+(a,b)),X)
+benchmark=match(*(+(a,b)),[a,a,b,a,b,a,a,b,a,a,a,a,a])
+iter=50000
+
+

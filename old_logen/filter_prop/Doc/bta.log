@@ -1,0 +1,214 @@
+This is pdfTeX, Version 3.14159-1.00b-pretest-20020211 (Web2C 7.3.7x) (format=pdflatex 2003.10.31)  15 JAN 2004 17:06
+**bta.tex
+(./bta.tex{/usr/local/teTeX/share/texmf.local/pdftex/config/pdftex.cfg}
+LaTeX2e <2001/06/01>
+Babel <v3.7h> and hyphenation patterns for american, french, german, ngerman, d
+utch, nohyphenation, loaded.
+(/usr/local/teTeX/share/texmf/tex/latex/base/article.cls
+Document Class: article 2001/04/21 v1.4e Standard LaTeX document class
+(/usr/local/teTeX/share/texmf/tex/latex/base/size12.clo
+File: size12.clo 2001/04/21 v1.4e Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/teTeX/share/texmf.os/tex/latex/macros/contrib/supported/algorithms/
+algorithmic.sty
+Package: algorithmic 
+
+Document Style `algorithmic' - environment
+(/usr/local/teTeX/share/texmf/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/teTeX/share/texmf/tex/latex/tools/calc.sty
+Package: calc 1998/07/07 v4.1b Infix arithmetic (KKT,FJ)
+\calc@Acount=\count87
+\calc@Bcount=\count88
+\calc@Adimen=\dimen103
+\calc@Bdimen=\dimen104
+\calc@Askip=\skip43
+\calc@Bskip=\skip44
+LaTeX Info: Redefining \setlength on input line 59.
+LaTeX Info: Redefining \addtolength on input line 60.
+\calc@denominator=\count89
+)
+\c@ALC@line=\count90
+\c@ALC@rem=\count91
+\ALC@tlm=\skip45
+) (./bta.aux)
+\openout1 = `bta.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 15.
+
+(/usr/local/teTeX/share/texmf/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 15.
+
+Underfull \vbox (badness 1194) has occurred while \output is active []
+
+ [1
+
+{/usr/local/teTeX/share/texmf/dvips/config/pdftex.map}{/usr/local/teTeX/share/t
+exmf.os/dvips/config/Ttbbold.map}{/usr/local/teTeX/share/texmf.os/dvips/config/
+wolfram.map}]
+
+LaTeX Warning: Citation `MogensenBondorf:LOPSTR92' on page 2 undefined on input
+ line 57.
+
+
+LaTeX Warning: Citation `HillGallagher:metachapter' on page 2 undefined on inpu
+t line 66.
+
+
+LaTeX Warning: Citation `MartensDeSchreye:metachapter' on page 2 undefined on i
+nput line 66.
+
+
+LaTeX Warning: Citation `Leuschel96:ecce-dppd' on page 2 undefined on input lin
+e 68.
+
+
+LaTeX Warning: Citation `disjoint-types' on page 2 undefined on input line 76.
+
+
+LaTeX Warning: Citation `disjoint-types' on page 2 undefined on input line 82.
+
+
+LaTeX Warning: Citation `disjoint-types' on page 2 undefined on input line 86.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 93.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 93.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 93.
+[2] [3]
+Overfull \hbox (5.2002pt too wide) in paragraph at lines 132--132
+[]/cmtt12/:-filter append([static],[static,nonstatic],[static,nonstatic]).[] 
+ []
+
+
+Underfull \vbox (badness 1688) has occurred while \output is active []
+
+ [4]
+Overfull \hbox (35.33069pt too wide) in paragraph at lines 192--193
+[]/cmbx12/createUnfoldBinaryClauseSemantics() /cmr12/Par-tially Eval-u-ate bin[
+]solve,
+ []
+
+[5]
+Overfull \hbox (29.0321pt too wide) in paragraph at lines 206--207
+[]/cmbx12/createMemoBinaryClauseSemantics() /cmr12/Par-tially Eval-u-ate bin[]s
+olve
+ []
+
+[6]
+Overfull \hbox (647.40051pt too wide) in paragraph at lines 276--276
+[]/cmtt12/:- module('/home/sjc02r/cvs_root/cogen2/logen_examples/bta_test/bin_s
+olve.pl.memo',[test__0/2,bin_solve_atom__1/2,solve_atom__2/4,bin_solve_atom__3/
+2,solve_atom__4/3]).[] 
+ []
+
+
+Overfull \hbox (270.72533pt too wide) in paragraph at lines 276--276
+[]/cmtt12/memo_table(1,bin_solve_atom(ann_dapp(A,B,C,D),E),bin_solve_atom__1(an
+n_dapp(A,B,C,D),E),done(internal),[]).[] 
+ []
+
+
+Overfull \hbox (134.87526pt too wide) in paragraph at lines 276--276
+[]/cmtt12/memo_table(2,solve_atom(ann_dapp(A,B,C,D)),solve_atom__2(A,B,C,D),don
+e(internal),[]).[] 
+ []
+
+
+Overfull \hbox (233.67531pt too wide) in paragraph at lines 276--276
+[]/cmtt12/memo_table(3,bin_solve_atom(ann_app(A,B,C),D),bin_solve_atom__3(ann_a
+pp(A,B,C),D),done(internal),[]).[] 
+ []
+
+
+Overfull \hbox (104.00024pt too wide) in paragraph at lines 276--276
+[]/cmtt12/memo_table(4,solve_atom(ann_app(A,B,C)),solve_atom__4(A,B,C),done(int
+ernal),[]).[] 
+ []
+
+[7]
+Overfull \hbox (48.42522pt too wide) in paragraph at lines 312--312
+[]/cmtt12/bin_solve_atom__1(match1([B|C],[D|E],F,[G|H]),unfold(match1(F,H,F,H))
+).[] 
+ []
+
+
+Overfull \hbox (23.7252pt too wide) in paragraph at lines 312--312
+[]/cmtt12/bin_solve_atom__1(match1([B|C],[B|D],E,F),unfold(match1(C,D,E,F))).[]
+ 
+ []
+
+
+Overfull \hbox (13.85533pt too wide) in paragraph at lines 323--324
+[]/cmr12/For each bi-nary clause of the form: /cmtt12/bin[]solve[]atom(p(--),un
+fold(p(--))/cmr12/: 
+ []
+
+[8]
+Overfull \hbox (23.7252pt too wide) in paragraph at lines 346--346
+[]/cmtt12/bin_solve_atom__1(match1([B|C],[B|D],E,F),unfold(match1(C,D,E,F))).[]
+ 
+ []
+
+
+Overfull \hbox (13.85533pt too wide) in paragraph at lines 354--355
+[]/cmr12/For each bi-nary clause of the form: /cmtt12/bin[]solve[]atom(p(--),un
+fold(p(--))/cmr12/: 
+ []
+
+[9] (./bta.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 459 strings out of 60917
+ 5446 string characters out of 1188882
+ 4050273 words of memory out of 6505630
+ 3511 multiletter control sequences out of 10000+50000
+ 9018 words of font info for 32 fonts, out of 500000 for 1000
+ 54 hyphenation exceptions out of 1000
+ 22i,5n,19p,336b,522s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 62 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 0 words of extra memory for PDF output out of 65536
+</usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmtt12.pfb></usr/local/t
+eTeX/share/texmf/fonts/type1/bluesky/cm/cmmi6.pfb></usr/local/teTeX/share/texmf
+/fonts/type1/bluesky/cm/cmr6.pfb></usr/local/teTeX/share/texmf/fonts/type1/blue
+sky/cm/cmmi8.pfb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmr8.pfb>
+</usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmmi12.pfb></usr/local/teT
+eX/share/texmf/fonts/type1/bluesky/cm/cmcsc10.pfb></usr/local/teTeX/share/texmf
+/fonts/type1/bluesky/cm/cmsy10.pfb></usr/local/teTeX/share/texmf/fonts/type1/bl
+uesky/cm/cmti12.pfb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmr12.
+pfb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmbx12.pfb>
+Output written on bta.pdf (9 pages, 85633 bytes).

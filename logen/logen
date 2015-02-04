@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+#Need to find path of logen_cli.pl.  If logen script is symlinked we must follow link
+if [ -L $0 ]
+   then
+      LOGENDIR=`readlink $0`	
+      LOGENDIR=`dirname $LOGENDIR`		
+      
+   else
+	LOGENDIR=`dirname $0`	
+	
+fi
+
+###ciao $LOGENDIR/ciao_entry.pl --logen_dir $LOGENDIR $*
+ciao $LOGENDIR/ciao_entry.pl --logen_dir $LOGENDIR "$@"
+
+#make $LOGENDIR/cogen
+#ciaoc $LOGENDIR/ciao_entry.pl 
+#$LOGENDIR/cogen --logen_dir $LOGENDIR "$@"
+
+
+
+#sicstus -l $LOGENDIR/logen_cli.pl --goal "go, halt." -a $*

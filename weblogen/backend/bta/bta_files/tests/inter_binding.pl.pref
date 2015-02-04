@@ -1,0 +1,7 @@
+entry= :- filter test((type list(struct(/,[static,dynamic]))), dynamic).
+goal=test([xx/X,yy/Y,zz/Z], R)
+goal=add16(X,Y,Z).
+goal=testadd.
+norm=both
+iter=100000
+benchmark=test([xx/100,yy/200,zz/300],Res)

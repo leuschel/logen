@@ -1,0 +1,82 @@
+/* file: ctl.ann */
+:- multifile ann_clause/3, filter/2, residual/1, clp_residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+residual(sat(A,B)).
+clp_residual(sat(A,B)).
+
+%filter(sat(A,B),[type(list(dynamic)),static]).
+filter(sat(A,B),[type(list(semi)),static]).
+ann_clause(1,sat(A,true),true).
+ann_clause(2,sat(A,false),rescall(fail)).
+ann_clause(3,sat(A,p(B)),unfold(prop(A,B))).
+ann_clause(4,sat(A,and(B,C)),(unfold(sat(A,B)),unfold(sat(A,C)))).
+ann_clause(5,sat(A,or(B,C)),unfold(sat(A,B))).
+ann_clause(6,sat(A,or(B,C)),unfold(sat(A,C))).
+ann_clause(7,sat(A,not(B)),resnot(hide_nf(memo(sat(A,B))))).
+ann_clause(8,sat(A,en(B)),(unfold(trans(C,A,D)),unfold(sat(D,B)))).
+ann_clause(9,sat(A,an(B)),resnot(hide_nf(unfold(sat(A,en(not(B))))))).
+ann_clause(10,sat(A,eu(B,C)),clpmemo(sat_eu(A,B,C))).
+ann_clause(11,sat(A,au(B,C)),
+	(unfold(sat(A,not(eu(not(C),and(not(B),not(C)))))),
+ 	 memo(sat_noteg(A,not(C))))).
+ann_clause(12,sat(A,ef(B)),unfold(sat(A,eu(true,B)))).
+ann_clause(13,sat(A,af(B)),memo(sat_noteg(A,not(B)))).
+ann_clause(14,sat(A,eg(B)),resnot(memo(sat_noteg(A,B)))).
+ann_clause(15,sat(A,ag(B)),unfold(sat(A,not(ef(not(B)))))).
+
+residual(sat_eu(A,B,C)).
+clp_residual(sat_eu(A,B,C)).
+%filter(sat_eu(A,B,C),[type(list(dynamic)),static,static]).
+filter(sat_eu(A,B,C),[type(list(semi)),static,static]).
+ann_clause(16,sat_eu(A,B,C),unfold(sat(A,C))).
+ann_clause(17,sat_eu(A,B,C),(unfold(sat(A,B)),
+	unfold(trans(D,A,E)),clpmemo(sat_eu(E,B,C)))).
+
+residual(sat_noteg(A,B)).
+filter(sat_noteg(A,B),[type(list(dynamic)),static]).
+ann_clause(18,sat_noteg(A,B),unfold(sat(A,not(B)))).
+ann_clause(19,sat_noteg(A,B),
+	resnot(hide_nf((unfold(trans(C,A,D)),resnot(memo(sat_noteg(D,B))))))).
+
+
+residual(trans(A,B,C)).
+filter(trans(A,B,C),[dynamic,dynamic,dynamic]).
+
+residual(time(A,B)).
+ann_clause(21,trans(enter_cs,[X,Sema,CritSec,Y,C],[X1,Sema1,Cs1,Y,C]),
+	     constraint([X>0, X1 = X-1, Sema>0, Sema1 = Sema-1, CritSec>=0, Cs1 = CritSec+1, Y>=0, C>=0])).
+
+
+ann_clause(22,trans(exit_cs,[X,Sema,CritSec,Y,C],[X,Sema1,CritSec1,Y1,C]), constraint([CritSec>0, CritSec1 = CritSec-1,
+	     Sema>=0,Sema1 = Sema + 1,
+	     Y>=0,Y1 = Y+1,
+	     C>=0])).
+	  
+ann_clause(23,trans(restart,[X,Sema,CritSec,Y,ResetCtr],[X1,Sema,CritSec,Y1,ResetCtr1]),
+	       constraint([Y>0, Y1 = Y-1,
+	       X>= 0, X1 = X+1,
+	       Sema >= 0, CritSec >= 0,
+	       ResetCtr>=0, ResetCtr<10, ResetCtr1 = ResetCtr + 1])).
+
+
+residual(prop(A,B)).
+filter(prop(A,B),[dynamic,dynamic]).
+ann_clause(24,prop([A,B,C,D,E],unsafe),constraint([C > 1])).
+%ann_clause(25,prop([0,A,0,0,B],deadlock),true).
+%ann_clause(26,prop([A,0,0,0,B],deadlock),true).
+ann_clause(25,prop([rat(0,1),A,rat(0,1),rat(0,1),B],deadlock),true).
+ann_clause(26,prop([A,rat(0,1),rat(0,1),rat(0,1),B],deadlock),true).
+
+residual(mc(A)).
+filter(mc(A),[dynamic]).
+ann_clause(27,mc(A),unfold(sat([A,1,0,0,0],ef(p(unsafe))))).
+ann_clause(28,mc(A),true).
+
+residual(mc3(A,E,B,C,D)).
+filter(mc3(A,E,B,C,D),[semi,dynamic,dynamic,dynamic,dynamic]).
+ann_clause(29,mc3(A,E,B,C,D),(constraint([A>0,B>=0,C>=0,D>=0, E>=0]),unfold(sat([A,E,B,C,D],ef(p(deadlock)))))).
+

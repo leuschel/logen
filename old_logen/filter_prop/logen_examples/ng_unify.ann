@@ -1,0 +1,81 @@
+/* file: bench/ng_unify.ann */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+
+residual(unify(A,B)).
+filter(unify(A,B),[static,dynamic]).
+ann_clause(1,unify(A,B),
+ (call(var(A)),rescall(var(B)),rescall(A=B))).
+ann_clause(2,unify(A,B),
+ (call(var(A)),rescall(nonvar(B)),memo(not_occurs_in(A,B)),rescall(A=B))).
+ann_clause(3,unify(A,B),
+ (rescall(var(B)),call(nonvar(A)),
+   hide_nf(unfold(not_occurs_in2(B,A))),rescall(B=A))).
+ann_clause(4,unify(A,B),
+ (call(nonvar(A)),rescall(nonvar(B)),
+  call(atomic(A)),rescall(atomic(B)),rescall(A=B))).
+ann_clause(5,unify(A,B),
+ (call(nonvar(A)),rescall(nonvar(B)),
+  unfold(compound2(A)),unfold(compound(B)),
+  hide_nf(unfold(term_unify(A,B))))).
+
+residual(not_occurs_in(A,B)).
+filter(not_occurs_in(A,B),[dynamic,dynamic]).
+ann_clause(6,not_occurs_in(A,B),(rescall(var(B)),rescall(A\==B))).
+ann_clause(7,not_occurs_in(A,B),
+  (rescall(nonvar(B)),rescall(atomic(B)))).
+ann_clause(8,not_occurs_in(A,B),
+  (rescall(nonvar(B)),unfold(compound(B)),
+   rescall(functor(B,C,D)),memo(not_occurs_in(D,A,B)))).
+
+residual(not_occurs_in(A,B,C)).
+filter(not_occurs_in(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(9,not_occurs_in(A,B,C),
+  (rescall(A>0),rescall(arg(A,C,D)),
+   memo(not_occurs_in(B,D)),rescall(E is A-1),
+   memo(not_occurs_in(E,B,C)))).
+ann_clause(10,not_occurs_in(0,A,B),true).
+
+residual(not_occurs_in2(A,B)).
+filter(not_occurs_in2(A,B),[dynamic,static]).
+ann_clause(11,not_occurs_in2(A,B),(call(var(B)),rescall(A\==B))).
+ann_clause(12,not_occurs_in2(A,B),
+  (call(nonvar(B)),call(atomic(B)))).
+ann_clause(13,not_occurs_in2(A,B),
+  (call(nonvar(B)),unfold(compound2(B)),
+   call(functor(B,C,D)),unfold(not_occurs_in2(D,A,B)))).
+
+filter(not_occurs_in2(A,B,C),[static,dynamic,static]).
+ann_clause(14,not_occurs_in2(A,B,C),
+  (call(A>0),call(arg(A,C,D)),
+   unfold(not_occurs_in2(B,D)),call(E is A-1),
+   unfold(not_occurs_in2(E,B,C)))).
+ann_clause(15,not_occurs_in2(0,A,B),true).
+
+
+
+filter(term_unify(A,B),[static,dynamic]).
+ann_clause(16,term_unify(A,B),
+   (call(functor(A,C,D)),call(functor(B,C,D)),
+     unfold(unify_args(D,A,B)))).
+
+filter(unify_args(A,B,C),[static,static,nonvar]).
+ann_clause(17,unify_args(A,B,C),
+  (call(A>0),unfold(unify_arg(A,B,C)),call(D is A-1),
+   unfold(unify_args(D,B,C)))).
+ann_clause(18,unify_args(0,A,B),true).
+
+filter(unify_arg(A,B,C),[static,static,nonvar]).
+ann_clause(19,unify_arg(A,B,C),
+   (call(arg(A,B,D)),call(arg(A,C,E)),memo(unify(D,E)))).
+
+filter(compound(A),[dynamic]).
+ann_clause(20,compound(A),(rescall(functor(A,B,C)),rescall(C>0))).
+
+/* splitting for different uses: */
+filter(compound2(A),[static]).
+ann_clause(21,compound2(A),(call(functor(A,B,C)),call(C>0))).

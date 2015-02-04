@@ -1,0 +1,49 @@
+:- filter
+        rev(dynamic, dynamic).
+:- filter
+        revacc(dynamic, (type list(dynamic)), dynamic).
+:- filter
+        rev2(dynamic, dynamic).
+:- filter
+        rev3(dynamic, dynamic).
+(:-module(user,[])).
+logen(rev, rev(A,B)) :-
+        logen(unfold, revacc(A,[],B)).
+logen(revacc, revacc([],A,A)).
+logen(revacc, revacc([A|B],C,D)) :-
+        logen(memo, revacc(B,[A|C],D)).
+logen(rev2, rev2(A,B)) :-
+        logen(unfold, revacc2(A,[],B)).
+logen(revacc, revacc2([],A,A)).
+logen(revacc, revacc2([A|B],C,D)) :-
+        logen(unfold, revacc2(B,[A|C],D)).
+
+logen(rev3, rev3(A,B)) :-
+        logen(unfold, revacc3(A,[],B)).
+logen(revacc3, revacc3([],A,A)).
+logen(revacc3, revacc3(XX,C,D)) :-
+        hide_nf(resif(logen(call,XX=[A|B]),
+             logen(unfold, revacc3(B,[A|C],D)),
+             logen(rescall, fail)
+             )).
+
+:- filter
+        a.       
+logen(a/0, a) :- logen(unfold,a), logen(unfold,a).
+:- filter
+        rec(dynamic). 
+logen(rec/1, rec(X)) :- resfindall(X, logen(unfold,rec(X)), R).
+
+:- filter
+        b(dynamic,dynamic). 
+logen(b/2,b(X,Y)) :- logen(rescall,a), logen(call,'=..'(X,Y)).
+
+:- filter  inf_nr(static).
+
+logen(inf_nr/1, inf_nr(X)) :- logen(call,X1 is X+1), logen(memo,inf_nr(X1)).
+:- filter  inf_nr2(static).
+
+logen(inf_nr2/1, inf_nr2(X)) :- logen(call,X1 is X+1), logen(unfold,inf_nr2(X1)).
+
+:- filter  filter_err(static).
+logen(filter_err/1,filter_err(X)) :- logen(rescall,X=Y), logen(memo,filter_err(Y)).

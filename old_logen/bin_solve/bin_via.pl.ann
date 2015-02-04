@@ -1,0 +1,150 @@
+(:-module(bin_via,[])).
+:- dynamic
+        rule/2.
+:- dynamic
+        gensym__r/1.
+:- dynamic
+        filtered/1.
+:- dynamic
+        program_point_for/1.
+logen(solve, solve([])).
+logen(solve, solve([unfold(_,A)|B])) :-
+        logen(memo, solve_atom(A)),
+        logen(unfold, solve(B)).
+logen(solve, solve([call(_,A)|B])) :-
+        logen(rescall, call(A)),
+        logen(unfold, solve(B)).
+logen(solve, solve([memo(_,A)|B])) :-
+        logen(memo, solve_atom(A)),
+        logen(unfold, solve(B)).
+logen(solve, solve([rescall(_,_)|A])) :-
+        logen(unfold, solve(A)).
+logen(solve_atom, solve_atom(A)) :-
+        logen(call, rule(A,B)),
+        logen(unfold, solve(B)).
+logen(generalise, generalise(A,static,A)).
+logen(generalise, generalise(_,dynamic,_)).
+logen(generalise, generalise(A,B,C)) :-
+        logen(call, B=..[D,E|F]),
+        logen(call, A=..[D|G]),
+        logen(unfold, l_gen(G,[E|F],H)),
+        logen(call, C=..[D|H]).
+logen(l_gen, l_gen([],[],[])).
+logen(l_gen, l_gen([A|B],[C|D],[E|F])) :-
+        logen(unfold, generalise(A,C,E)),
+        logen(unfold, l_gen(B,D,F)).
+logen(bin_solve, bin_solve(A,[unfold(A,B)|_],B)) :-
+        logen(unfold, via(A)).
+logen(bin_solve, bin_solve(A,[memo(A,B)|_],memo(C))) :-
+        logen(call, filter(B,D)),
+        logen(unfold, generalise(B,D,C)).
+logen(bin_solve, bin_solve(A,[unfold(B,C)|_],D)) :-
+        logen(unfold, via(B)),
+        logen(memo, old_bin_solve_atom(A,C,D)).
+logen(bin_solve, bin_solve(A,[unfold(_,B)|C],D)) :-
+        logen(memo, solve_atom(B)),
+        logen(unfold, bin_solve(A,C,D)).
+logen(bin_solve, bin_solve(A,[memo(_,_)|B],C)) :-
+        logen(unfold, bin_solve(A,B,C)).
+logen(bin_solve, bin_solve(A,[call(_,B)|C],D)) :-
+        logen(rescall, call(B)),
+        logen(unfold, bin_solve(A,C,D)).
+logen(bin_solve, bin_solve(A,[rescall(_,_)|B],C)) :-
+        logen(unfold, bin_solve(A,B,C)).
+logen(via, via(_)).
+logen(old_bin_solve_atom, old_bin_solve_atom(A,B,C)) :-
+        logen(call, rule(B,D)),
+        logen(unfold, bin_solve(A,D,C)).
+logen(bin_solve_atom, bin_solve_atom(A,B,C)) :-
+        logen(call, program_point_for(B,A)),
+        logen(call, program_point_for(C,A)),
+        logen(call, rule(B,D)),
+        logen(unfold, bin_solve(A,D,C)).
+logen(test, test(A,B)) :-
+        logen(call, filtered(A)),
+        logen(call, program_point_for(A,C)),
+        logen(call, program_point_for(B,C)),
+        logen(memo, solve_atom(A)),
+        logen(memo, bin_solve_atom(C,A,B)).
+logen(test, test(A,B,C)) :-
+        logen(unfold, load_rules(A)),
+        logen(call, !),
+        logen(unfold, test(B,C)).
+logen(solve_file, solve_file(A)) :-
+        logen(call, use_module(library(system))),
+        if(logen(call,file_exists(A)), (logen(unfold,load_rules(A)),logen(call,!),logen(call,filtered(B)),logen(memo,solve_atom(B)),logen(call,program_point_for(B,C)),logen(call,program_point_for(D,C)),logen(memo,bin_solve_atom(C,B,D))), logen(rescall,file_not_found(A))).
+logen(load_rules, load_rules(A)) :-
+        logen(call, op(750,fx,filter)),
+        logen(unfold, clear),
+        logen(call, seeing(B)),
+        logen(call, see(A)),
+        logen(unfold, read_assert),
+        logen(call, seen),
+        logen(call, see(B)).
+logen(clear, clear) :-
+        logen(call, retractall(rule(_,_))),
+        logen(call, retractall(filter(_,_))),
+        logen(call, retractall(gensym__r(_))),
+        logen(call, retractall(program_point_for(_,_))),
+        logen(call, retractall(filtered(_))).
+logen(read_assert, read_assert) :-
+        logen(call, read_term(A,[])),
+        if(logen(call,A=end_of_file), logen(call,true), (logen(unfold,assert_term(A)),logen(unfold,read_assert))).
+logen(assert_term, assert_term((logen(_,A):-B))) :-
+        logen(call, !),
+        logen(unfold, convert_body2list(B,C)),
+        logen(call, assert(rule(A,C))),
+        logen(unfold, add_filtered(A)).
+logen(assert_term, assert_term((:-filter A))) :-
+        logen(call, !),
+        logen(unfold, freshCall(A,B)),
+        logen(call, assert(filter(B,A))).
+logen(assert_term, assert_term((:-_))) :-
+        logen(call, !).
+logen(assert_term, assert_term(logen(_,A))) :-
+        logen(call, assert(rule(A,[]))),
+        logen(unfold, add_filtered(A)).
+logen(add_filtered, add_filtered(A)) :-
+        logen(unfold, freshCall(A,B)),
+        logen(call, filtered(B)),
+        logen(call, !).
+logen(add_filtered, add_filtered(A)) :-
+        logen(unfold, freshCall(A,B)),
+        logen(call, assert(filtered(B))).
+logen(convert_body2list, convert_body2list((A,B),[C|D])) :-
+        logen(unfold, convert_call(A,C)),
+        logen(unfold, convert_body2list(B,D)).
+logen(convert_body2list, convert_body2list(A,[B])) :-
+        logen(unfold, convert_call(A,B)).
+logen(convert_call, convert_call(logen(A,B),C)) :-
+        logen(call, C=..[A,D,B]),
+        logen(unfold, gensym(D)),
+        logen(unfold, freshCall(B,_)),
+        logen(call, assert(program_point_for(B,D))).
+logen(freshCall, freshCall(A,B)) :-
+        logen(call, A=..[C|D]),
+        logen(call, length(D,E)),
+        logen(call, length(F,E)),
+        logen(call, B=..[C|F]).
+logen(gensym, gensym(A)) :-
+        logen(call, gensym__r(A)),
+        logen(call, !),
+        logen(call, retract(gensym__r(A))),
+        logen(call, B is A+1),
+        logen(call, assert(gensym__r(B))).
+logen(gensym, gensym(0)) :-
+        logen(call, assert(gensym__r(1))).
+:- filter
+        rule(dynamic, dynamic).
+:- filter
+        bin_solve_atom(nonvar_nf, nonvar, nonvar).
+:- filter
+        old_bin_solve_atom(nonvar_nf, nonvar, nonvar).
+:- filter
+        test(dynamic, dynamic).
+:- filter
+        test(static, dynamic, dynamic).
+:- filter
+        solve_atom(nonvar).
+:- filter
+        solve_file(static).

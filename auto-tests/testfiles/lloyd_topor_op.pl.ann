@@ -1,0 +1,324 @@
+(:-module(lloyd_topor_op,[])).
+(:-op(950,yfx,=>)).
+(:-op(950,yfx,<=)).
+(:-op(850,yfx,or)).
+(:-op(800,yfx,&)).
+(:-op(750,fy,~)).
+logen(solve1, solve1(A)) :-
+        logen(unfold, solve_file_atom('lloyd_topor/app',A)).
+logen(s1, s1(A)) :-
+        logen(unfold, solve1(app([a],[b],A))).
+logen(solve2, solve2(A)) :-
+        logen(unfold, solve_file_atom('lloyd_topor/subset.pl',A)).
+logen(solve3, solve3(A)) :-
+        logen(unfold, solve_file_atom('lloyd_topor/db_ic.pl',A)).
+logen(solve_file_atom_opts, solve_file_atom_opts(A,B,C)) :-
+        logen(unfold, set_options(C)),
+        logen(unfold, solve_file_atom(A,B)).
+logen(set_options, set_options([])).
+logen(set_options, set_options(['-C'|A])) :-
+        logen(call, !),
+        logen(call, assert(use_co_routining(yes))),
+        logen(unfold, set_options(A)).
+logen(set_options, set_options(['-D'|A])) :-
+        logen(call, !),
+        logen(call, assert(debugging(on))),
+        logen(unfold, set_options(A)).
+logen(set_options, set_options([argv(_)|A])) :-
+        logen(call, !),
+        logen(unfold, set_options(A)).
+logen(set_options, set_options([A|B])) :-
+        logen(call, print('% unknown option: ')),
+        logen(call, print(A)),
+        logen(call, nl),
+        logen(unfold, set_options(B)).
+logen(solve_file_atom, solve_file_atom(A,B)) :-
+        logen(unfold, lt_load_file(A)),
+        logen(unfold, is_user_pred(B,C)),
+        logen(memo, solve_atom(C)).
+logen(solve_file_atom, solve_file_atom(_,A)) :-
+        resnot(logen(memo,is_user_pred(A,_))),
+        logen(rescall, print('### Error, Predicate undefined: ')),
+        logen(rescall, functor(A,B,C)),
+        logen(rescall, print(B/C)),
+        logen(rescall, nl),
+        logen(rescall, fail).
+logen_module(gx, (:-use_module(library(toplevel)))).
+:- dynamic
+        lt_loaded_file/1.
+logen(lt_load_file, lt_load_file(A)) :-
+        if(logen(call,A=argv(_)), (logen(rescall,print('% ### Please supply filename as argument')),logen(rescall,nl),logen(rescall,fail)), logen(call,true)),
+        logen(call, absolute_file_name(A,B)),
+        logen(call, atom_concat(C,'.pl',B)),
+        logen(call, assert(lt_loaded_file(C))),
+        logen(call, prolog_flag(single_var_warnings,D,off)),
+        logen(call, ensure_loaded(A)),
+        logen(call, print('% loaded file: ')),
+        logen(call, print(A)),
+        logen(call, print(' : ')),
+        logen(call, print(C)),
+        logen(call, nl),
+        logen(call, set_prolog_flag(single_var_warnings,D)).
+logen(solve, solve((A,B))) :-
+        logen(unfold, solve(A)),
+        logen(unfold, solve(B)).
+logen(solve, solve(A)) :-
+        logen(call, nonvar(A)),
+        logen(call, A\=(_,_)),
+        logen(unfold, solve_literal(A)).
+logen(solve_literal, solve_literal('basiccontrol:true')).
+logen(solve_literal, solve_literal(true)).
+logen(solve_literal, solve_literal(false)) :-
+        logen(call, fail).
+logen(solve_literal, solve_literal(~A)) :-
+        logen(unfold, not_solve_literal(A)).
+logen(solve_literal, solve_literal(A&B)) :-
+        logen(unfold, solve_literal(A)),
+        logen(unfold, solve_literal(B)).
+logen(solve_literal, solve_literal(A or _)) :-
+        logen(unfold, solve_literal(A)).
+logen(solve_literal, solve_literal(_ or A)) :-
+        logen(unfold, solve_literal(A)).
+logen(solve_literal, solve_literal(A=>B)) :-
+        logen(unfold, solve_literal(~A or B)).
+logen(solve_literal, solve_literal(A<=B)) :-
+        logen(unfold, solve_literal(A or~B)).
+logen(solve_literal, solve_literal('user:forall'(A,B))) :-
+        logen(unfold, not_solve_literal(exists(A,~B))).
+logen(solve_literal, solve_literal(exists(A,B))) :-
+        logen(unfold, rename(A,B,C)),
+        logen(unfold, solve_literal(C)).
+logen(solve_literal, solve_literal(A)) :-
+        logen(unfold, is_user_pred(A,B)),
+        logen(memo, solve_atom(B)).
+logen(solve_literal, solve_literal(A)) :-
+        logen(unfold, is_built_in(A)),
+        logen(unfold, debug_print(calling(A))),
+        logen(rescall, call(A)).
+logen(not_solve_literal, not_solve_literal('basiccontrol:true')) :-
+        logen(call, fail).
+logen(not_solve_literal, not_solve_literal(true)) :-
+        logen(call, fail).
+logen(not_solve_literal, not_solve_literal(false)).
+logen(not_solve_literal, not_solve_literal(~A)) :-
+        logen(unfold, solve_literal(A)).
+logen(not_solve_literal, not_solve_literal(A or B)) :-
+        logen(unfold, not_solve_literal(A)),
+        logen(unfold, not_solve_literal(B)).
+logen(not_solve_literal, not_solve_literal(A&_)) :-
+        logen(unfold, not_solve_literal(A)).
+logen(not_solve_literal, not_solve_literal(_&A)) :-
+        logen(unfold, not_solve_literal(A)).
+logen(not_solve_literal, not_solve_literal(A=>B)) :-
+        logen(unfold, not_solve_literal(~A or B)).
+logen(not_solve_literal, not_solve_literal(A<=B)) :-
+        logen(unfold, not_solve_literal(A or~B)).
+logen(not_solve_literal, not_solve_literal('user:forall'(A,B))) :-
+        logen(unfold, rename(A,B,C)),
+        logen(unfold, not_solve_literal(C)).
+logen(not_solve_literal, not_solve_literal(exists(A,B))) :-
+        logen(unfold, force_not_solve_literal(exists(A,B))).
+logen(not_solve_literal, not_solve_literal(A)) :-
+        logen(unfold, is_user_pred(A,B)),
+        logen(memo, not_solve_atom(B)).
+logen(not_solve_literal, not_solve_literal(A=B)) :-
+        logen(call, use_co_routining(yes)),
+        logen(rescall, A\=B).
+logen(not_solve_literal, not_solve_literal(A)) :-
+        logen(unfold, is_built_in(A)),
+        resdisj(resnot(logen(call,use_co_routining(yes))), logen(call,A\=(_=_))),
+        logen(unfold, debug_print(calling_not(A))),
+        resnot(logen(rescall,call(A))).
+:- dynamic
+        use_co_routining/1.
+logen_module(gx, (:-use_module(library(terms)))).
+logen_module(gx, (:-use_module(library(when)))).
+logen(force_not_solve_literal, force_not_solve_literal(A)) :-
+        logen(call, use_co_routining(yes)),
+        logen(unfold, get_free_variables(A,[],[],B)),
+        logen(unfold, debug_print(force_not_solve_literal(A,B))),
+        reswhen(ground(B), resnot(logen(memo,solve_literal(A)))).
+logen(force_not_solve_literal, force_not_solve_literal(A)) :-
+        not(logen(call,use_co_routining(yes))),
+        resnot(logen(memo,solve_literal(A))).
+logen(get_free_variables, get_free_variables(A,B,C,D)) :-
+        logen(call, var(A)),
+        if(logen(unfold,not_member(A,B)), logen(unfold,add_var(A,C,D)), logen(call,D=C)).
+logen(get_free_variables, get_free_variables(A,B,C,D)) :-
+        logen(call, nonvar(A)),
+        (   logen(call, A=exists(E,F))
+        ;   logen(call, A='user:forall'(E,F))
+        ),
+        logen(unfold, get_free_variables(F,[E|B],C,D)).
+logen(get_free_variables, get_free_variables(A,B,C,D)) :-
+        logen(call, nonvar(A)),
+        logen(call, A\=exists(_,_)),
+        logen(call, A\='user:forall'(_,_)),
+        logen(call, A=..[_|E]),
+        logen(unfold, l_get_free_variables(E,B,C,D)).
+logen(l_get_free_variables, l_get_free_variables([],_,A,A)).
+logen(l_get_free_variables, l_get_free_variables([A|B],C,D,E)) :-
+        logen(unfold, get_free_variables(A,C,D,F)),
+        logen(unfold, l_get_free_variables(B,C,F,E)).
+logen(not_member, not_member(_,[])).
+logen(not_member, not_member(A,[B|C])) :-
+        logen(call, A\==B),
+        logen(unfold, not_member(A,C)).
+logen(add_var, add_var(A,B,C)) :-
+        if(logen(unfold,not_member(A,B)), logen(call,C=[A|B]), logen(call,C=B)).
+logen(delete_var, delete_var(_,[],[])).
+logen(delete_var, delete_var(A,[B|C],D)) :-
+        if(logen(call,A==B), logen(call,D=E), logen(call,D=[B|E])),
+        logen(unfold, delete_var(A,C,E)).
+logen(not_solve_atom, not_solve_atom(A)) :-
+        logen(call, use_co_routining(yes)),
+        logen(unfold, debug_print(~A)),
+        logen(unfold, head_normal_form(A,B)),
+        logen(unfold, debug_print(hnf(B))),
+        logen(unfold, not_solve_literal(B)).
+logen(not_solve_atom, not_solve_atom(A)) :-
+        not(logen(call,use_co_routining(yes))),
+        resnot(logen(memo,solve_atom(A))).
+logen(solve_atom, solve_atom(A)) :-
+        logen(unfold, debug_print(A)),
+        logen(call, clause(A,B)),
+        logen(unfold, solve(B)).
+logen(is_user_pred, is_user_pred(A,B)) :-
+        logen(call, lt_loaded_file(C)),
+        logen(call, current_predicate(D/E,user(C))),
+        (   logen(call, atom_concat('user:',D,F))
+        ;   logen(call, F=D)
+        ),
+        logen(call, functor(A,F,E)),
+        logen(call, A=..[F|G]),
+        logen(call, B=..[D|G]),
+        logen(call, D\=use_co_routining),
+        logen(call, D\=debugging).
+logen(is_built_in, is_built_in(A)) :-
+        logen(call, nonvar(A)),
+        not(logen(memo,is_user_pred(A,_))),
+        logen(call, A\=true),
+        logen(call, A\=false),
+        logen(call, A\='basiccontrol:true'),
+        logen(call, A\=(~_)),
+        logen(call, A\=(_ or _)),
+        logen(call, A\=(_&_)),
+        logen(call, A\=(_=>_)),
+        logen(call, A\=(_<=_)),
+        logen(call, A\='user:forall'(_,_)),
+        logen(call, A\=exists(_,_)).
+logen(rename, rename(A,B,C)) :-
+        logen(unfold, rename2(B,C,A,_)).
+logen(rename2, rename2(A,B,C,D)) :-
+        logen(call, var(A)),
+        if(logen(call,A==C), logen(call,B=D), logen(call,B=A)).
+logen(rename2, rename2(A,B,C,D)) :-
+        logen(call, nonvar(A)),
+        logen(call, A=..[E|F]),
+        logen(unfold, l_rename(F,G,C,D)),
+        logen(call, B=..[E|G]).
+logen(l_rename, l_rename([],[],_,_)).
+logen(l_rename, l_rename([A|B],[C|D],E,F)) :-
+        logen(unfold, rename2(A,C,E,F)),
+        logen(unfold, l_rename(B,D,E,F)).
+logen(hnf, hnf(A,B)) :-
+        logen(unfold, head_normal_form(A,B)).
+logen(head_normal_form, head_normal_form(A,B)) :-
+        findall(clause(A,C), logen(call,clause(A,C)), D),
+        logen(unfold, convert_list_into_disjunction(D,A,B)).
+logen(convert_list_into_disjunction, convert_list_into_disjunction([],_,false)).
+logen(convert_list_into_disjunction, convert_list_into_disjunction([A],B,C)) :-
+        logen(unfold, generate_disjunct(B,A,C)).
+logen(convert_list_into_disjunction, convert_list_into_disjunction([A,B|C],D,E or F)) :-
+        logen(unfold, generate_disjunct(D,A,E)),
+        logen(unfold, convert_list_into_disjunction([B|C],D,F)).
+logen(generate_disjunct, generate_disjunct(A,clause(B,C),D)) :-
+        logen(unfold, generate_equality_formula(A,B,E)),
+        logen(unfold, clever_and(E,C,F)),
+        logen(call, varset(B,G)),
+        logen(unfold, get_free_variables(C,[],G,H)),
+        logen(unfold, generate_exists(H,F,D)).
+logen(generate_equality_formula, generate_equality_formula(A,B,C)) :-
+        logen(call, A=..[D|E]),
+        logen(call, B=..[D|F]),
+        logen(unfold, gen_equalities(E,F,C)).
+logen(gen_equalities, gen_equalities([],[],true)).
+logen(gen_equalities, gen_equalities([A|B],[C|D],E)) :-
+        logen(unfold, gen_equalities(B,D,F)),
+        if(logen(call,A==C), logen(call,E=F), logen(unfold,clever_and(A=C,F,E))).
+logen(clever_and, clever_and(true,A,A)).
+logen(clever_and, clever_and(A,true,A)) :-
+        logen(call, A\=true).
+logen(clever_and, clever_and(A,B,A&B)) :-
+        logen(call, A\=true),
+        logen(call, B\=true).
+logen(generate_exists, generate_exists([],A,A)).
+logen(generate_exists, generate_exists([A|B],C,exists(A,D))) :-
+        if(logen(call,var(A)), logen(call,true), logen(call,print(nonvar_in_generate_exists(A,C)))),
+        logen(unfold, generate_exists(B,C,D)).
+:- dynamic
+        debugging/1.
+logen(debugging, debugging(on)).
+logen(debug_print, debug_print(A)) :-
+        if(logen(call,debugging(on)), logen(unfold,print_message(informational,A)), logen(call,true)).
+logen(print_message, print_message(_,A)) :-
+        logen(rescall, print('% ')),
+        logen(rescall, print(A)),
+        logen(rescall, nl).
+logen(pc, pc) :-
+        logen(unfold, print_clauses).
+logen(print_clauses, print_clauses) :-
+        logen(rescall, print('/*  -------  */')),
+        logen(rescall, nl),
+        logen(unfold, is_user_pred(A,_)),
+        logen(rescall, portray_clause(my_is_user_pred(A))),
+        logen(rescall, fail).
+logen(print_clauses, print_clauses) :-
+        logen(rescall, nl),
+        logen(unfold, is_user_pred(A,_)),
+        logen(rescall, clause(A,B)),
+        logen(rescall, portray_clause(my_clause(A,B))),
+        logen(rescall, fail).
+logen(print_clauses, print_clauses) :-
+        logen(rescall, print('/*  ------  */')),
+        logen(rescall, nl).
+logen(my_is_user_pred, my_is_user_pred(pq(_))).
+logen(my_is_user_pred, my_is_user_pred(el(_,_))).
+logen(my_is_user_pred, my_is_user_pred(subset(_,_))).
+logen(my_is_user_pred, my_is_user_pred(r(_))).
+logen(my_is_user_pred, my_is_user_pred(q(_))).
+logen(my_is_user_pred, my_is_user_pred(t)).
+logen(my_is_user_pred, my_is_user_pred(p(_))).
+logen(my_is_user_pred, my_is_user_pred(portray_message(_,_))).
+logen(my_clause, my_clause(pq(A),p(A)or q(A))).
+logen(my_clause, my_clause(pq(A),(r(A),p(A)or q(A)))).
+logen(my_clause, my_clause(pq(A),(p(A),print(A),nl))).
+logen(my_clause, my_clause(el(A,B),member(A,B))).
+logen(my_clause, my_clause(subset(A,B),'user:forall'(C,el(C,B)<=el(C,A)))).
+logen(my_clause, my_clause(r(a),true)).
+logen(my_clause, my_clause(r(b),true)).
+logen(my_clause, my_clause(q(b),true)).
+logen(my_clause, my_clause(t,exists(A,r(A)& ~p(A)))).
+logen(my_clause, my_clause(p(a),true)).
+:- filter
+        solve1(dynamic).
+:- filter
+        solve2(dynamic).
+:- filter
+        solve3(dynamic).
+:- filter
+        solve_file_atom(static, dynamic).
+:- filter
+        solve_file_atom_opts(static, dynamic, static).
+:- filter
+        solve_atom(nonvar).
+:- filter
+        not_solve_atom(nonvar).
+:- filter
+        solve_literal(semi).
+:- filter
+        not_solve_literal(semi).
+:- filter
+        pc.
+:- filter
+        is_user_pred(dynamic, dynamic).

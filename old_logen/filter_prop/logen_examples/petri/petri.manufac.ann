@@ -1,0 +1,121 @@
+/* file: petri.finkel.ann */
+
+static_consult([]).
+
+
+residual(reachable(A)).
+filter(reachable(A),[dynamic]).
+ann_clause(reachable(R),(unfold(initial_marking(B)),memo(reachable(A,B,R)))).
+
+filter(initial_marking(A),[dynamic]).
+filter(initial_marking(A),[dynamic]).
+ann_clause(initial_marking([ P,s(0),0,s(0),0,0,s(0),0,0,s(s(s(0))),
+         0,s(0),s(0),0,s(s(s(0))),s(0),0,0,s(0),0,
+	 0,0,0,s(0),0 ]),true).
+
+
+residual(reachable(A,B,R)).
+filter(reachable(A,B,R),[dynamic,type(list(dynamic)),dynamic]).
+ann_clause(reachable([],A,A),resnot(memo(trans(_,A,_)))).
+ann_clause(reachable([A|B],C,R),(unfold(trans(A,C,D)),memo(reachable(B,D,R)))).
+
+residual(trans(A,B,C)).
+filter(trans(A,B,C),[dynamic,type(list(dynamic)),dynamic]).
+ann_clause(trans(r1,
+	[ s(X1),s(X2),X3,s(X4),X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,s(X3),X4,s(X5),X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r2,
+	[ s(X1),X2,s(X3),X4,X5,X6,s(X7),X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,s(X2),X3,X4,X5,s(X6),X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r3,
+	[ X1,X2,X3,X4,s(X5),X6,X7,X8,X9,X10,
+         X11,s(X12),X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,s(X4),X5,X6,X7,s(X8),X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r4,
+	[ X1,X2,X3,X4,X5,s(X6),X7,X8,X9,X10,
+         X11,X12,s(X13),X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,s(X7),X8,s(X9),X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r5,
+	[ X1,X2,X3,X4,X5,X6,X7,s(X8),X9,s(X10),
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         s(X11),s(X12),X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r6,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,s(X9),X10,
+         X11,X12,X13,X14,s(X15),X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,s(X13),s(X14),X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r7,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         s(X11),X12,X13,X14,X15,s(X16),X17,X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,s(X10),
+         X11,X12,X13,X14,X15,X16,s(X17),X18,X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r8,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,s(X14),X15,X16,X17,X18,s(X19),X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,s(X15),X16,X17,s(X18),X19,X20,
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r9,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,s(X12),X13,X14,X15,X16,s(X17),X18,X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,s(X16),X17,X18,X19,s(X20),
+	 X21,X22,X23,X24,X25 ]),true).
+ann_clause(trans(r10,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,s(X13),X14,X15,X16,X17,s(X18),X19,X20,
+	 X21,X22,X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,s(X19),X20,
+	 s(X21),X22,X23,X24,X25 ]),true).
+ann_clause(trans(r11,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,s(X20),
+	 X21,X22,X23,s(X24),X25 ],
+	[ s(X1),X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,s(X12),X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,s(X22),X23,X24,X25 ]),true).
+ann_clause(trans(r12,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 s(X21),s(X22),X23,X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,s(X23),X24,X25 ]),true).
+ann_clause(trans(r13,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,s(X23),X24,X25 ],
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,s(X25) ]),true).
+ann_clause(trans(r14,
+	[ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,X13,X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,X24,s(X25) ],
+	[ s(X1),X2,X3,X4,X5,X6,X7,X8,X9,X10,
+         X11,X12,s(X13),X14,X15,X16,X17,X18,X19,X20,
+	 X21,X22,X23,s(X24),X25 ]),true).

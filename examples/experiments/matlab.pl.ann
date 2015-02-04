@@ -1,0 +1,285 @@
+(:-module(matlab,[])).
+logen(eval_mfile, eval_mfile(A,B,C)) :-
+        logen(unfold, load),
+        logen(call, parse(A,D)),
+        logen(call, !),
+        logen(unfold, eval_matlab(D,B,C)).
+logen(load, load) :-
+        logen(call, use_module('matlab_parser.pl')).
+logen(eval_matlab, eval_matlab([A|B],C,1)) :-
+        logen(unfold, eval_function(A,C,1,[D],[A|B])),
+        logen(memo, print_value(D)).
+logen(eval_function, eval_function(function(_,A,B,C,D),E,F,G,H)) :-
+        logen(unfold, bind_undef(env([],H),C,I)),
+        logen(unfold, bind_params(I,J,B,E)),
+        logen(unfold, eval_commands(D,J,K)),
+        logen(unfold, return_values(F,A,G,K)).
+logen(bind_undef, bind_undef(A,[],A)).
+logen(bind_undef, bind_undef(A,[B|C],D)) :-
+        logen(unfold, store_var(A,B,undef,E)),
+        logen(unfold, bind_undef(E,C,D)).
+logen(bind_params, bind_params(A,A,_,[])).
+logen(bind_params, bind_params(A,B,[C|D],[E|F])) :-
+        logen(unfold, store_var(A,C,E,G)),
+        logen(unfold, bind_params(G,B,D,F)).
+logen(return_values, return_values(0,_,[],_)).
+logen(return_values, return_values(A,[B|C],[D|E],F)) :-
+        logen(call, G is A-1),
+        logen(unfold, return_values(G,C,E,F)),
+        logen(unfold, lookup_var(B,F,D)).
+logen(eval_commands, eval_commands([],A,A)).
+logen(eval_commands, eval_commands([A|B],C,D)) :-
+        logen(unfold, eval_comm(A,C,E)),
+        logen(unfold, eval_commands(B,E,D)).
+logen(eval_comm, eval_comm(exp(A,false),B,C)) :-
+        logen(unfold, eval_exp(A,D,B,C)),
+        logen(unfold, print_exp(ans,D)).
+logen(eval_comm, eval_comm(exp(A,true),B,C)) :-
+        logen(unfold, eval_exp(A,_,B,C)).
+logen(eval_comm, eval_comm(assign(var(A),B,false),C,D)) :-
+        logen(unfold, eval_exp(B,E,C,F)),
+        logen(unfold, store_var(F,A,E,D)),
+        logen(unfold, print_exp(A,E)).
+logen(eval_comm, eval_comm(assign(var(A),B,true),C,D)) :-
+        logen(unfold, eval_exp(B,E,C,F)),
+        logen(unfold, store_var(F,A,E,D)).
+logen(eval_comm, eval_comm(while(A,B),C,D)) :-
+        logen(unfold, env_copy(C,D)),
+        logen(memo, eval_while(A,B,C,D)).
+logen(eval_comm, eval_comm(for(A,B,C),D,E)) :-
+        logen(unfold, eval_exp(B,F,D,G)),
+        logen(unfold, eval_for(A,F,C,G,E)).
+logen(eval_comm, eval_comm(if(A,B,_),C,D)) :-
+        logen(unfold, eval_exp(A,E,C,F)),
+        logen(unfold, non_zero(E)),
+        logen(rescall, !),
+        logen(unfold, eval_commands(B,F,D)).
+logen(eval_comm, eval_comm(if(_,_,A),B,C)) :-
+        logen(unfold, eval_commands(A,B,C)).
+logen(eval_while, eval_while(A,B,C,D)) :-
+        logen(unfold, eval_exp(A,E,C,F)),
+        logen(unfold, non_zero(E)),
+        logen(unfold, eval_commands(B,F,G)),
+        logen(unfold, env_copy(G,D)),
+        logen(memo, eval_while(A,B,G,D)).
+logen(eval_while, eval_while(_,_,A,A)).
+logen(eval_for, eval_for(var(A),matrix([[]]),_,B,C)) :-
+        logen(unfold, store(B,A,[],C)).
+logen(eval_for, eval_for(var(A),B,C,D,E)) :-
+        logen(unfold, get_elements(B,F)),
+        logen(rescall, eval_for2(A,F,C,D,E)).
+logen(get_elements, get_elements(const(A),[const(A)])).
+logen(get_elements, get_elements(matrix([A]),A)).
+logen(eval_for2, eval_for2(_,[],_,A,A)).
+logen(eval_for2, eval_for2(A,[B|C],D,E,F)) :-
+        logen(unfold, store_var(E,A,B,G)),
+        logen(unfold, eval_commands(D,G,H)),
+        logen(memo, eval_for2(A,C,D,H,F)).
+logen(env_copy, env_copy(env(A,B),env(C,B))) :-
+        logen(unfold, var_copy(A,C)).
+logen(var_copy, var_copy([],[])).
+logen(var_copy, var_copy([A/_|B],[A/_|C])) :-
+        logen(unfold, var_copy(B,C)).
+logen(eval_exp, eval_exp(const(A),const(A),B,B)).
+logen(eval_exp, eval_exp(var(A),B,C,C)) :-
+        logen(unfold, lookup_var(A,C,B)).
+logen(eval_exp, eval_exp(bin_op(A,B,C),D,E,F)) :-
+        logen(unfold, eval_exp(B,G,E,H)),
+        logen(unfold, eval_exp(C,I,H,F)),
+        logen(unfold, apply_op(A,G,I,D)).
+logen(eval_exp, eval_exp(func_call(A,B),C,D,E)) :-
+        logen(unfold, eval_exps(B,F,D,E)),
+        logen(unfold, lookup_func(A,D,G)),
+        logen(unfold, get_funcs(D,H)),
+        logen(memo, eval_function(G,F,1,[C],H)).
+logen(eval_exp, eval_exp(matrix(A),B,C,C)) :-
+        logen(unfold, eval_rows(A,D,C)),
+        logen(unfold, convert(D,B)).
+logen(eval_exp, eval_exp(colon(A,B),C,D,D)) :-
+        logen(unfold, eval_exp(A,const(E),D,D)),
+        logen(unfold, eval_exp(B,const(F),D,D)),
+        logen(unfold, expand_colon(E,1,F,C)),
+        logen(rescall, !).
+logen(eval_exp, eval_exp(colon(A,B,C),D,E,E)) :-
+        logen(unfold, eval_exp(A,const(F),E,E)),
+        logen(unfold, eval_exp(B,const(G),E,E)),
+        logen(unfold, eval_exp(C,const(H),E,E)),
+        logen(unfold, expand_colon(F,G,H,D)),
+        logen(rescall, !).
+logen(expand_colon, expand_colon(_,0,_,matrix([[]]))).
+logen(expand_colon, expand_colon(A,B,C,matrix([D]))) :-
+        logen(rescall, B>0),
+        logen(memo, arith_prog_incr(A,B,C,D)).
+logen(expand_colon, expand_colon(A,B,C,matrix([D]))) :-
+        logen(rescall, B<0),
+        logen(memo, arith_prog_decr(A,B,C,D)).
+logen(arith_prog_incr, arith_prog_incr(A,_,B,[])) :-
+        logen(rescall, A>B).
+logen(arith_prog_incr, arith_prog_incr(A,B,C,[const(A)|D])) :-
+        logen(rescall, E is A+B),
+        logen(memo, arith_prog_incr(E,B,C,D)).
+logen(arith_prog_decr, arith_prog_decr(A,_,B,[])) :-
+        logen(rescall, A<B).
+logen(arith_prog_decr, arith_prog_decr(A,B,C,[const(A)|D])) :-
+        logen(rescall, E is A+B),
+        logen(memo, arith_prog_decr(E,B,C,D)).
+logen(convert, convert([[const(A)]],const(A))).
+logen(convert, convert(A,matrix(A))).
+logen(eval_rows, eval_rows([],[],_)).
+logen(eval_rows, eval_rows([A|B],[C|D],E)) :-
+        logen(unfold, eval_exps(A,C,E,_)),
+        logen(unfold, eval_rows(B,D,E)).
+logen(get_funcs, get_funcs(env(_,A),A)).
+logen(eval_exps, eval_exps([],[],A,A)).
+logen(eval_exps, eval_exps([A|B],[C|D],E,F)) :-
+        logen(unfold, eval_exp(A,C,E,G)),
+        logen(unfold, eval_exps(B,D,G,F)).
+logen(add, add(const(A),const(B),const(C))) :-
+        logen(rescall, C is A+B).
+logen(minus, minus(const(A),const(B),const(C))) :-
+        logen(rescall, C is A-B).
+logen(mldivide, mldivide(const(A),const(B),const(C))) :-
+        logen(rescall, C is B/A).
+logen(mrdivide, mrdivide(const(A),const(B),const(C))) :-
+        logen(rescall, C is A/B).
+logen(mtimes, mtimes(const(A),const(B),const(C))) :-
+        logen(rescall, C is A*B).
+logen(gt, gt(const(A),const(B),const(1))) :-
+        logen(rescall, A>B).
+logen(gt, gt(const(A),const(B),const(0))) :-
+        logen(rescall, A=<B).
+logen(lt, lt(const(A),const(B),const(1))) :-
+        logen(rescall, A<B).
+logen(lt, lt(const(A),const(B),const(0))) :-
+        logen(rescall, A>=B).
+logen(ge, ge(const(A),const(B),const(1))) :-
+        logen(rescall, A>=B).
+logen(ge, ge(const(A),const(B),const(0))) :-
+        logen(rescall, A<B).
+logen(le, le(const(A),const(B),const(1))) :-
+        logen(rescall, A=<B).
+logen(le, le(const(A),const(B),const(0))) :-
+        logen(rescall, A>B).
+logen(eq, eq(const(A),const(B),const(1))) :-
+        logen(rescall, A==B).
+logen(eq, eq(const(A),const(B),const(0))) :-
+        logen(rescall, A\==B).
+logen(ne, ne(const(A),const(B),const(1))) :-
+        logen(rescall, A\==B).
+logen(ne, ne(const(A),const(B),const(0))) :-
+        logen(rescall, A==B).
+logen(is_zero, is_zero(const(0))).
+logen(non_zero, non_zero(const(A))) :-
+        logen(call, A\==0).
+logen(apply_op, apply_op(+,A,B,C)) :-
+        logen(unfold, add(A,B,C)).
+logen(apply_op, apply_op(-,A,B,C)) :-
+        logen(unfold, minus(A,B,C)).
+logen(apply_op, apply_op(/,A,B,C)) :-
+        logen(unfold, mrdivide(A,B,C)).
+logen(apply_op, apply_op(\,A,B,C)) :-
+        logen(unfold, mldivide(A,B,C)).
+logen(apply_op, apply_op(*,A,B,C)) :-
+        logen(unfold, mtimes(A,B,C)).
+logen(apply_op, apply_op(>,A,B,C)) :-
+        logen(unfold, gt(A,B,C)).
+logen(apply_op, apply_op(<,A,B,C)) :-
+        logen(unfold, lt(A,B,C)).
+logen(apply_op, apply_op(>=,A,B,C)) :-
+        logen(unfold, ge(A,B,C)).
+logen(apply_op, apply_op(<=,A,B,C)) :-
+        logen(unfold, le(A,B,C)).
+logen(apply_op, apply_op(==,A,B,C)) :-
+        logen(unfold, eq(A,B,C)).
+logen(apply_op, apply_op(~=,A,B,C)) :-
+        logen(unfold, ne(A,B,C)).
+logen(print_exp, print_exp(A,B)) :-
+        logen(rescall, write(A)),
+        logen(rescall, write(' =')),
+        logen(rescall, nl),
+        logen(unfold, print_value(B)).
+logen(print_element, print_element(const(A))) :-
+        logen(rescall, write('    ')),
+        logen(rescall, write(A)).
+logen(print_value, print_value(const(A))) :-
+        logen(rescall, write('    ')),
+        logen(rescall, write(A)),
+        logen(rescall, nl),
+        logen(rescall, nl).
+logen(print_value, print_value(undef)) :-
+        logen(rescall, write('    undefined!')),
+        logen(rescall, nl),
+        logen(rescall, nl).
+logen(print_value, print_value(matrix([[]]))) :-
+        logen(rescall, write('    []')),
+        logen(rescall, nl).
+logen(print_value, print_value(matrix(A))) :-
+        logen(memo, print_rows(A)),
+        logen(rescall, nl).
+logen(print_rows, print_rows([])).
+logen(print_rows, print_rows([A|B])) :-
+        logen(memo, print_row(A)),
+        logen(rescall, nl),
+        logen(memo, print_rows(B)).
+logen(print_row, print_row([])).
+logen(print_row, print_row([A|B])) :-
+        logen(memo, print_element(A)),
+        logen(memo, print_row(B)).
+logen(store_var, store_var(env(A,B),C,D,env(E,B))) :-
+        logen(unfold, store(A,C,D,E)).
+logen(lookup_var, lookup_var(A,env(B,_),C)) :-
+        logen(unfold, lookup(A,B,C)).
+logen(lookup_func, lookup_func(A,env(_,B),C)) :-
+        logen(unfold, lookupf(A,B,C)).
+logen(func_matches, func_matches(A,function(A,_,_,_,_))).
+logen(lookupf, lookupf(A,[B|_],B)) :-
+        logen(unfold, func_matches(A,B)).
+logen(lookupf, lookupf(A,[_|B],C)) :-
+        logen(unfold, lookupf(A,B,C)).
+logen(store, store([],A,B,[A/B])).
+logen(store, store([A/_|B],A,C,[A/C|B])).
+logen(store, store([A/B|C],D,E,[A/B|F])) :-
+        logen(call, D\==A),
+        logen(unfold, store(C,D,E,F)).
+logen(lookup, lookup(A,[A/B|_],B)).
+logen(lookup, lookup(A,[B/_|C],D)) :-
+        logen(call, A\==B),
+        logen(unfold, lookup(A,C,D)).
+logen(run1, run1(A)) :-
+        logen(unfold, eval_matlab([function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])],A,1)).
+logen(run12, run12(A)) :-
+        logen(unfold, eval_mfile([102,117,110,99,116,105,111,110,32,121,32,61,32,102,97,99,116,40,120,41,10,121,32,61,32,49,59,10,119,104,105,108,101,32,120,32,62,32,48,10,32,32,121,32,61,32,121,32,42,32,120,59,10,32,32,120,32,61,32,120,32,45,32,49,59,10,101,110,100],A,1)).
+logen(run2, run2(A)) :-
+        logen(unfold, eval_matlab([function(fact,[y],[x],[x,y],[if(bin_op(>,var(x),const(1)),[assign(var(y),bin_op(*,var(x),func_call(fact,[bin_op(-,var(x),const(1))])),true)],[assign(var(y),const(1),true)])])],A,1)).
+logen(run22, run22(A)) :-
+        logen(unfold, eval_mfile([102,117,110,99,116,105,111,110,32,121,32,61,32,102,97,99,116,40,120,41,10,105,102,32,120,32,62,32,49,10,32,32,121,32,61,32,120,32,42,32,102,97,99,116,40,120,32,45,32,49,41,59,10,101,108,115,101,10,32,32,121,32,61,32,49,59,10,101,110,100],A,1)).
+logen(run3, run3(A)) :-
+        logen(unfold, eval_mfile([102,117,110,99,116,105,111,110,32,121,32,61,32,102,97,99,116,40,120,41,10,121,32,61,32,49,59,10,102,111,114,32,110,32,61,32,49,58,120,10,32,32,121,32,61,32,121,32,42,32,110,59,10,101,110,100],A,1)).
+:- filter
+        eval_mfile(static, (type list(dynamic)), static).
+:- filter
+        eval_function(static, (type list(dynamic)), static, (type list(dynamic)), static).
+:- filter
+        eval_while(static, static, struct(env,[(type list(struct(/,[static,dynamic]))),static]), struct(env,[(type list(struct(/,[static,dynamic]))),static])).
+:- filter
+        run12((type list(dynamic))).
+:- filter
+        run1((type list(dynamic))).
+:- filter
+        print_value(dynamic).
+:- filter
+        print_element(dynamic).
+:- filter
+        print_rows(dynamic).
+:- filter
+        print_row(dynamic).
+:- filter
+        eval_for2(static, dynamic, static, struct(env,[(type list(struct(/,[static,dynamic]))),static]), struct(env,[(type list(struct(/,[static,dynamic]))),static])).
+:- filter
+        arith_prog_incr(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        arith_prog_decr(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        print_answers(dynamic).
+:- filter
+        run3((type list(dynamic))).

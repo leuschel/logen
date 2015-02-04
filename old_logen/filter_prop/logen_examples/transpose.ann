@@ -1,0 +1,23 @@
+/* file: bench/transpose.ann */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+
+residual(transpose(A,B)).
+filter(transpose(A,B),
+ [(struct('[]',[]) ; struct('.',[type(list(dynamic)),type(list(dynamic))])),dynamic]).
+ann_clause(1,transpose(A,[]),unfold(nullrows(A))).
+ann_clause(2,transpose(A,[B|C]),(unfold(makerow(A,B,D)),unfold(transpose(D,C)))).
+
+/* residual(makerow(A,B,C)). */
+filter(makerow(A,B,C),[type(list(type(list(dynamic)))),dynamic,dynamic]).
+ann_clause(3,makerow([],[],[]),true).
+ann_clause(4,makerow([[A|B]|C],[A|D],[B|E]),unfold(makerow(C,D,E))).
+
+/* residual(nullrows(A)). */
+filter(nullrows(A),[type(list(type(list(dynamic))))]).
+ann_clause(5,nullrows([]),true).
+ann_clause(6,nullrows([[]|A]),unfold(nullrows(A))).

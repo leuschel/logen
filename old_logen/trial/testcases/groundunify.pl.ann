@@ -1,0 +1,63 @@
+%% Logen Annotation File
+(:-module(groundunify,[])).
+logen(0, unify(A,B,C)) :-
+        logen(unfold, unify(A,B,[],C)).
+logen(1, unify(var(A),B,C,D)) :-
+        logen(unfold, bound(var(A),C,E,F)),
+        logen(unfold, unify(var(A),B,C,D,E,F)).
+logen(2, unify(struct(A,B),var(C),D,E)) :-
+        logen(unfold, unify(var(C),struct(A,B),D,E)).
+logen(3, unify(struct(A,B),struct(A,C),D,E)) :-
+        logen(unfold, unifyargs(B,C,D,E)).
+logen(4, unify(var(_),A,B,C,D,true)) :-
+        logen(unfold, unify(D,A,B,C)).
+logen(5, unify(var(A),B,C,D,_,false)) :-
+        logen(unfold, unify1(B,var(A),C,D)).
+logen(6, unifyargs([],[],A,A)).
+logen(7, unifyargs([A|B],[C|D],E,F)) :-
+        logen(unfold, unify(A,C,E,G)),
+        logen(unfold, unifyargs(B,D,G,F)).
+logen(8, unify1(struct(A,B),var(C),D,[var(C)/struct(A,B)|D])).
+logen(9, unify1(var(A),var(A),B,B)).
+logen(10, unify1(var(A),var(B),C,D)) :-
+        logen(call, A\==B),
+        logen(unfold, bound(var(A),C,E,F)),
+        logen(unfold, unify1(var(A),var(B),C,D,E,F)).
+logen(11, unify1(var(_),var(A),B,C,D,true)) :-
+        logen(unfold, unify1(D,var(A),B,C)).
+logen(12, unify1(var(A),var(B),C,[var(B)/var(A)|C],_,false)).
+logen(13, bound(var(A),[var(A)/B|_],B,true)) :-
+        logen(call, B\==var(A)).
+logen(14, bound(var(A),[B/_|C],D,E)) :-
+        logen(call, B\==var(A)),
+        logen(unfold, bound(var(A),C,D,E)).
+logen(15, bound(var(_),[],_,false)).
+logen(16, dereference(var(A),[var(A)/B|_],B)) :-
+        logen(call, B\==var(A)).
+logen(17, dereference(var(A),[B/_|C],D)) :-
+        logen(call, B\==var(A)),
+        logen(unfold, dereference(var(A),C,D)).
+logen(18, occur(var(A),var(B),C)) :-
+        logen(unfold, dereference(var(B),C,D)),
+        logen(unfold, occur(var(A),D,C)).
+logen(19, occur(var(A),var(A),_)).
+logen(20, occur(var(A),struct(_,B),C)) :-
+        logen(unfold, occur_args(var(A),B,C)).
+logen(21, occur_args(var(A),[B|_],C)) :-
+        logen(unfold, occur(var(A),B,C)).
+logen(22, occur_args(var(A),[_|B],C)) :-
+        logen(unfold, occur_args(var(A),B,C)).
+:- filter
+        bound(nonvar, (type list(dynamic)), dynamic, dynamic).
+:- filter
+        unify1(dynamic, nonvar, (type list(dynamic)), dynamic).
+:- filter
+        unify1(nonvar, nonvar, (type list(dynamic)), dynamic, dynamic, static).
+:- filter
+        unify(static, dynamic, dynamic).
+:- filter
+        unify(dynamic, dynamic, (type list(dynamic)), dynamic).
+:- filter
+        unify(nonvar, dynamic, (type list(dynamic)), dynamic, dynamic, static).
+:- filter
+        unifyargs(dynamic, dynamic, (type list(dynamic)), dynamic).

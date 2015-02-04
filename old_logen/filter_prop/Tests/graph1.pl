@@ -1,0 +1,1 @@
+edge(a,b).edge(b,c).edge(b,d).edge(d,e).edge(c,a).path(X,Y) :- edge(X,Y).path(X,Z) :- edge(X,Y),path(Y,Z).

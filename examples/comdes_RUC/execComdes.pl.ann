@@ -1,0 +1,272 @@
+logen(test/1,test(A)) :-
+        logen(unfold,zeroList(A,B)),
+        logen(unfold,trueList(A,C)),
+        logen(unfold,exec(airPumpSystem(C,B,B,B,_,_,_,_))).
+logen(zeroList/2,zeroList(0,[])).
+logen(zeroList/2,zeroList(A,[0|B])) :-
+        logen(call,A>0),
+        logen(call,C is A-1),
+        logen(unfold,zeroList(C,B)).
+logen(trueList/2,trueList(0,[])).
+logen(trueList/2,trueList(A,[true|B])) :-
+        logen(call,A>0),
+        logen(call,C is A-1),
+        logen(unfold,trueList(C,B)).
+logen(exec/1,exec(A)) :-
+        logen(unfold,expandDesign((A,true),B)),
+        logen(unfold,oneStepExec(B)).
+logen(oneStepExec/1,oneStepExec(A)) :-
+        logen(call,A\==[]),
+        logen(unfold,oneStepExpand(A,B)),
+        logen(rescall,write(A)),
+        logen(rescall,nl),
+        logen(rescall,nl),
+        logen(memo,oneStepExec(B)).
+logen(oneStepExec/1,oneStepExec([])).
+logen(oneStepExpand/2,oneStepExpand([true|A],B)) :-
+        logen(unfold,oneStepExpand(A,B)).
+logen(oneStepExpand/2,oneStepExpand([A|B],[C|D])) :-
+        logen(unfold,component(A,E,C)),
+        logen(rescall,call(E)),
+        logen(unfold,oneStepExpand(B,D)).
+logen(oneStepExpand/2,oneStepExpand([],[])).
+logen(expandDesign/2,expandDesign((A,B),C)) :-
+        logen(unfold,expandDesign(A,D)),
+        logen(unfold,expandDesign(B,E)),
+        logen(unfold,app(D,E,C)).
+logen(expandDesign/2,expandDesign(true,[])).
+logen(expandDesign/2,expandDesign(A,B)) :-
+        logen(unfold,box(A)),
+        logen(call,clause(A,C)),
+        logen(unfold,expandDesign(C,B)).
+logen(expandDesign/2,expandDesign(A,[B])) :-
+        logen(unfold,machine(A,B)).
+logen(expandDesign/2,expandDesign(A,[A])) :-
+        logen(unfold,basicComponent(A)).
+logen(component/3,component(A,B,C)) :-
+        logen(unfold,basicComponent(A)),
+        logen(call,clause(A,(B,C))).
+logen(component/3,component(A,true,true)) :-
+        logen(unfold,basicComponent(A)),
+        logen(call,clause(A,true)).
+logen(app/3,app([],A,A)).
+logen(app/3,app([A|B],C,[A|D])) :-
+        logen(unfold,app(B,C,D)).
+logen(box/1,box(airPumpSystem(_,_,_,_,_,_,_,_))).
+logen(box/1,box(psu(_,_))).
+logen(box/1,box(apu(_,_))).
+logen(box/1,box(cu(_,_))).
+logen(box/1,box(cpu(_,_))).
+logen(box/1,box(isd11(_,_))).
+logen(box/1,box(osd11(_,_))).
+logen(box/1,box(isd21(_,_))).
+logen(box/1,box(isd22(_,_))).
+logen(box/1,box(isd23(_,_))).
+logen(box/1,box(osd21(_,_))).
+logen(box/1,box(osd22(_,_))).
+logen(box/1,box(osd23(_,_))).
+logen(box/1,box(isd31(_,_))).
+logen(box/1,box(isd32(_,_))).
+logen(box/1,box(isd33(_,_))).
+logen(box/1,box(isd34(_,_))).
+logen(box/1,box(osd31(_,_))).
+logen(box/1,box(osd32(_,_))).
+logen(box/1,box(osd33(_,_))).
+logen(box/1,box(osd34(_,_))).
+logen(box/1,box(isd41(_,_))).
+logen(box/1,box(isd42(_,_))).
+logen(box/1,box(isd43(_,_))).
+logen(box/1,box(isd44(_,_))).
+logen(box/1,box(osd41(_,_))).
+logen(box/1,box(osd42(_,_))).
+logen(box/1,box(signalCond(_,_))).
+logen(box/1,box(limitCheck(_,_))).
+logen(box/1,box(limitCheckBool(_,_))).
+logen(basicComponent/1,basicComponent(tyrePressureController(_,_,_,_))).
+logen(basicComponent/1,basicComponent(cylPressureController(_,_,_))).
+logen(basicComponent/1,basicComponent(copyStream(_,_))).
+logen(basicComponent/1,basicComponent(scaler1(_,_,_))).
+logen(basicComponent/1,basicComponent(scaler2(_,_,_))).
+logen(basicComponent/1,basicComponent(mux(_,_,_))).
+logen(machine/2,machine(dummyMachine,init)).
+logen(airPumpSystem/8,airPumpSystem(A,B,C,D,E,F,G,H)) :-
+        logen(unfold,psu(C,I)),
+        logen(unfold,apu((J,G,H),(K,L,D))),
+        logen(unfold,cpu((M,E,F,N),(A,B,J,I))),
+        logen(unfold,cu((K,L),(N,I,M,J))).
+logen(psu/2,psu(A,B)) :-
+        logen(unfold,isd11(A,C)),
+        logen(unfold,signalCond(C,D)),
+        logen(unfold,limitCheck(D,E)),
+        logen(unfold,osd11(E,B)).
+logen(apu/2,apu((A,B,C),(D,E,F))) :-
+        logen(unfold,isd23(D,G)),
+        logen(unfold,isd21(E,H)),
+        logen(unfold,isd22(F,I)),
+        logen(unfold,limitCheckBool(G,J)),
+        logen(unfold,signalCond(I,K)),
+        logen(unfold,limitCheck(K,L)),
+        logen(unfold,limitCheckBool(H,M)),
+        logen(unfold,osd21(M,B)),
+        logen(unfold,osd23(J,C)),
+        logen(unfold,osd22(L,A)).
+logen(cu/2,cu((A,B),(C,D,E,F))) :-
+        logen(unfold,isd41(C,G)),
+        logen(unfold,isd42(D,H)),
+        logen(unfold,isd43(E,I)),
+        logen(unfold,isd44(F,J)),
+        logen(unfold,tyrePressureController(G,H,I,K)),
+        logen(unfold,cylPressureController(J,I,L)),
+        logen(unfold,osd41(K,B)),
+        logen(unfold,osd42(L,A)).
+logen(tyrePressureController/4,tyrePressureController([A|B],[C|D],[E|F],[G|H])) :-
+        logen(unfold,tyrePressureControllerLogic(A,C,E,G)),
+        logen(memo,tyrePressureController(B,D,F,H)).
+logen(tyrePressureController/4,tyrePressureController([],[],[],[])).
+logen(tyrePressureControllerLogic/4,tyrePressureControllerLogic(A,B,C,D)) :-
+        logen(rescall,A<B),
+        logen(call,C=false),
+        logen(call,D=true).
+logen(tyrePressureControllerLogic/4,tyrePressureControllerLogic(A,B,_,C)) :-
+        logen(rescall,A>=B),
+        logen(call,C=false).
+logen(tyrePressureControllerLogic/4,tyrePressureControllerLogic(_,_,A,B)) :-
+        logen(call,A=true),
+        logen(call,B=false).
+logen(cylPressureController/3,cylPressureController([A|B],[C|D],[E|F])) :-
+        logen(unfold,cylPressureControllerLogic(A,C,E)),
+        logen(memo,cylPressureController(B,D,F)).
+logen(cylPressureController/3,cylPressureController([],[],[])).
+logen(cylPressureControllerLogic/3,cylPressureControllerLogic(A,B,C)) :-
+        logen(memo,maxVal(D)),
+        logen(rescall,A<D),
+        logen(call,B=false),
+        logen(call,C=true).
+logen(cylPressureControllerLogic/3,cylPressureControllerLogic(_,A,B)) :-
+        logen(call,A=true),
+        logen(call,B=false).
+logen(cylPressureControllerLogic/3,cylPressureControllerLogic(A,_,B)) :-
+        logen(memo,maxVal(C)),
+        logen(rescall,A>=C),
+        logen(call,B=false).
+logen(isd11/2,isd11(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd11/2,osd11(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd21/2,isd21(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd22/2,isd22(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd23/2,isd23(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd21/2,osd21(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd22/2,osd22(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd23/2,osd23(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd41/2,isd41(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd42/2,isd42(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd43/2,isd43(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd44/2,isd44(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd41/2,osd41(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd42/2,osd42(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(copyStream/2,copyStream([],[])).
+logen(copyStream/2,copyStream([A|B],[C|D])) :-
+        logen(call,A=C),
+        logen(memo,copyStream(B,D)).
+logen(signalCond/2,signalCond(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(limitCheck/2,limitCheck(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(limitCheckBool/2,limitCheckBool(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(cpu/2,cpu((A,B,C,D),(E,F,G,H))) :-
+        logen(unfold,isd31(E,I)),
+        logen(unfold,isd32(F,J)),
+        logen(unfold,isd33(G,K)),
+        logen(unfold,isd34(H,L)),
+        logen(unfold,mux(I,J,M)),
+        logen(unfold,scaler1(I,K,N)),
+        logen(unfold,scaler2(I,L,O)),
+        logen(unfold,osd31(M,D)),
+        logen(unfold,osd32(N,B)),
+        logen(unfold,osd33(O,C)),
+        logen(unfold,osd34(I,A)).
+logen(mux/3,mux([A|B],[C|D],[E|F])) :-
+        logen(unfold,muxLogic(A,C,E)),
+        logen(memo,mux(B,D,F)).
+logen(mux/3,mux([],[],[])).
+logen(muxLogic/3,muxLogic(A,_,B)) :-
+        logen(call,A=true),
+        logen(rescall,B is 0).
+logen(muxLogic/3,muxLogic(A,B,C)) :-
+        logen(call,A=false),
+        logen(unfold,tyrePressure(B,C)).
+logen(tyrePressure/2,tyrePressure(1,20)).
+logen(tyrePressure/2,tyrePressure(2,25)).
+logen(tyrePressure/2,tyrePressure(3,28)).
+logen(tyrePressure/2,tyrePressure(4,35)).
+logen(tyrePressure/2,tyrePressure(5,40)).
+logen(scaler1/3,scaler1([A|B],[C|D],[E|F])) :-
+        logen(unfold,scaler1Logic(A,C,E)),
+        logen(memo,scaler1(B,D,F)).
+logen(scaler1/3,scaler1([],[],[])).
+logen(scaler1Logic/3,scaler1Logic(A,_,B)) :-
+        logen(call,A=true),
+        logen(rescall,B is 0).
+logen(scaler1Logic/3,scaler1Logic(A,B,C)) :-
+        logen(call,A=false),
+        logen(memo,real(B)),
+        logen(rescall,C is B/2).
+logen(scaler2/3,scaler2([A|B],[C|D],[E|F])) :-
+        logen(unfold,scaler2Logic(A,C,E)),
+        logen(memo,scaler2(B,D,F)).
+logen(scaler2/3,scaler2([],[],[])).
+logen(scaler2Logic/3,scaler2Logic(A,_,B)) :-
+        logen(call,A=true),
+        logen(rescall,B is 0).
+logen(scaler2Logic/3,scaler2Logic(A,B,C)) :-
+        logen(call,A=false),
+        logen(memo,real(B)),
+        logen(rescall,C is B/3).
+logen(isd31/2,isd31(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd32/2,isd32(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd33/2,isd33(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(isd34/2,isd34(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd31/2,osd31(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd32/2,osd32(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd33/2,osd33(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(osd34/2,osd34(A,B)) :-
+        logen(unfold,copyStream(A,B)).
+logen(real/1,real(_)).
+logen(maxVal/1,maxVal(16)).
+
+:- filter maxVal(dynamic).  /* added by mal */
+:- filter real(dynamic). /* added by mal */
+:- filter
+        exec(nonvar).
+:- filter
+        oneStepExec((type list(nonvar))).
+:- filter
+        test(static).
+        
+:- filter tyrePressureController(dynamic,dynamic,dynamic,dynamic).
+:- filter cylPressureController(dynamic,dynamic,dynamic).
+:- filter copyStream(dynamic,dynamic).
+:- filter scaler1(dynamic,dynamic,dynamic).
+:- filter scaler2(dynamic,dynamic,dynamic).
+:- filter mux(dynamic,dynamic,dynamic).

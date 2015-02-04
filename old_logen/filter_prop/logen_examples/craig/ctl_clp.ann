@@ -1,0 +1,78 @@
+/* file: ctl.ann */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+residual(sat(A,B)).
+filter(sat(A,B),[type(list(dynamic)),static]).
+ann_clause(1,sat(A,true),true).
+ann_clause(2,sat(A,false),rescall(fail)).
+ann_clause(3,sat(A,p(B)),unfold(prop(A,B))).
+ann_clause(4,sat(A,and(B,C)),(unfold(sat(A,B)),unfold(sat(A,C)))).
+ann_clause(5,sat(A,or(B,C)),unfold(sat(A,B))).
+ann_clause(6,sat(A,or(B,C)),unfold(sat(A,C))).
+ann_clause(7,sat(A,not(B)),resnot(hide_nf(memo(sat(A,B))))).
+ann_clause(8,sat(A,en(B)),(unfold(trans(C,A,D)),unfold(sat(D,B)))).
+ann_clause(9,sat(A,an(B)),resnot(hide_nf(unfold(sat(A,en(not(B))))))).
+ann_clause(10,sat(A,eu(B,C)),memo(sat_eu(A,B,C))).
+ann_clause(11,sat(A,au(B,C)),
+	(unfold(sat(A,not(eu(not(C),and(not(B),not(C)))))),
+ 	 memo(sat_noteg(A,not(C))))).
+ann_clause(12,sat(A,ef(B)),unfold(sat(A,eu(true,B)))).
+ann_clause(13,sat(A,af(B)),memo(sat_noteg(A,not(B)))).
+ann_clause(14,sat(A,eg(B)),resnot(memo(sat_noteg(A,B)))).
+ann_clause(15,sat(A,ag(B)),unfold(sat(A,not(ef(not(B)))))).
+
+residual(sat_eu(A,B,C)).
+filter(sat_eu(A,B,C),[type(list(dynamic)),static,static]).
+ann_clause(16,sat_eu(A,B,C),unfold(sat(A,C))).
+ann_clause(17,sat_eu(A,B,C),(unfold(sat(A,B)),
+	unfold(trans(D,A,E)),memo(sat_eu(E,B,C)))).
+
+residual(sat_noteg(A,B)).
+filter(sat_noteg(A,B),[type(list(dynamic)),static]).
+ann_clause(18,sat_noteg(A,B),unfold(sat(A,not(B)))).
+ann_clause(19,sat_noteg(A,B),
+	resnot(hide_nf((unfold(trans(C,A,D)),resnot(memo(sat_noteg(D,B))))))).
+
+
+residual(trans(A,B,C)).
+filter(trans(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(21,trans(enter_cs,[A,B,C,D,E],[F,G,H,D,E]),','(memo('{}'(A > 0)),','(
+memo('{}'(F = (A - 1))),','(memo('{}'(B > 0)),','(memo('{}'(G = (B - 1))),','(me
+mo('{}'(C >= 0)),','(memo('{}'(H = (C + 1))),','(memo('{}'(D >= 0)),memo('{}'(E 
+>= 0)))))))))).
+ann_clause(22,trans(exit_cs,[A,B,C,D,E],[A,F,G,H,E]),memo('{}'(','(C > 0,','(G =
+ (C - 1),','(B >= 0,','(F = (B + 1),','(D >= 0,','(H = (D + 1),E >= 0))))))))).
+ann_clause(23,trans(restart,[A,B,C,D,E],[F,B,C,G,H]),memo('{}'(','(D > 0,','(G =
+ (D - 1),','(A >= 0,','(F = (A + 1),','(B >= 0,','(C >= 0,','(E >= 0,','(E < 10,
+H = (E + 1)))))))))))).
+
+residual(prop(A,B)).
+filter(prop(A,B),[dynamic,dynamic]).
+ann_clause(24,prop([A,B,C,D,E],unsafe),constraint(C > 1)).
+ann_clause(25,prop([0,A,0,0,B],deadlock),true).
+ann_clause(26,prop([A,0,0,0,B],deadlock),true).
+
+residual(mc(A)).
+filter(mc(A),[dynamic]).
+ann_clause(27,mc(A),memo(sat([A,1,0,0,0],ef(p(unsafe))))).
+ann_clause(28,mc(A),true).
+
+residual(mc2(A)).
+filter(mc2(A),[dynamic]).
+ann_clause(29,mc2(A),memo(sat([A,1,0,0,0],ef(p(deadlock))))).
+
+residual(time(A,B)).
+filter(time(A,B),[dynamic,dynamic]).
+ann_clause(30,time(A,B),','(memo(statistics(runtime,[C,D])),','(rescall(call(A))
+,','(memo(statistics(runtime,[E,F])),rescall(B is (E - C)))))).
+
+residual(time(A)).
+filter(time(A),[dynamic]).
+ann_clause(31,time(A),','(memo(time(A,B)),','(rescall(print('Time for goal: ')),
+','(rescall(print(A)),','(rescall(print(' is: ')),','(rescall(print(B)),','(resc
+all(print(' ms')),rescall(nl)))))))).
+ann_clause(32,q__u__e__r__y,memo([time(mc(2))])).

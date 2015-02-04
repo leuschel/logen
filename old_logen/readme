@@ -1,0 +1,11 @@
+Example Usage: to specialise mapnew.pl for the clause map(q,L1,L2).
+	SICSTUS:
+	load sicstus.pl (this will load cogen_interface automatically)
+	run_all(mapnew, map(q,L1,L2)).
+
+
+To convert between old annotations and new annotations
+	load convertann.pl
+	|?- convertFile(OldFilename).
+
+

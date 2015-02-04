@@ -1,0 +1,15 @@
+:- module(append, []).
+
+logen(test, test(C,D,E,F)) :- 
+	    logen(memo, append([a,a,c|C], [x,y], D)),
+	    logen(memo, append1([a,a,c|E], [x,y], F)).		
+
+logen(append, append([],B,B)).
+logen(append, append([X|Xs],Y, [X|Zs])) :- logen(online, append(Xs,Y,Zs)).
+
+logen(append1, append1([],B,B)).
+logen(append1, append1([X|Xs],Y, [X|Zs])) :- logen(online, append1(Xs,Y,Zs)).
+
+:- filter append(online, static, online).
+:- filter append1(online, dynamic, online).
+:- filter test(dynamic,dynamic,dynamic,dynamic).

@@ -1,0 +1,66 @@
+/* file: barker/holdsread.ann */
+
+:- multifile residual/1, clp_residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic residual/1, clp_residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+static_consult([]).
+
+
+residual(holds_read(A,B)).
+filter(holds_read(A,B),[static,nonvar]).
+ann_clause(1,holds_read(A,B),unfold(built_in(B))).
+ann_clause(2,holds_read(A,B),','(memo(permitted(A,read,B)),','(unfold(fact(B)),rescall(B)))).
+ann_clause(3,holds_read(A,B),','(memo(permitted(A,read,B)),
+                          ','(unfold(rule(B,C)),unfold(l_holds_read(A,C))))).
+
+residual(l_holds_read(A,B)).
+filter(l_holds_read(A,B),[static,type(list(nonvar))]).
+ann_clause(4,l_holds_read(A,[]),true).
+ann_clause(5,l_holds_read(A,[B|C]),','(memo(holds_read(A,B)),unfold(l_holds_read(A,C)))).
+
+residual(built_in(A)).
+filter(built_in(A),[dynamic]).
+ann_clause(6,built_in(A = A),true).
+ann_clause(7,built_in(A is B),rescall(A is B)).
+
+residual(permitted(A,B,C)).
+filter(permitted(A,B,C),[static,static,nonvar]).
+ann_clause(8,permitted(A,B,C),','(unfold(ura(A,D)),','(memo(active(A,D)),
+               ','(unfold(senior_to(D,E)),unfold(pra(E,B,C)))))).
+
+residual(sd(A,B)).
+filter(sd(A,B),[dynamic,dynamic]).
+ann_clause(9,sd(r1,r2),true).
+
+residual(senior_to(A,B)).
+filter(senior_to(A,B),[static,dynamic]).
+ann_clause(10,senior_to(A,A),true).
+ann_clause(11,senior_to(A,B),','(unfold(sd(A,C)),unfold(senior_to(C,B)))).
+
+residual(active(A,B)).
+filter(active(A,B),[dynamic,dynamic]).
+ann_clause(12,active(u1,r1),true).
+ann_clause(13,active(u2,r2),true).
+
+residual(ura(A,B)).
+filter(ura(A,B),[dynamic,dynamic]).
+ann_clause(14,ura(u1,r1),true).
+ann_clause(15,ura(u1,r2),true).
+ann_clause(16,ura(u2,r2),true).
+
+residual(pra(A,B,C)).
+filter(pra(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(17,pra(r1,read,s(A)),true).
+ann_clause(18,pra(r2,read,p(A)),true).
+ann_clause(19,pra(r2,read,q(A,B)),true).
+ann_clause(20,pra(r1,read,r(A,B)),true).
+
+residual(fact(A)).
+filter(fact(A),[dynamic]).
+ann_clause(21,fact(p(X)),true).
+ann_clause(24,fact(s(X)),true).
+
+residual(rule(A,B)).
+filter(rule(A,B),[dynamic,dynamic]).
+ann_clause(25,rule(q(A,B),[p(A),p(B)]),true).
+ann_clause(26,rule(r(A,B),[q(A,B),s(A)]),true).

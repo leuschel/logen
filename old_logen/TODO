@@ -1,0 +1,9 @@
+TO DO list:
+
+* capture <cmd>-C for copy when outside editing mode.
+* separate output from "specialised file" pane.
+
+Known Bugs:
+
+* If the directory of the last file opened does not exist any more, Logen hangs up.
+

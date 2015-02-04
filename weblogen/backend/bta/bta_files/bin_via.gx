@@ -1,0 +1,251 @@
+/*  --------------------  */
+/*  GENERATING EXTENSION  */
+/*  --------------------  */
+
+:- module('bin_via.gx', [table_gx/1,user_type/2,op_def_gx/3,dynamic_gx/1]).
+logen_module_dependencies([]).
+/* commented out, otherwise standalone .sav and .exe do not work !
+ :- use_module('../logen_source/memoizer.pl',[find_pattern/4,insert_pattern_with_filter_types/5]).
+:- use_module('../logen_source/logen_filter',[generalise_with_filter_types/3]).
+:- use_module('../logen_source/cogen-tools',[add_two_arguments/5,add_extra_argument/4]).
+ ---- */
+
+
+
+:- use_module(library(terms), [term_variables/2]).
+
+  /* Logen auxiliary predicates */
+
+safe_if_conjunction(If,Th,El,Code1,Code2,Code3) :-
+  terms:term_variables((El,Code3),V3),
+  safe_call(If,Code1),
+  (check_var(V3) -> true
+    ; logen_messages:print_error('WARNING: If Condition has instantiated Else Branch'),
+      (logen_messages:print_error(condition(If)), logen_messages:print_error(vars(V3)))
+  ),
+  terms:term_variables((If,Code1),V1), terms:term_variables((El,Code3),V3_2), 
+  safe_call(Th,Code2),
+  (check_var(V1) -> true
+    ; logen_messages:print_error('WARNING: Then Branch has instantiated If Condition'),
+      (logen_messages:print_error(then_branch(Th)), logen_messages:print_error(vars(V1)))
+  ),
+  (check_var(V3_2) -> true
+    ; logen_messages:print_error('WARNING: If Condition has instantiated Else Branch'),
+      (logen_messages:print_error(then_branch(Th)), logen_messages:print_error(vars(V3_2)))
+  ),
+  terms:term_variables((If,Code1),V1_2), terms:term_variables((Th,Code2),V2), 
+  safe_call(El,Code3),
+  (check_var(V1_2) -> true
+    ; logen_messages:print_error('WARNING: Else Branch has instantiated If Condition'),
+      (logen_messages:print_error(else_branch(El)), logen_messages:print_error(vars(V1_2)))
+  ),
+  (check_var(V2) -> true
+    ; logen_messages:print_error('WARNING: Else Branch has instantiated Then Branch'),
+      (logen_messages:print_error(else_branch(El)), logen_messages:print_error(vars(V2)))
+  ).
+  
+safe_call(Call,Code) :-
+   if(Call,true,(Code=fail,logen_messages:print_error('WARNING: call has failed'),
+                 logen_messages:print_error(call(Call)))).
+   
+
+safe_or(Call1,Call2,Code1,Code2) :-
+   terms:term_variables((Call2,Code2),V2),
+   safe_call(Call1,Code1),
+  (check_var(V2) -> true
+    ; logen_messages:print_error('WARNING: Or Branch 1 has instantiated Branch 2'),
+      (logen_messages:print_error(branch1(Call1)), logen_messages:print_error(vars(V2)))
+  ),
+   terms:term_variables((Call1,Code1),V1),
+   safe_call(Call2,Code2),
+  (check_var(V1) -> true
+    ; logen_messages:print_error('WARNING: Or Branch 2 has instantiated Branch 1'),
+      (logen_messages:print_error(branch1(Call2)), logen_messages:print_error(vars(V1)))
+  ).
+  
+check_var([]).
+check_var([H|T]) :- var(H),check_var(T).
+
+
+table_gx(_) :-
+        fail.
+user_type(_, _) :-
+        fail.
+op_def_gx(_, _, _) :-
+        fail.
+dynamic_gx(rule/2).
+dynamic_gx(gensym__r/1).
+dynamic_gx(filtered/1).
+dynamic_gx(program_point_for/1).
+logen_residual_clauses((:-module('bin_via.spec',[]))).
+:- dynamic
+        rule/2.
+:- dynamic
+        gensym__r/1.
+:- dynamic
+        filtered/1.
+:- dynamic
+        program_point_for/1.
+rule_request(A, B, Requestor, ResidualCall) :-
+        (   memoizer:find_pattern(bin_via, rule(A,B), ResidualCall, Requestor) ->
+            true
+        ;   memoizer:insert_pattern_with_filter_types(bin_via, rule(C,D), [[dynamic,dynamic]], Requestor, ResidualCall),
+            rule(C,D)=rule(A,B)
+        ).
+bin_solve_atom_request(A, B, C, Requestor, ResidualCall) :-
+        (   memoizer:find_pattern(bin_via, bin_solve_atom(A,B,C), ResidualCall, Requestor) ->
+            true
+        ;   logen_filter:generalise_with_filter_types(bin_solve_atom(A,B,C), [[static_nf,nonvar,nonvar]], D),
+            memoizer:insert_pattern_with_filter_types(bin_via, D, [[static_nf,nonvar,nonvar]], Requestor, ResidualCall),
+            D=bin_solve_atom(A,B,C)
+        ).
+test_request(A, B, Requestor, ResidualCall) :-
+        (   memoizer:find_pattern(bin_via, test(A,B), ResidualCall, Requestor) ->
+            true
+        ;   memoizer:insert_pattern_with_filter_types(bin_via, test(C,D), [[dynamic,dynamic]], Requestor, ResidualCall),
+            test(C,D)=test(A,B)
+        ).
+test_request(A, B, C, Requestor, ResidualCall) :-
+        (   memoizer:find_pattern(bin_via, test(A,B,C), ResidualCall, Requestor) ->
+            true
+        ;   memoizer:insert_pattern_with_filter_types(bin_via, test(A,D,E), [[static,dynamic,dynamic]], Requestor, ResidualCall),
+            test(A,D,E)=test(A,B,C)
+        ).
+solve_atom_request(A, Requestor, ResidualCall) :-
+        (   memoizer:find_pattern(bin_via, solve_atom(A), ResidualCall, Requestor) ->
+            true
+        ;   logen_filter:generalise_with_filter_types(solve_atom(A), [[nonvar]], B),
+            memoizer:insert_pattern_with_filter_types(bin_via, B, [[nonvar]], Requestor, ResidualCall),
+            B=solve_atom(A)
+        ).
+solve_file_request(A, Requestor, ResidualCall) :-
+        (   memoizer:find_pattern(bin_via, solve_file(A), ResidualCall, Requestor) ->
+            true
+        ;   memoizer:insert_pattern_with_filter_types(bin_via, solve_file(A), [[static]], Requestor, ResidualCall),
+            solve_file(A)=solve_file(A)
+        ).
+add_filtered_u(A, B) :-
+        freshCall_u(A, C, B),
+        filtered(C), !.
+add_filtered_u(A, B) :-
+        freshCall_u(A, C, B),
+        assert(filtered(C)).
+assert_term_u((logen(_,A):-B), (C,D)) :- !,
+        convert_body2list_u(B, E, C),
+        assert(rule(A,E)),
+        add_filtered_u(A, D).
+assert_term_u((:-filter A), B) :- !,
+        freshCall_u(A, C, B),
+        assert(filter(C,A)).
+assert_term_u((:-_), true) :- !.
+assert_term_u(logen(_,A), B) :-
+        assert(rule(A,[])),
+        add_filtered_u(A, B).
+bin_solve_u(A, [unfold(A,B)|_], B, C) :-
+        via_u(A, C).
+bin_solve_u(A, [memo(A,B)|_], memo(C), D) :-
+        filter(B, E),
+        generalise_u(B, E, C, D).
+bin_solve_u(A, [unfold(B,C)|_], D, (E,F)) :-
+        via_u(B, E),
+        bin_solve_atom_request(A, C, D, internal, F).
+bin_solve_u(A, [unfold(_,B)|C], D, (E,F)) :-
+        solve_atom_request(B, internal, E),
+        bin_solve_u(A, C, D, F).
+bin_solve_u(A, [memo(_,_)|B], C, D) :-
+        bin_solve_u(A, B, C, D).
+bin_solve_u(A, [call(_,B)|C], D, (call(B),E)) :-
+        bin_solve_u(A, C, D, E).
+bin_solve_u(A, [rescall(_,_)|B], C, D) :-
+        bin_solve_u(A, B, C, D).
+bin_solve_atom_u(A, B, C, D) :-
+        rule(B, E),
+        bin_solve_u(A, E, C, D).
+clear_u(true) :-
+        retractall(rule(_,_)),
+        retractall(filter(_,_)),
+        retractall(gensym__r(_)),
+        retractall(program_point_for(_,_)),
+        retractall(filtered(_)).
+convert_body2list_u((A,B), [C|D], (E,F)) :-
+        convert_call_u(A, C, E),
+        convert_body2list_u(B, D, F).
+convert_body2list_u(A, [B], C) :-
+        convert_call_u(A, B, C).
+convert_call_u(logen(A,B), C, (D,E)) :-
+        C=..[A,F,B],
+        gensym_u(F, D),
+        freshCall_u(B, G, E),
+        assert(program_point_for(G,F)).
+freshCall_u(A, B, true) :-
+        A=..[C|D],
+        length(D, E),
+        length(F, E),
+        B=..[C|F].
+generalise_u(A, static, A, true).
+generalise_u(_, dynamic, _, true).
+generalise_u(A, B, C, D) :-
+        B=..[E,F|G],
+        A=..[E|H],
+        l_gen_u(H, [F|G], I, D),
+        C=..[E|I].
+gensym_u(A, true) :-
+        gensym__r(A), !,
+        retract(gensym__r(A)),
+        B is A+1,
+        assert(gensym__r(B)).
+gensym_u(0, true) :-
+        assert(gensym__r(1)).
+l_gen_u([], [], [], true).
+l_gen_u([A|B], [C|D], [E|F], (G,H)) :-
+        generalise_u(A, C, E, G),
+        l_gen_u(B, D, F, H).
+load_rules_u(A, (B,C)) :-
+        op(750, fx, filter),
+        clear_u(B),
+        seeing(D),
+        see(A),
+        read_assert_u(C),
+        seen,
+        see(D).
+read_assert_u(A) :-
+        read_term(B, []),
+        (   B=end_of_file ->
+            A=(true,true)
+        ;   assert_term_u(B, C),
+            read_assert_u(D),
+            A=(C,D)
+        ).
+solve_u([], true).
+solve_u([unfold(_,A)|B], (C,D)) :-
+        solve_atom_request(A, internal, C),
+        solve_u(B, D).
+solve_u([call(_,A)|B], (call(A),C)) :-
+        solve_u(B, C).
+solve_u([memo(_,A)|B], (C,D)) :-
+        solve_atom_request(A, internal, C),
+        solve_u(B, D).
+solve_u([rescall(_,_)|A], B) :-
+        solve_u(A, B).
+solve_atom_u(A, B) :-
+        rule(A, C),
+        solve_u(C, B).
+solve_file_u(A, (B,C,D)) :-
+        load_rules_u(A, B), !,
+        filtered(E),
+        solve_atom_request(E, internal, C),
+        program_point_for(E, F),
+        program_point_for(G, F),
+        bin_solve_atom_request(F, E, G, internal, D).
+test_u(A, B, (C,D)) :-
+        filtered(A),
+        program_point_for(A, E),
+        program_point_for(B, E),
+        solve_atom_request(A, internal, C),
+        bin_solve_atom_request(E, A, B, internal, D).
+test_u(A, B, C, (D,E)) :-
+        load_rules_u(A, D), !,
+        test_u(B, C, E).
+via_u(_, true).
+
+/* GX file Generated in 20 ms */

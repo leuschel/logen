@@ -1,0 +1,65 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen match.pl "match([a,a,b],S)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 43.18999999676467 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for match([a,a,b],_)
+
+/* match([a,a,b],A) :- match__0(A). */
+match__0([A|B]) :-
+        a\==A,
+        match1__1(B,B).
+match__0([a,A|B]) :-
+        a\==A,
+        match1__1([A|B],[A|B]).
+match__0([a,a,A|B]) :-
+        b\==A,
+        match1__1([a,A|B],[a,A|B]).
+match__0([a,a,b|_]).
+
+/* match1([a,a,b],A,[a,a,b],B) :- match1__1(A,B). */
+match1__1([A|_],[_|B]) :-
+        a\==A,
+        match1__1(B,B).
+match1__1([a,A|_],[_|B]) :-
+        a\==A,
+        match1__1(B,B).
+match1__1([a,a,A|_],[_|B]) :-
+        b\==A,
+        match1__1(B,B).
+match1__1([a,a,b|_],_).
+/* Specialisation time 1.38599999983883 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen match.pl "match([a,a,b],S)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 64.87399999514016 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for match([a,a,b],_)
+
+/* match([a,a,b],A) :- match__0(A). */
+match__0([A|B]) :-
+        a\==A,
+        match1__1(B,B).
+match__0([a,A|B]) :-
+        a\==A,
+        match1__1([A|B],[A|B]).
+match__0([a,a,A|B]) :-
+        b\==A,
+        match1__1([a,A|B],[a,A|B]).
+match__0([a,a,b|_]).
+
+/* match1([a,a,b],A,[a,a,b],B) :- match1__1(A,B). */
+match1__1([A|_],[_|B]) :-
+        a\==A,
+        match1__1(B,B).
+match1__1([a,A|_],[_|B]) :-
+        a\==A,
+        match1__1(B,B).
+match1__1([a,a,A|_],[_|B]) :-
+        b\==A,
+        match1__1(B,B).
+match1__1([a,a,b|_],_).
+/* Specialisation time 1.747999999796695 ms (runtime) */

@@ -1,0 +1,102 @@
+(:-module(lambdaint,[])).
+(:-true).
+logen(l_eval, l_eval([],_,[])).
+logen(l_eval, l_eval([A|B],C,[D|E])) :-
+        logen(unfold, eval(A,C,D)),
+        logen(unfold, l_eval(B,C,E)).
+(:-true).
+logen(eval, eval(cst(A),_,constr(A,[]))).
+logen(eval, eval(constr(A,B),C,constr(A,D))) :-
+        logen(unfold, l_eval(B,C,D)).
+logen(eval, eval(var(A),B,C)) :-
+        logen(unfold, lookup(A,B,C)).
+logen(eval, eval(plus(A,B),C,constr(D,[]))) :-
+        logen(unfold, eval(A,C,constr(E,[]))),
+        logen(unfold, eval(B,C,constr(F,[]))),
+        logen(rescall, D is E+F).
+logen(eval, eval(minus(A,B),C,constr(D,[]))) :-
+        logen(unfold, eval(A,C,constr(E,[]))),
+        logen(unfold, eval(B,C,constr(F,[]))),
+        logen(rescall, D is E-F).
+logen(eval, eval(times(A,B),C,constr(D,[]))) :-
+        logen(unfold, eval(A,C,constr(E,[]))),
+        logen(unfold, eval(B,C,constr(F,[]))),
+        logen(rescall, D is E*F).
+logen(eval, eval(eq(A,B),C,constr(D,[]))) :-
+        logen(unfold, eval(A,C,E)),
+        logen(unfold, eval(B,C,F)),
+        resif(logen(rescall,E=F), logen(rescall,D=true), logen(rescall,D=false)).
+logen(eval, eval(let(A,B,C),D,E)) :-
+        logen(unfold, eval(B,D,F)),
+        logen(unfold, store(D,A,F,G)),
+        logen(unfold, eval(C,G,E)).
+logen(eval, eval(if(A,B,C),D,E)) :-
+        logen(unfold, eval_if(A,B,C,D,E)).
+logen(eval, eval(lambda(A,B),_,lambda(A,B))).
+logen(eval, eval(apply(A,B),C,D)) :-
+        logen(unfold, eval(B,C,E)),
+        logen(unfold, rename(E,C,lambda(F,G))),
+        logen(unfold, eval(A,C,H)),
+        logen(unfold, store(C,F,H,I)),
+        logen(memo, eval(G,I,D)).
+logen(eval, eval(fun(A),_,B)) :-
+        logen(unfold, function(A,B)).
+logen(eval, eval(print(A),_,constr(true,[]))) :-
+        logen(rescall, print(A)),
+        logen(rescall, nl).
+logen(rename, rename(A,_,B)) :-
+        logen(call, B=A).
+logen(eval_if, eval_if(A,B,_,C,D)) :-
+        logen(unfold, test(A,C)),
+        logen(rescall, !),
+        logen(unfold, eval(B,C,D)).
+logen(eval_if, eval_if(_,_,A,B,C)) :-
+        logen(unfold, eval(A,B,C)).
+logen(test, test(eq(A,B),C)) :-
+        logen(unfold, eval(A,C,D)),
+        logen(unfold, eval(B,C,D)).
+logen(function, function(fib,lambda(x,if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib)))))))).
+(:-true).
+logen(store, store([],A,B,[A/B])).
+logen(store, store([A/_|B],A,C,[A/C|B])).
+logen(store, store([A/B|C],D,E,[A/B|F])) :-
+        logen(call, D\==A),
+        logen(unfold, store(C,D,E,F)).
+(:-true).
+logen(lookup, lookup(A,[A/B|_],B)).
+logen(lookup, lookup(A,[B/_|C],D)) :-
+        logen(rescall, A\==B),
+        logen(unfold, lookup(A,C,D)).
+logen(fib, fib(A,B)) :-
+        logen(unfold, store([],x,A,C)),
+        logen(unfold, eval(apply(cst(A),fun(fib)),C,constr(B,_))).
+logen(bench, bench(A,B)) :-
+        logen(rescall, A>B),
+        logen(rescall, print('Done')),
+        logen(rescall, nl).
+logen(bench, bench(A,B)) :-
+        logen(rescall, A=<B),
+        logen(unfold, fib(A,C)),
+        logen(rescall, !),
+        logen(rescall, print(fib(A))),
+        logen(rescall, print(' == ')),
+        logen(rescall, print(C)),
+        logen(rescall, nl),
+        logen(rescall, D is A+1),
+        logen(memo, bench(D,B)).
+:- filter
+        l_eval(static, (type list(struct(/,[static,dynamic]))), dynamic).
+:- filter
+        eval(static, (type list(struct(/,[static,online]))), online).
+:- filter
+        rename(dynamic, dynamic, dynamic).
+:- filter
+        function(dynamic, dynamic).
+:- filter
+        store(dynamic, static, static, dynamic).
+:- filter
+        lookup(static, dynamic, dynamic).
+:- filter
+        fib(dynamic, dynamic).
+:- filter
+        bench(dynamic, dynamic).

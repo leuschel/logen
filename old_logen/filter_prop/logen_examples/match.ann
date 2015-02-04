@@ -1,0 +1,18 @@
+/* file: /Users/mal/CVS/cogen/logen_examples/match.ann */
+
+:- multifile residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+static_consult([]).
+
+ann_clause(2, match1([],_,_,_), true).
+ann_clause(3, match1([A|_],[B|_],C,[_|D]), (rescall(A\==B),memo(match1(C,D,C,D)))).
+ann_clause(4, match1([A|B],[A|C],D,E), memo(match1(B,C,D,E))).
+ann_clause(1, match(A,B), unfold(match1(A,B,A,B))).
+
+residual(match(_,_)).
+residual(match1(_,_,_,_)).
+
+:- filter(match(static,dynamic)).
+% filter(match1(_,_,_,_), [static,dynamic,static,dynamic]).
+

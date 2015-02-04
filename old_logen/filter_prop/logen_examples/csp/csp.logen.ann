@@ -1,0 +1,386 @@
+/* file: /csp/csp.logen.ann */
+/* Annotations produced by hand by Michael Leuschel */
+/* (c) 2000,2001 Michael Leuschel */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+residual(trans(A,B,C)).
+filter(trans(A,B,C),[type(csp),dynamic,dynamic]).
+ann_clause(1,trans(stop,A,B),call(fail)).
+ann_clause(2,trans(skip,tau,stop),true).
+ann_clause(3,trans(ccs_choice(A,B),C,D),unfold(trans(A,C,D))).
+ann_clause(4,trans(ccs_choice(A,B),C,D),unfold(trans(B,C,D))).
+ann_clause(5,trans(choice(A,B),C,D),
+   (unfold(trans(A,C,D)),semicall(dif(C,tau)))).
+ann_clause(6,trans(choice(A,B),C,D),
+   (unfold(trans(B,C,D)),semicall(dif(C,tau)))).
+ann_clause(7,trans(choice(A,B),tau,choice(C,B)),unfold(trans(A,tau,C))).
+ann_clause(8,trans(choice(A,B),tau,choice(A,C)),unfold(trans(B,tau,C))).
+ann_clause(9,trans(int_choice(A,B),tau,A),true).
+ann_clause(10,trans(int_choice(A,B),tau,B),true).
+ann_clause(11,trans(if(A,B,C),D,E),
+   (rescall(test(A)),unfold(trans(B,D,E)))).
+ann_clause(12,trans(if(A,B,C),D,E),
+   (resnot(rescall(test(A))),unfold(trans(C,D,E)))).
+ann_clause(13,trans(if(A,B),C,D),
+   (rescall(test(A)),unfold(trans(B,C,D)))).
+ann_clause(14,trans(prefix(A,B,C),io(A,B),C),true).
+ann_clause(15,trans(prefix(A,B,C,D),io(A,B),D),rescall(test(C))).
+ann_clause(16,trans(seq(A,B),C,seq(D,B)),
+   (unfold(trans(A,C,D)),semicall(dif(C,tick)))).
+ann_clause(17,trans(seq(A,B),tau,B),
+    unfold(trans(A,tick,C))).
+ann_clause(18,trans(interleave(A,B),C,D),unfold(trans(par(A,[],B),C,D))).
+ann_clause(19,trans(timeout(A,B),C,D),
+    (semicall(dif(C,tau)),unfold(trans(A,C,D)))).
+ann_clause(20,trans(timeout(A,B),tau,timeout(C,B)),
+    unfold(trans(A,tau,C))).
+ann_clause(21,trans(timeout(A,B),tau,B),true).
+ann_clause(22,trans(interrupt(A,B),C,interrupt(D,B)),
+     (semicall(dif(C,tick)),unfold(trans(A,C,D)))).
+ann_clause(23,trans(interrupt(A,B),tick,omega),unfold(trans(A,tick,C))).
+ann_clause(24,trans(interrupt(A,B),i,B),true).
+ann_clause(25,trans(par(A,B,C),io(D,E),par(F,B,G)),
+     (unfold(trans(A,io(H,E),F)),unfold(trans(C,io(I,E),G)),
+      unfold(unify_values(H,I,D)),rescall(hidden(io(D,E),B)))).
+ann_clause(26,trans(par(A,B,C),D,par(E,B,C)),
+      (unfold(trans(A,D,E)),semicall(dif(D,tick)),
+       rescall(not_hidden(D,B)))).
+ann_clause(27,trans(par(A,B,C),D,par(A,B,E)),
+       (unfold(trans(C,D,E)),semicall(dif(D,tick)),
+       rescall(not_hidden(D,B)))).
+ann_clause(28,trans(par(A,B,C),tau,par(omega,B,C)),
+       unfold(trans(A,tick,D))).
+ann_clause(29,trans(par(A,B,C),tau,par(A,B,omega)),
+       unfold(trans(C,tick,D))).
+ann_clause(30,trans(par(omega,A,omega),tick,omega),true).
+ann_clause(31,trans(agent_call(A),B,C),
+   (unfold(evaluate_agent_call(A,D)),
+    unfold(agent(D,E)),unfold(trans(E,B,C)))).
+ann_clause(32,trans(hide(A,B),C,hide(D,B)),
+    (unfold(trans(A,C,D)),semicall(dif(C,tick)),
+     rescall(not_hidden(C,B)))).
+ann_clause(33,trans(hide(A,B),tau,hide(C,B)),
+     (unfold(trans(A,D,C)),rescall(hidden(D,B)))).
+ann_clause(34,trans(hide(A,B),tick,omega),unfold(trans(A,tick,C))).
+ann_clause(35,trans(rename(A,B),C,rename(D,B)),
+      (unfold(trans(A,E,D)),rescall(rename_action(E,B,C)))).
+ann_clause(36,trans(let(A,B,C),tau,C),
+      (unfold(evaluate_argument(B,D)),call(A=D))).
+
+/* residual(unify_values(A,B,C)). */
+filter(unify_values(A,B,C),[list(nonvar),dynamic,dynamic]).
+ann_clause(37,unify_values([],[],[]),true).
+ann_clause(38,unify_values([A|B],[C|D],[E|F]),
+    (unfold(unify_value(A,C,E)),unfold(unify_values(B,D,F)))).
+
+
+residual(unify_value(A,B,C)).
+filter(unify_value(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(39,unify_value(in(A),in(A),in(A)),true).
+ann_clause(40,unify_value(in(A),out(A),dot(A)),true).
+ann_clause(41,unify_value(in(A),dot(A),dot(A)),true).
+ann_clause(42,unify_value(out(A),in(A),dot(A)),true).
+ann_clause(43,unify_value(out(A),out(A),out(A)),true).
+ann_clause(44,unify_value(out(A),dot(A),dot(A)),true).
+ann_clause(45,unify_value(dot(A),in(A),dot(A)),true).
+ann_clause(46,unify_value(dot(A),out(A),dot(A)),true).
+ann_clause(47,unify_value(dot(A),dot(A),dot(A)),true).
+
+residual(dif_value(A,B)).
+filter(dif_value(A,B),[dynamic,dynamic]).
+ann_clause(48,dif_value(in(A),in(B)),semicall(dif(A,B))).
+ann_clause(49,dif_value(in(A),out(B)),semicall(dif(A,B))).
+ann_clause(50,dif_value(in(A),dot(B)),semicall(dif(A,B))).
+ann_clause(51,dif_value(out(A),in(B)),semicall(dif(A,B))).
+ann_clause(52,dif_value(out(A),out(B)),semicall(dif(A,B))).
+ann_clause(53,dif_value(out(A),dot(B)),semicall(dif(A,B))).
+ann_clause(54,dif_value(dot(A),in(B)),semicall(dif(A,B))).
+ann_clause(55,dif_value(dot(A),out(B)),semicall(dif(A,B))).
+ann_clause(56,dif_value(dot(A),dot(B)),semicall(dif(A,B))).
+
+residual(evaluate_agent_call(A,B)).
+filter(evaluate_agent_call(A,B),[nonvar,dynamic]).
+ann_clause(57,evaluate_agent_call(A,B),
+  (call(A=..[C|D]),unfold(l_evaluate_arguments(D,E)),call(B=..[C|E]))).
+
+residual(l_evaluate_arguments(A,B)).
+filter(l_evaluate_arguments(A,B),[type(list(nonvar)),dynamic]).
+ann_clause(58,l_evaluate_arguments([],[]),true).
+ann_clause(59,l_evaluate_arguments([A|B],[C|D]),
+   (unfold(evaluate_argument(A,C)),unfold(l_evaluate_arguments(B,D)))).
+
+residual(evaluate_argument(A,B)).
+filter(evaluate_argument(A,B),[nonvar,dynamic]).
+ann_clause(60,evaluate_argument(eval(A),B),rescall(evaluate_argument2(A,B))).
+ann_clause(61,evaluate_argument(keep(A),A),true).
+
+residual(evaluate_argument2(A,B)).
+filter(evaluate_argument2(A,B),[dynamic,dynamic]).
+ann_clause(62,evaluate_argument2(A+B,C),(memo(evaluate_argument(A,D)),memo(evaluate_argument(B,E)),rescall(C is D+E))).
+ann_clause(63,evaluate_argument2(A-B,C),(memo(evaluate_argument(A,D)),memo(evaluate_argument(B,E)),rescall(C is D+E))).
+ann_clause(64,evaluate_argument2(union(A,B),C),(memo(evaluate_argument(A,D)),memo(evaluate_argument(B,E)),memo(multi_set_union(D,E,C)))).
+ann_clause(65,evaluate_argument2(diff(A,B),C),(memo(evaluate_argument(A,D)),memo(evaluate_argument(B,E)),memo(multi_set_difference(D,E,C)))).
+ann_clause(66,evaluate_argument2(A rem B,C),(memo(evaluate_argument(A,D)),memo(evaluate_argument(B,E)),memo(multi_set_difference(D,[E],C)))).
+ann_clause(67,evaluate_argument2(add(A,B),C),(memo(evaluate_argument(A,D)),memo(evaluate_argument(B,E)),memo(multi_set_union(D,[E],C)))).
+ann_clause(68,evaluate_argument2(card(A),B),(memo(evaluate_argument(A,C)),memo(multi_set_cardinality(C,B)))).
+
+residual(test(A)).
+filter(test(A),[dynamic]).
+ann_clause(69,test(true),true).
+ann_clause(70,test(false),rescall(fail)).
+ann_clause(71,test(not(A)),memo(when(ground(A),\+test(A)))).
+ann_clause(72,test(and(A,B)),(memo(test(A)),memo(test(B)))).
+ann_clause(73,test(or(A,B)),memo(test(A))).
+ann_clause(74,test(or(A,B)),memo(test(B))).
+ann_clause(75,test(A=A),true).
+ann_clause(76,test(!=(A,B)),memo(dif(A,B))).
+ann_clause(77,test(A>B),memo(when(ground((A,B)),A>B))).
+ann_clause(78,test(A<B),memo(when(ground((A,B)),A<B))).
+ann_clause(79,test(in(A,B)),memo(when(nonvar(B),member_test(A,B)))).
+
+residual(member_test(A,B)).
+filter(member_test(A,B),[dynamic,dynamic]).
+ann_clause(80,member_test(A,[A|B]),true).
+ann_clause(81,member_test(A,[B|C]),memo(when(nonvar(C),member_test(A,C)))).
+
+residual(not_hidden(A,B)).
+filter(not_hidden(A,B),[dynamic,dynamic]).
+ann_clause(82,not_hidden(tau,A),true).
+ann_clause(83,not_hidden(tick,A),true).
+ann_clause(84,not_hidden(io(A,B),C),memo(not_hidden_test(io(A,B),C))).
+
+residual(not_hidden_test(A,B)).
+filter(not_hidden_test(A,B),[dynamic,dynamic]).
+ann_clause(85,not_hidden_test(A,[]),true).
+ann_clause(86,not_hidden_test(A,[B|C]),(memo(not_match_action(A,B)),memo(not_hidden_test(A,C)))).
+
+residual(not_match_action(A,B)).
+filter(not_match_action(A,B),[dynamic,dynamic]).
+ann_clause(87,not_match_action(io(A,B),io(C,D)),memo(dif(B,D))).
+ann_clause(88,not_match_action(io(A,B),io(C,B)),memo(not_match_action2(A,C))).
+
+residual(not_match_action2(A,B)).
+filter(not_match_action2(A,B),[dynamic,dynamic]).
+ann_clause(89,not_match_action2([A|B],[C|D]),memo(dif_value(A,C))).
+ann_clause(90,not_match_action2([A|B],[C|D]),memo(not_match_action2(B,D))).
+
+residual(hidden(A,B)).
+filter(hidden(A,B),[dynamic,dynamic]).
+ann_clause(91,hidden(tau,A),rescall(fail)).
+ann_clause(92,hidden(tick,A),rescall(fail)).
+ann_clause(93,hidden(io(A,B),C),memo(when(nonvar(C),hidden_test(io(A,B),C)))).
+
+residual(hidden_test(A,B)).
+filter(hidden_test(A,B),[dynamic,dynamic]).
+ann_clause(94,hidden_test(A,[B|C]),memo(match_action(A,B))).
+ann_clause(95,hidden_test(A,[B|C]),memo(hidden_test(A,C))).
+
+residual(match_action(A,B)).
+filter(match_action(A,B),[dynamic,dynamic]).
+ann_clause(96,match_action(io(A,B),io(C,B)),memo(when(nonvar(C),match_action2(A,C)))).
+
+residual(match_action2(A,B)).
+filter(match_action2(A,B),[dynamic,dynamic]).
+ann_clause(97,match_action2(A,[]),true).
+ann_clause(98,match_action2([A|B],[C|D]),(memo(when(nonvar(A),unify_value(A,C,E))),memo(when(nonvar(D),match_action2(B,D))))).
+
+residual(rename_action(A,B,C)).
+filter(rename_action(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(99,rename_action(tau,A,tau),true).
+ann_clause(100,rename_action(tick,A,tick),true).
+ann_clause(101,rename_action(A,B,C),(memo(dif(A,tau)),memo(dif(A,tick)),memo(rename_action2(A,B,C,not_found)))).
+
+residual(rename_action2(A,B,C,D)).
+filter(rename_action2(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(102,rename_action2(A,[],A,not_found),true).
+ann_clause(103,rename_action2(A,[<-(B,C)|D],E,F),(memo(match_action(A,B)),memo(rename_action3(A,B,C,E)))).
+ann_clause(104,rename_action2(A,[<-(B,C)|D],E,F),(memo(match_action(A,B)),memo(rename_action2(A,D,E,found)))).
+ann_clause(105,rename_action2(A,[<-(B,C)|D],E,F),(memo(not_match_action(A,B)),memo(rename_action2(A,D,E,F)))).
+
+residual(rename_action3(A,B,C,D)).
+filter(rename_action3(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(106,rename_action3(io(A,B),io(C,B),io(D,E),io(F,E)),memo(rename_action4(A,C,D,F))).
+
+residual(rename_action4(A,B,C,D)).
+filter(rename_action4(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(107,rename_action4(A,[],B,C),memo(append(B,A,C))).
+ann_clause(108,rename_action4([A|B],[C|D],E,F),memo(rename_action4(B,D,E,F))).
+
+residual(prop(A,B)).
+filter(prop(A,B),[type(csp),dynamic]).
+ann_clause(109,prop(A,B),unfold(trans(A,B,C))).
+ann_clause(110,prop(A,deadlock),resnot(live(A))).
+
+residual(live(A)).
+filter(live(A),[type(csp)]).
+ann_clause(111,live(A),unfold(trans(A,B,C))).
+
+residual(app(A,B,C)).
+filter(app(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(112,app([],A,A),true).
+ann_clause(113,app([A|B],C,[A|D]),memo(app(B,C,D))).
+
+residual(rev(A,B,C)).
+filter(rev(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(114,rev([],A,A),true).
+ann_clause(115,rev([A|B],C,D),memo(rev(B,[A|C],D))).
+
+residual(member(A,B)).
+filter(member(A,B),[dynamic,dynamic]).
+ann_clause(116,member(A,[A|B]),true).
+ann_clause(117,member(A,[B|C]),memo(member(A,C))).
+
+residual(member_nr(A,B,C)).
+filter(member_nr(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(118,member_nr(A,[A|B],1),true).
+ann_clause(119,member_nr(A,[B|C],D),(memo(member_nr(A,C,E)),rescall(D is E+1))).
+residual(append(A,B,C)).
+filter(append(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(120,append([],A,A),true).
+ann_clause(121,append([A|B],C,[A|D]),memo(append(B,C,D))).
+
+residual(delete_el(A,B,C)).
+filter(delete_el(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(122,delete_el([A|B],A,B),true).
+ann_clause(123,delete_el([A|B],C,[A|D]),memo(delete_el(B,C,D))).
+
+residual(remove(A,B,C)).
+filter(remove(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(124,remove([],A,[]),true).
+ann_clause(125,remove([A|B],A,B),true).
+ann_clause(126,remove([A|B],C,[A|D]),(resnot(C=A),memo(remove(B,C,D)))).
+
+residual(multi_set_difference(A,B,C)).
+filter(multi_set_difference(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(127,multi_set_difference(A,[],A),true).
+ann_clause(128,multi_set_difference(A,[B|C],D),(memo(remove(A,B,E)),memo(multi_set_difference(E,C,D)))).
+
+residual(multi_set_union(A,B,C)).
+filter(multi_set_union(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(129,multi_set_union(A,B,C),memo(append(A,B,C))).
+
+residual(multi_set_cardinality(A,B)).
+filter(multi_set_cardinality(A,B),[dynamic,dynamic]).
+ann_clause(130,multi_set_cardinality([],0),true).
+ann_clause(131,multi_set_cardinality([A|B],C),(memo(multi_set_cardinality(B,D)),rescall(C is D+1))).
+
+residual(string_concatenate(A,B,C)).
+filter(string_concatenate(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(132,string_concatenate(A,B,C),(memo(name(A,D)),memo(name(B,E)),memo(append(D,E,F)),memo(name(C,F)))).
+
+residual(q__u__e__r__y).
+filter(q__u__e__r__y,[]).
+ann_clause(133,q__u__e__r__y,memo([(dynamic agent/2)])).
+
+residual(agent(A,B)).
+filter(agent(A,B),[dynamic,dynamic]).
+ann_clause(134,agent(a_TrafficLight,prefix([],yellow,prefix([],green,agent_call(a_TrafficLightGo)))),true).
+ann_clause(135,agent(a_TrafficLightGo,prefix([],yellow,prefix([],red,agent_call(a_TrafficLight)))),true).
+ann_clause(136,agent(a_Counter(s(A)),prefix([],down,agent_call(a_Counter(keep(A))))),true).
+ann_clause(137,agent(a_Counter(A),prefix([],up,agent_call(a_Counter(keep(s(A)))))),true).
+ann_clause(138,agent(a_Counter(0),prefix([],zero,agent_call(a_Counter(keep(0))))),true).
+ann_clause(139,agent(a_Counter(A),prefix([],reset,agent_call(a_Counter(keep(0))))),true).
+ann_clause(140,agent(a_MAIN,prefix([],traffic,agent_call(a_TrafficLight))),true).
+ann_clause(141,agent(a_MAIN,prefix([],counter,agent_call(a_Counter(keep(0))))),true).
+
+residual(unsafe(A,B)).
+filter(unsafe(A,B),[type(csp),dynamic]).
+ann_clause(142,unsafe(A,deadlock),resnot(live(A))).
+
+residual(verify(A,B,C,D)).
+filter(verify(A,B,C,D),[type(csp),dynamic,dynamic,dynamic]).
+ann_clause(143,verify(A,[],A,B),unfold(unsafe(A,B))).
+ann_clause(144,verify(A,[B|C],D,E),
+        (unfold(trans(A,B,F)),memo(verify(F,C,D,E)))). 
+
+residual(iv).
+filter(iv,[]).
+ann_clause(145,iv,unfold(iv(a_MAIN))).
+
+residual(iv(A)).
+filter(iv(A),[nonvar]).
+ann_clause(146,iv(A),unfold(id_verify(agent_call(A)))).
+
+residual(id_verify(A)).
+filter(id_verify(A),[dynamic]).
+ann_clause(147,id_verify(A),
+   (rescall(print('Intial expression: ')),
+     rescall(print_expr(A)),rescall(nl),
+     rescall(print('Starting an iterative deepening search ')),
+     memo(list(B)),rescall(print(.)),
+     memo(verify(A,B,C,D)),
+     rescall(nl),rescall(print('*** error found: ')),
+     rescall(print(D)),rescall(print(' ! ***')),rescall(nl),
+     rescall(print('Trace: ')),
+     rescall(print_value_list(B)),rescall(nl),
+     rescall(print('Final expression: ')),
+     rescall(print_expr(C)),rescall(nl),
+     rescall(print('Continue y or n ==>')),
+     rescall(read(E)),call(E=n))).
+
+residual(list(A)).
+filter(list(A),[dynamic]).
+ann_clause(148,list([]),true).
+ann_clause(149,list([A|B]),memo(list(B))).
+
+residual(trace(A)).
+filter(trace(A),[dynamic]).
+ann_clause(150,trace(A),unfold(trace(agent_call(a_MAIN),A))).
+
+residual(trace(A,B)).
+filter(trace(A,B),[type(csp),dynamic]).
+ann_clause(151,trace(A,[]),true).
+ann_clause(152,trace(A,[B|C]),
+   (unfold(trans(A,B,D)),
+    unfold(simplify(D,E)),
+    if(call((print(E),nl,nonvar(E),
+            (E=prefix(_,_,_); E=prefix(_,_,_,_) ) )) 
+       , unfold(trace(E,C))
+       ,  memo(trace(E,C))))).
+
+residual(simplify(A,B)).
+filter(simplify(A,B),[dynamic,dynamic]).
+ann_clause(153,simplify(stop,stop),true).
+ann_clause(154,simplify(skip,skip),true).
+ann_clause(155,simplify(omega,omega),true).
+ann_clause(156,simplify(choice(A,B),C),
+   (unfold(simplify(A,D)),unfold(simplify(B,E)),
+    if(call(A=stop),call(C=E),
+       if(call(B=stop),
+             call(C=D),
+             call(C=choice(D,E)))))).
+ann_clause(157,simplify(int_choice(A,B),int_choice(C,D)),
+    (unfold(simplify(A,C)),unfold(simplify(B,D)))).
+ann_clause(158,simplify(prefix(A,B,C),prefix(A,B,D)),
+    unfold(simplify(C,D))).
+ann_clause(159,simplify(prefix(A,B,C,D),prefix(A,B,C,E)),
+    unfold(simplify(D,E))).
+ann_clause(160,simplify(interleave(A,B),par(C,[],D)),
+   (unfold(simplify(A,C)),unfold(simplify(B,D)))).
+ann_clause(161,simplify(par(A,B,C),par(D,B,E)),
+   (unfold(simplify(A,D)),unfold(simplify(C,E)))).
+ann_clause(162,simplify(timeout(A,B),timeout(C,D)),
+   (unfold(simplify(A,C)),unfold(simplify(B,D)))).
+ann_clause(163,simplify(interrupt(A,B),interrupt(C,D)),
+   (unfold(simplify(A,C)),unfold(simplify(B,D)))).
+ann_clause(164,simplify(agent_call(A),agent_call(A)),true).
+ann_clause(165,simplify(hide(A,B),E),
+    (unfold(simplify(A,C)),
+     if(call(C=hide(D,B)),
+        call(E=hide(D,B)),
+        call(E=hide(C,B))))).
+ann_clause(166,simplify(restrict(A,B),restrict(C,B)),
+     (unfold(simplify(A,C)),
+      if(call(C=restrict(D,B)),
+         call(E=restrict(D,B)),
+         call(E=hide(C,B))))).
+ann_clause(167,simplify(rename(A,B),rename(C,B)),
+     unfold(simplify(A,C))).
+ann_clause(168,simplify(let(A,B,C),let(A,B,D)),
+     unfold(simplify(C,D))). 
+
+

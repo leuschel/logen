@@ -1,0 +1,14 @@
+%% Logen Annotation File
+(:-module(match,[])).
+logen(0, match(A,B)) :-
+        logen(unfold, match1(A,B,A,B)).
+logen(1, match1([],_,_,_)).
+logen(2, match1([A|_],[B|_],C,[_|D])) :-
+        logen(rescall, A\==B),
+        logen(memo, match1(C,D,C,D)).
+logen(3, match1([A|B],[A|C],D,E)) :-
+        logen(unfold, match1(B,C,D,E)).
+:- filter
+        match1(static, dynamic, static, dynamic).
+:- filter
+        match(static, dynamic).

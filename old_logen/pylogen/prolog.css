@@ -1,0 +1,65 @@
+p {font-family:monospace;display:inline;}
+
+span.unfold, span.memo, span.dynamic, span.static, span.call, span.rescall, span.unsafe, span.hide_nf, span.ucall, span.if, span.logif, span.semicall, span.mcall, span.resif, span.semif, span.reslogif, span.unknown, span.findall, span.resfindall, span.resnot, span.not, span.disj, span.resdisj, span.mnf, span.pp_cll, span.pp_mnf, span.when, span.semiwhen, span.reswhen, span.online, span.time_out {
+	position:relative; /*this is the key*/
+	z-index:24;
+	text-decoration:none
+}
+
+span.unfold:hover, span.memo:hover, span.dynamic:hover, span.static:hover, span.call:hover, span.rescall:hover, span.unsafe:hover, span.hide_nf:hover, span.ucall:hover, span.if:hover, span.logif:hover, span.semicall:hover, span.mcall:hover, span.resif:hover, span.semif:hover, span.reslogif:hover, span.unknown:hover, span.findall:hover, span.resfindall:hover, span.resnot:hover, span.not:hover, span.disj:hover, span.resdisj:hover, span.mnf:hover, span.pp_cll:hover, span.pp_mnf:hover, span.when:hover, span.semiwhen:hover, span.reswhen:hover, span.online:hover, span.time_out:hover {
+	z-index:25;
+}
+
+span.unfold div, span.memo div, span.dynamic div, span.static div, span.call div, span.rescall div, span.unsafe div, span.hide_nf div, span.ucall div, span.if div, span.logif div, span.semicall div, span.mcall div, span.resif div, span.semif div, span.reslogif div, span.unknown div, span.findall div, span.resfindall div, span.resnot div, span.not div, span.disj div, span.resdisj div, span.mnf div, span.pp_cll div, span.pp_mnf div, span.when div, span.semiwhen div, span.reswhen div, span.online div, span.time_out div {
+	display: none
+}
+
+span.unfold:hover div, span.memo:hover div, span.dynamic:hover div, span.static:hover div, span.call:hover div, span.rescall:hover div, span.unsafe:hover div, span.hide_nf:hover div, span.ucall:hover div, span.if:hover div, span.logif:hover div, span.semicall:hover div, span.mcall:hover div, span.resif:hover div, span.semif:hover div, span.reslogif:hover div, span.unknown:hover div, span.findall:hover div, span.resfindall:hover div, span.resnot:hover div, span.not:hover div, span.disj:hover div, span.resdisj:hover div, span.mnf:hover div, span.pp_cll:hover div, span.pp_mnf:hover div, span.when:hover div, span.semiwhen:hover div, span.reswhen:hover div, span.online:hover div, span.time_out:hover div {
+	/*the span will display just on :hover state*/
+	display:block;
+	position:absolute;
+	top:2em; left:2em;
+	padding-left:1em;
+	padding-right:1em;
+	border:1px solid #0cf;
+	background-color:#cff; color:#000;
+	text-align: center;
+	text-decoration:none
+}
+
+span.unfold {color: #006400}
+span.memo {color: #8b0000}
+span.head {color: blue}
+span.comment {color: #ff69b4}
+span.dynamic {color: #8b0000}
+span.static {color: #006400}
+span.list {color: #800080}
+span.call {color: #006400; text-decoration: underline}
+span.rescall {color: #8b0000; text-decoration: underline}
+span.unsafe {background-color: #800080; color: white}
+span.hide_nf {background-color: yellow}
+span.filter {color: #00008b}
+span.ucall {color: #006400}
+span.if {color: #006400}
+span.logif {color: #006400}
+span.semicall {color:00008b}
+span.mcall {color: #8b0000}
+span.resif {color: #8b0000}
+span.semif {color:00008b}
+span.reslogif {color: #8b0000}
+span.unknown {color: white; background-color: black}
+span.findall {color: #006400}
+span.resfindall {color: #8b0000}
+span.resnot {color: #006400}
+span.not {color: #8b0000}
+span.disj {color: #006400}
+span.resdisj {color: #8b0000}
+span.mnf {color: #00008b}
+span.pp_cll {color: #00008b}
+span.pp_mnf {color: #00008b}
+span.when {color: #006400}
+span.semiwhen {color: #00008b}
+span.reswhen {color: #8b0000}
+span.online {color: #00008b}
+span.time_out {color: #8b0000}
+

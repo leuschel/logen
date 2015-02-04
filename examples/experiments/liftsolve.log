@@ -1,0 +1,96 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen liftsolve.pl "test(X,Y,Z)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 48.50699999636638 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_,_,_)
+
+/* test(A,B,C) :- test__0(A,B,C). */
+test__0(term(null,[]),A,A) :-
+        solve__1.
+test__0(term(cons,[B,C]),A,term(cons,[B,D])) :-
+        solve__2(D,A,C).
+
+/* solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[]) :- solve__1. */
+solve__1.
+
+/* solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[A,B,C])]) :- solve__2(C,B,A). */
+solve__2(A,A,term(null,[])) :-
+        solve__1.
+solve__2(term(cons,[B,C]),A,term(cons,[B,D])) :-
+        solve__2(C,A,D).
+/* Specialisation time 1.73599999979809 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen liftsolve.pl "test(X,Y,Z)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 73.86899999446646 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_,_,_)
+
+/* test(A,B,C) :- test__0(A,B,C). */
+test__0(term(null,[]),A,A) :-
+        solve__1.
+test__0(term(cons,[B,C]),A,term(cons,[B,D])) :-
+        solve__2(D,A,C).
+
+/* solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[]) :- solve__1. */
+solve__1.
+
+/* solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[A,B,C])]) :- solve__2(C,B,A). */
+solve__2(A,A,term(null,[])) :-
+        solve__1.
+solve__2(term(cons,[B,C]),A,term(cons,[B,D])) :-
+        solve__2(C,A,D).
+/* Specialisation time 72.28799999458488 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen liftsolve_online.pl "test(X,Y,Z)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 73.42899999449937 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_,_,_)
+ % Mixed Generalisation: 'generalise_online_mixed([(type list(online)),(type goal)],solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[_1134,_549,_1189])]),solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[_1134,_549,_1189])]),test__0(_607,_608,_609))'.
+
+/* test(A,B,C) :- test__0(A,B,C). */
+test__0(term(null,[]),A,A).
+test__0(term(cons,[B,term(null,[])]),A,term(cons,[B,A])).
+test__0(term(cons,[B,term(cons,[C,D])]),A,term(cons,[B,term(cons,[C,E])])) :-
+        solve__1(A,D,E).
+
+/* solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[A,B,C])]) :- solve__1(B,A,C). */
+solve__1(A,term(null,[]),A).
+solve__1(A,term(cons,[B,C]),term(cons,[B,D])) :-
+        solve__1(A,C,D).
+/* Specialisation time 6.909999999355039 ms (runtime) */  
+ -- 4.4 ms when marking a static part as static rather than online [forced because
+  of the bug that the cogen does not yet check whether type declarations make reference
+  to online
+
+
+[Mottisfont:logen/examples/experiments] leuschel% mixtus
+% restoring /Volumes/Spearywell/Documents/Programming/tools/mixtus0.3.6/mixtus.sav...
+% /Volumes/Spearywell/Documents/Programming/tools/mixtus0.3.6/mixtus.sav restored in 10 msec 294616 bytes
+SICStus 3.12.2 (powerpc-darwin-7.9.0): Sun May 29 12:02:06 CEST 2005
+Licensed to ecs.soton.ac.uk
+Mixtus 0.3.6
+| ?- pconsult('liftsolve.pl').
+{consulting for mixtus: /Users/leuschel/svn_root/logen/examples/experiments/liftsolve.pl}
+yes
+| ?- statistics(runtime,_), pe(test(X,Y,Z)), statistics(runtime,[_,T2]), nl,print(T2),nl.
+test(A, B, C) :-
+        test1(A, B, C).
+
+% test1(A,B,C):-test(A,B,C)
+test1(A, B, C) :-
+        'solve.termclause1'(A, B, C).
+
+% 'solve.termclause1'(A,B,C):-solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[A,B,C])])
+'solve.termclause1'(term(null,[]), A, A).
+'solve.termclause1'(term(cons,[A,B]), C, term(cons,[A,D])) :-
+        'solve.termclause1'(B, C, D).
+
+100

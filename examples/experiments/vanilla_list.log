@@ -1,0 +1,55 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen vanilla_list.pl "test(R)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 44.40599999667359 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_)
+
+/* test(A) :- test__0(A). */
+test__0(A) :-
+        solve_atom__1(app([a,b,c],[d,e,f,g],A)).
+
+/* solve_atom(solve_atom2(A)) :- solve_atom__1(A). */
+solve_atom__1(A) :-
+        solve_atom__2(B,A),
+        solve_atom__3(B).
+
+/* solve_atom(my_clause2(A,B)) :- solve_atom__2(B,A). */
+solve_atom__2([],app([],A,A)).
+solve_atom__2([app(A,B,C)],app([D|A],B,[D|C])).
+
+/* solve_atom(solve2(A)) :- solve_atom__3(A). */
+solve_atom__3([]).
+solve_atom__3([A|B]) :-
+        solve_atom__1(A),
+        solve_atom__3(B).
+/* Specialisation time 0.9779999998862372 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen vanilla_list.pl "test(R)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 66.79099999499659 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_)
+
+/* test(A) :- test__0(A). */
+test__0(A) :-
+        solve_atom__1(app([a,b,c],[d,e,f,g],A)).
+
+/* solve_atom(solve_atom2(A)) :- solve_atom__1(A). */
+solve_atom__1(A) :-
+        solve_atom__2(B,A),
+        solve_atom__3(B).
+
+/* solve_atom(my_clause2(A,B)) :- solve_atom__2(B,A). */
+solve_atom__2([],app([],A,A)).
+solve_atom__2([app(A,B,C)],app([D|A],B,[D|C])).
+
+/* solve_atom(solve2(A)) :- solve_atom__3(A). */
+solve_atom__3([]).
+solve_atom__3([A|B]) :-
+        solve_atom__1(A),
+        solve_atom__3(B).
+/* Specialisation time 1.328999999845443 ms (runtime) */

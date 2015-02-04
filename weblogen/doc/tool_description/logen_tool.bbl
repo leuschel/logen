@@ -1,0 +1,148 @@
+\begin{thebibliography}{10}
+
+\bibitem{Andersen94:PhD}
+L.~O. Andersen.
+\newblock {\em Program Analysis and Specialization for the {C} Programming
+  Language}.
+\newblock PhD thesis, DIKU, University of Copenhagen, May 1994.
+\newblock (DIKU report 94/19).
+
+\bibitem{BarkerLeuschelVarea:pepm04}
+S.~Barker, M.~Leuschel, and M.~Varea.
+\newblock Efficient and flexible access control via logic program
+  specialisation.
+\newblock In {\em PEPM '04: Proceedings of the 2004 ACM SIGPLAN symposium on
+  Partial evaluation and semantics-based program manipulation}, pages 190--199,
+  New York, NY, USA, 2004. ACM Press.
+
+\bibitem{BirkedalWelinder:94:handcogen}
+L.~Birkedal and M.~Welinder.
+\newblock Hand-writing program generator generators.
+\newblock In M.~Hermenegildo and J.~Penjam, editors, {\em Programming Language
+  Implementation and Logic Programming. Proceedings, Proceedings of PLILP'91},
+  LNCS 844, pages 198--214, Madrid, Spain, 1994. Springer-Verlag.
+
+\bibitem{Craig:Phd}
+S.~Craig.
+\newblock {\em Practicable Prolog Specialisation}.
+\newblock PhD thesis, University of Southampton, U.K., June 2005.
+
+\bibitem{CraigLeuschel:PSI03}
+S.~Craig and M.~Leuschel.
+\newblock A compiler generator for constraint logic programs.
+\newblock In M.~Broy and A.~V. Zamulin, editors, {\em Proceedings of PSI'03},
+  LNCS 2890, pages 148--161. Springer-Verlag, 2003.
+
+\bibitem{BTA:Lopstr04}
+S.-J. Craig, J.~Gallagher, M.~Leuschel, and K.~S. Henriksen.
+\newblock Fully automatic binding-time analysis for {P}rolog.
+\newblock In S.~Etalle, editor, {\em Proceedings LOPSTR 2004}, LNCS 3573, pages
+  53--68. Springer-Verlag, August 2004.
+
+\bibitem{CraigLeuschel:PPDP05}
+S.-J. Craig and M.~Leuschel.
+\newblock Self-tuning resource aware specialisation for {P}rolog.
+\newblock In {\em PPDP '05: Proceedings of the 7th ACM SIGPLAN international
+  conference on Principles and practice of declarative programming}, pages
+  23--34, New York, NY, USA, 2005. ACM Press.
+
+\bibitem{FarwerLeuschel:PPDP04}
+B.~Farwer and M.~Leuschel.
+\newblock Model checking object {P}etri nets in {P}rolog.
+\newblock In {\em PPDP '04: Proceedings of the 6th ACM SIGPLAN international
+  conference on Principles and practice of declarative programming}, pages
+  20--31, New York, NY, USA, 2004. ACM Press.
+
+\bibitem{GlueckJoergensen:PLILP95}
+R.~Gl{\"u}ck and J.~J{\o}rgensen.
+\newblock Efficient multi-level generating extensions for program
+  specialization.
+\newblock In S.~Swierstra and M.~Hermenegildo, editors, {\em Programming
+  Languages, Implementations, Logics and Programs (PLILP'95)}, LNCS 982, pages
+  259--278, Utrecht, The Netherlands, September 1995. Springer-Verlag.
+
+\bibitem{Holst:89a}
+C.~K. Holst.
+\newblock Syntactic currying: yet another approach to partial evaluation.
+\newblock Technical report, DIKU, Department of Computer Science, University of
+  Copenhagen, 1989.
+
+\bibitem{HolstLaunchbury:92}
+C.~K. Holst and J.~Launchbury.
+\newblock Handwriting cogen to avoid problems with static typing.
+\newblock In {\em Draft Proceedings, Fourth Annual Glasgow Workshop on
+  Functional Programming, Skye, Scotland}, pages 210--218. Glasgow University,
+  1991.
+
+\bibitem{Jones:peval}
+N.~D. Jones, C.~K. Gomard, and P.~Sestoft.
+\newblock {\em Partial Evaluation and Automatic Program Generation}.
+\newblock Prentice Hall, 1993.
+
+\bibitem{JorgensenLeuschel:Cogen}
+J.~J{\o}rgensen and M.~Leuschel.
+\newblock Efficiently generating efficient generating extensions in {Prolog}.
+\newblock In O.~Danvy, R.~Gl\"{u}ck, and P.~Thiemann, editors, {\em Partial
+  Evaluation, International Seminar}, LNCS 1110, pages 238--262, Schlo\ss\
+  Dagstuhl, 1996. Springer-Verlag.
+
+\bibitem{Leuschel:lopstrbook}
+M.~Leuschel, S.~Craig, M.~Bruynooghe, and W.~Vanhoof.
+\newblock Specializing interpreters using offline partial deduction.
+\newblock In M.~Bruynooghe and K.-K. Lau, editors, {\em Program Development in
+  Computational Logic}, LNCS 3049, pages 341--376. Springer-Verlag, 2004.
+
+\bibitem{LeuschelCraig:SemiWatch}
+M.~Leuschel and S.-J. Craig.
+\newblock Opposites attract: Offline and online specialisation for {P}rolog
+  combined.
+\newblock submitted, 2005.
+
+\bibitem{LeuschelEtAl:TPLP03}
+M.~Leuschel, J.~J{\o}rgensen, W.~Vanhoof, and M.~Bruynooghe.
+\newblock Offline specialisation in {P}rolog using a hand-written compiler
+  generator.
+\newblock {\em Theory and Practice of Logic Programming}, 4(1):139--191, 2004.
+
+\bibitem{LeuschelLehmann:CL2000}
+M.~Leuschel and H.~Lehmann.
+\newblock Coverability of reset {P}etri nets and other well-structured
+  transition systems by partial deduction.
+\newblock In J.~Lloyd, editor, {\em Proceedings of the International Conference
+  on Computational Logic (CL'2000)}, LNAI 1861, pages 101--115, London, UK,
+  2000. Springer-Verlag.
+
+\bibitem{LeuschelLehmann:Coverability}
+M.~Leuschel and H.~Lehmann.
+\newblock Solving coverability problems of {P}etri nets by partial deduction.
+\newblock In M.~Gabbrielli and F.~Pfenning, editors, {\em Proceedings of
+  PPDP'2000}, pages 268--279, Montreal, Canada, 2000. ACM Press.
+
+\bibitem{LeuschelMassart:LOPSTR99}
+M.~Leuschel and T.~Massart.
+\newblock Infinite state model checking by abstract interpretation and program
+  specialisation.
+\newblock In A.~Bossi, editor, {\em {\em Logic-Based Program Synthesis and
+  Transformation.} Proceedings of LOPSTR'99}, LNCS 1817, pages 63--82, Venice,
+  Italy, 2000.
+
+\bibitem{Ostermann:ECOOP05}
+K.~Ostermann, M.~Mezini, and C.~Bockisch.
+\newblock Expressive pointcuts for increased modularity.
+\newblock In A.~P. Black, editor, {\em European Conference on Object-Oriented
+  Programming (ECOOP)}, LNCS 3586, pages 214--240. Springer-Verlag, 2005.
+
+\bibitem{Thiemann:ICFP96}
+P.~Thiemann.
+\newblock Cogen in six lines.
+\newblock In {\em International Conference on Functional Programming}, pages
+  180--189. ACM Press, 1996.
+
+\bibitem{WangGuptaLeuschel:PADL05}
+Q.~Wang, G.~Gupta, and M.~Leuschel.
+\newblock Towards provably correct code generation via {H}orn logical
+  continuation semantics.
+\newblock In M.~V. Hermenegildo and D.~Cabeza, editors, {\em PADL}, volume 3350
+  of {\em Lecture Notes in Computer Science}, pages 98--112. Springer, 2005.
+
+\end{thebibliography}

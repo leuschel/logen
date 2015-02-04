@@ -1,0 +1,35 @@
+:- filter map([g],[A],[B]).
+:- filter [A]=..[g,ng].
+:- filter call([A]).
+entry :- 
+     map(rev,B,C),callpattern(map([g],[A],[B])).
+logen(1,map(A,[],[])) :- 
+     true.
+logen(2,map(A,[F|G],[H|I])) :- 
+     logen(call,D=..[A,F,H]),callpattern([A]=..[ng,g]),
+     logen(mcall,call(D)),callpattern(call([A])),
+     logen(memo,map(A,G,I)),callpattern(map([g],[ng,g],[ng,g])).
+logen(3,reduce(A,B,[],B)) :- 
+     true.
+logen(4,reduce(A,B,[G|H],D)) :- 
+     logen(memo,reduce(A,B,H,K)),callpattern(fail),
+     logen(call,E=..[A,G,K,D]),callpattern(fail),
+     logen(ucall,call(E)),callpattern(fail).
+logen(5,q(a,b)) :- 
+     true.
+logen(6,q(b,c)) :- 
+     true.
+logen(7,q(c,d)) :- 
+     true.
+logen(8,q(d,e)) :- 
+     true.
+logen(9,reduce_add(A,B)) :- 
+     logen(unfold,reduce(add,0,A,B)),callpattern(fail).
+logen(10,add(A,B,C)) :- 
+     logen(rescall,C is A+B),callpattern(fail).
+logen(11,rev(A,B)) :- 
+     logen(memo,rev(A,[],B)),callpattern(fail).
+logen(12,rev([],B,B)) :- 
+     true.
+logen(13,rev([D|E],B,C)) :- 
+     true.

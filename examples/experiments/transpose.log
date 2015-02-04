@@ -1,0 +1,28 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen transpose.pl "transpose([[X1,X2,X3,X4,X5,X6,X7,X8,X9],Xr2,Xr3],Xtrm)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 43.55699999673714 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for transpose([[_,_,_,_,_,_,_,_,_],_,_],_)
+
+/* transpose([B,C,D],A) :- transpose__0(B,C,D,A). */
+transpose__0([],[],[],[]).
+transpose__0([A|B],[C|D],[E|F],[[A,C,E]|G]) :-
+        transpose__0(B,D,F,G).
+/* Specialisation time 0.5439999999367146 ms (runtime) */
+
+
+[Mottisfont:logen/examples/experiments] leuschel% logen transpose.pl "transpose([[X1,X2,X3,X4,X5,X6,X7,X8,X9],Xr2,Xr3],Xtrm)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 66.2999999950335 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for transpose([[_,_,_,_,_,_,_,_,_],_,_],_)
+
+/* transpose([B,C,D],A) :- transpose__0(B,C,D,A). */
+transpose__0([],[],[],[]).
+transpose__0([A|B],[C|D],[E|F],[[A,C,E]|G]) :-
+        transpose__0(B,D,F,G).
+/* Specialisation time 0.8369999999026446 ms (runtime) */

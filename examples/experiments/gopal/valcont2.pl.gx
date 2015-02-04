@@ -1,0 +1,1327 @@
+:-module(_,[main/1,main_gx/1]).
+mnf(X) :-
+        if(X,true,(add_error(runtime_checks,[67,97,108,108,32,102,97,105,108,101,100,58,32,126,119,126,110],[X]),fail)).
+pp_mnf(X) :-
+        add_postfix_to_pred(X,'_pre',Pre),
+        (   Pre ->
+            true
+        ;   add_error(runtime_checks,[80,114,101,32,67,111,110,100,105,116,105,111,110,32,102,97,105,108,101,100,58,32,126,119,126,110],[Pre])
+        ),
+        mnf(X),
+        add_postfix_to_pred(X,'_post',Post),
+        (   Post ->
+            true
+        ;   add_error(runtime_checks,[80,111,115,116,32,67,111,110,100,105,116,105,111,110,32,102,97,105,108,101,100,58,32,126,119,126,110],[Post])
+        ).
+add_postfix_to_pred($:(Call),Extension,$:(Post)) :- !,
+        add_postfix_to_pred(Call,Extension,Post).
+add_postfix_to_pred(Call,Extension,PostCall) :-
+        Call=..[F|Args],
+        atom_concat(F,Extension,PostF),
+        PostCall=..[PostF|Args].
+:- dynamic
+        logged_error/2.
+:- dynamic
+        verbosity_level/1.
+set_verbosity_level(NewLevel,OldLevel) :-
+        verbosity_level(OldLevel),
+        retract(verbosity_level(OldLevel)),
+        assert(verbosity_level(NewLevel)).
+verbosity_level(1).
+message_stream(user_error).
+error_stream(user_error).
+reset_errors :-
+        retractall(logged_error(_,_)).
+reset_errors_from_source(Source) :-
+        retractall(logged_error(Source,_)).
+add_exception(Source,ErrFormat,ErrArgs,Exception) :-
+        parse_exception(Exception,FmtS,FmtArgs),
+        append(ErrFormat,FmtS,FormatString),
+        append(ErrArgs,FmtArgs,FormatArgs),
+        add_error(Source,FormatString,FormatArgs).
+add_error(Source,ErrFormat,ErrArgs) :-
+        error_stream(ErrS),
+        format(ErrS,[126,78,32,33,32,65,110,32,101,114,114,111,114,32,111,99,99,117,114,114,101,100,126,110,33,32],[]),
+        format(ErrS,ErrFormat,ErrArgs),
+        format(ErrS,[126,78],[]),
+        flush_output(ErrS),
+        assertz(logged_error(Source,ErrFormat-ErrArgs)).
+add_message(_Source,Level,Msg,Args) :-
+        verbosity_level(C),
+        Level=<C, !,
+        print_message(Msg,Args).
+add_message(_,_,_,_) :- !.
+print_message(Msg,Args) :-
+        message_stream(Str),
+        format(Str,[126,78,32,37,32],[]),
+        format(Str,Msg,Args),
+        format(Str,[126,78],[]),
+        flush_output(Str).
+get_error(Source,ErrMsg) :-
+        retract(logged_error(Source,ErrMsg)).
+get_all_errors(All) :-
+        findall(Err,get_error(_Source,Err),All),
+        \+All=[].
+test_error_occured(Source) :-
+        logged_error(Source,_), !.
+count_errors_occured(NrOfErrors) :-
+        count_errors_occured_with_source(_,NrOfErrors).
+count_errors_occured_with_source(Source,NrOfErrors) :-
+        findall(1,logged_error(Source,_),Ls),
+        length(Ls,NrOfErrors).
+parse_exception(error(syntax_error(P1,P2,Msg,Tokens),_Pred),FmtString,FmtArgs) :-
+        token_format_string(Tokens,ErrString),
+        append([83,89,78,84,65,88,32,69,82,82,79,82,58,32,40,108,105,110,101,115,32,126,119,45,126,119,41,32,126,119,126,110],ErrString,FmtString),
+        append([P1,P2,Msg],Tokens,FmtArgs), !.
+parse_exception(error(existence_error(source_sink,Filename),_Pred),[85,110,97,98,108,101,32,116,111,32,111,112,101,110,32,102,105,108,101,58,32,126,119],[Filename]) :- !.
+parse_exception(E,[126,119],[E]).
+token_format_string([],[]).
+token_format_string([_T|Ts],[126,119,32|ErrStr]) :-
+        token_format_string(Ts,ErrStr).
+:-op(1150,fx,filter).
+:-op(1150,fx,type).
+:-op(500,xfx,--->).
+:-use_module(library(terms_vars)).
+flatten(X,Res) :-
+        var(X), !,
+        Res=X.
+flatten((X,Y),Res) :- !,
+        flatten(X,FX),
+        (   FX==fail ->
+            Res=fail
+        ;   flatten(Y,FY),
+            (   FX==true ->
+                Res=FY
+            ;   FY==true ->
+                Res=FX
+            ;   Res=(FX,FY)
+            )
+        ).
+flatten((LHS;E),Res) :-
+        nonvar(LHS),
+        LHS=(I->T), !,
+        flatten(I,FI),
+        (   FI==fail ->
+            flatten(E,Res)
+        ;   FI==true ->
+            flatten(T,Res)
+        ;   Res=(FI->FT;FE),
+            flatten(T,FT),
+            flatten(E,FE)
+        ).
+flatten(call(X),X) :-
+        nonvar(X), !.
+flatten((L;R),Disj) :- !,
+        flatten(L,FL),
+        flatten(R,FR),
+        (   FL=true ->
+            Disj=FR
+        ;   FR=true ->
+            Disj=FL
+        ;   Disj=(FL;FR)
+        ).
+flatten(\+X,\+Y) :-
+        flatten(X,Y), !.
+flatten(when(C,Call),when(C,FCall)) :-
+        flatten(Call,FCall), !.
+flatten(X,X).
+portray_message(informational,_).
+:-use_module(library(lists)).
+:- dynamic
+        gx_data/2.
+generalise_call(Filters,Call,GenCall) :-
+        Call=..[F|Args],
+        gen_filters_list(Filters,Args,GArgs,_,_,_),
+        GenCall=..[F|GArgs].
+filter_call(Filters,Call,GCall,FCall) :-
+        Call=..[F|Args],
+        GCall=..[F|GArgs],
+        gen_filters_list(Filters,Args,GArgs,FArgs,_,_),
+        gensym(F,NewF),
+        FCall=..[NewF|FArgs].
+generalise_and_filter(Filters,Call,GenCall,FCall) :-
+        Call=..[F|Args],
+        gen_filters_list(Filters,Args,GenArgs,FilArgs,_,_),
+        GenCall=..[F|GenArgs],
+        gensym(F,NewF),
+        FCall=..[NewF|FilArgs].
+gen_filters_list(FilterList,Args,GArgs1,FArgs1,OnlineArgs1,OnlineMap1) :-
+        member(Filter,FilterList),
+        l_gen_fil(Filter,Args,[],GArgs,[],FArgs,[],OnlineArgs,[],OnlineMap),
+        reverse(GArgs,GArgs1),
+        reverse(FArgs,FArgs1),
+        reverse(OnlineArgs,OnlineArgs1),
+        reverse(OnlineMap,OnlineMap1), !.
+l_gen_fil([],[],G,G,F,F,OA,OA,OM,OM).
+l_gen_fil([Type|Types],[A|Args],GArgsIn,GArgsOut,FArgsIn,FArgsOut,OIn,OOut,OMIn,OMOut) :-
+        gen_fil(Type,A,GArgsIn,GArgsOut1,FArgsIn,FArgsOut1,OIn,OOut1,OMIn,OMOut1),
+        l_gen_fil(Types,Args,GArgsOut1,GArgsOut,FArgsOut1,FArgsOut,OOut1,OOut,OMOut1,OMOut).
+gen_fil(static,A,G,[A|G],F,F,O,O,OM,OM) :-
+        ground(A).
+gen_fil(static_nf,A,G,[A|G],F,[A|F],O,O,OM,OM) :-
+        ground(A).
+gen_fil(online,A,G,[Var|G],F,F,O,[A|O],OM,[Var|OM]).
+gen_fil(dynamic,_,G,[A|G],F,[A|F],O,O,OM,OM).
+gen_fil(nonvar,A,GIn,[G|GIn],FIn,FOut,O,O,OM,OM) :-
+        functor(A,Func,Arity),
+        functor(G,Func,Arity),
+        G=..[Func|FArgs],
+        append(FIn,FArgs,FOut).
+gen_fil(struct(Func,TArgs),A,GIn,[G|GIn],FIn,FOut,OIn,OOut,OMIn,OMOut) :-
+        A=..[Func|Args],
+        l_gen_fil(TArgs,Args,[],GArgs1,FIn,FOut1,OIn,OOut1,OMIn,OMOut1),
+        reverse(FOut1,FOut),
+        reverse(GArgs1,GArgs),
+        reverse(OOut1,OOut),
+        reverse(OMOut1,OMOut),
+        G=..[Func|GArgs].
+gen_fil((type T),A,GI,GO,FI,FO,OIn,OOut,OMIn,OMOut) :-
+        typedef(T,Def),
+        gen_fil(Def,A,GI,GO,FI,FO,OIn,OOut,OMIn,OMOut).
+gen_fil((T1;_T2),A,GIn,GOut,FIn,FOut,OIn,OOut,OMIn,OMOut) :-
+        gen_fil(T1,A,GIn,GOut,FIn,FOut,OIn,OOut,OMIn,OMOut).
+gen_fil((_T1;T2),A,GIn,GOut,FIn,FOut,OIn,OOut,OMIn,OMOut) :-
+        gen_fil(T2,A,GIn,GOut,FIn,FOut,OIn,OOut,OMIn,OMOut).
+:- dynamic
+        usertypedef/2.
+typedef(list(T),(struct([],[]);struct('.',[T,(type list(T))]))).
+typedef(static_or_dynamic,(static;dynamic)).
+typedef(T,Def) :-
+        usertypedef(T,Def).
+gensym(H,NewHead) :-
+        (   gx_data(sym,Sym) ->
+            NewSym is Sym+1,
+            retract(gx_data(sym,Sym))
+        ;   NewSym=0
+        ),
+        assert(gx_data(sym,NewSym)),
+        add_id(H,NewSym,NewHead).
+add_id(H,Sym,NH) :-
+        atom_concat(H,'__',H1),
+        name(H1,H1S),
+        name(Sym,SymS),
+        append(H1S,SymS,NHS),
+        name(NH,NHS).
+same_length([],[]).
+same_length([_|T],[_|T2]) :-
+        same_length(T,T2).
+build_unfold_call(Call,SpecCode,LogenData,UnfoldCall) :-
+        Call=..[Func|Args],
+        atom_concat(Func,'_u',NewFunc),
+        append(Args,[SpecCode,LogenData],NewArgs),
+        UnfoldCall=..[NewFunc|NewArgs].
+build_request_call(Call,Req,ResCall,LogenData,RequestCall) :-
+        Call=..[Func|Args],
+        atom_concat(Func,'_request',NewFunc),
+        append(Args,[Req,ResCall,LogenData],NewArgs),
+        RequestCall=..[NewFunc|NewArgs].
+:-use_module(memory).
+:-use_module(dcg).
+:-use_module(lex,[lex/2]).
+spec_data(declaration,use_module(memory)).
+spec_data(declaration,use_module(dcg)).
+spec_data(declaration,use_module(lex,[lex/2])).
+spec_data(_,_) :-
+        fail.
+:- dynamic
+        memo_table/4.
+:- dynamic
+        spec_clause/2.
+:-use_module(library(terms)).
+:-use_module(library(terms_check)).
+find_pattern(ID,Call,ResCall,_Requestor) :-
+        copy_term(Call,CallCopy),
+        memo_table(ID,Call,ResCall,_MEMODATA),
+        variant(CallCopy,Call).
+insert_pattern(ID,GCall,FCall,MEMODATA) :-
+        assert(memo_table(ID,GCall,FCall,MEMODATA)).
+update_status(ID,GCall,FCall,Req) :-
+        retract(memo_table(ID,GCall,FCall,MEMODATA)),
+        get_memodata_requestor(MEMODATA,pending(Req)),
+        set_memodata_requestor(MEMODATA,Req,MEMODATAPRIME),
+        assert(memo_table(ID,GCall,FCall,MEMODATAPRIME)).
+spec_driver :-
+        memo_table(ID,GCall,FCall,[pending(Req)|_MEMODATA]),
+        update_status(ID,GCall,FCall,Req), !,
+        generate_code(GCall,FCall),
+        spec_driver.
+spec_driver.
+generate_code(Call,ResCall) :-
+        copy_term((Call,ResCall),(CCall,CResCall)),
+        build_unfold_call(Call,Res,[[CCall],CResCall],UnfoldCall),
+        findall((ResCall:-FRes),(UnfoldCall,flatten(Res,FRes)),Clauses),
+        (   Clauses=[] ->
+            save_clauses([(ResCall:-fail)])
+        ;   save_clauses(Clauses)
+        ).
+save_clauses([]).
+save_clauses([C|Cs]) :-
+        (   C=(Head:-_Body) ->
+            true
+        ;   Head=C
+        ),
+        assert(spec_clause(Head,C)),
+        save_clauses(Cs).
+print_memo_table(S) :-
+        memo_table(A,B,C,D),
+        format(S,[47,42,32,126,119,46,32,42,47,126,110],[memo_table(A,B,C,D)]),
+        fail.
+print_memo_table(_).
+print_clauses(S) :-
+        spec_data(declaration,Decl),
+        portray_clause(S,(:-Decl)),
+        fail.
+print_clauses(S) :-
+        memo_table(_,Orig,Head,_),
+        copy_term([Orig,Head],Copy),
+        prettyvars(Copy),
+        format(S,[126,110,47,42,32,126,119,32,58,45,32,126,119,46,32,42,47,126,110],Copy),
+        spec_clause(Head,C),
+        portray_clause(S,C),
+        fail.
+print_clauses(S) :-
+        (   gx_error(_) ->
+            write(S,'/* ------------------------------------------ */'),
+            nl(S),
+            write(S,'/* Error(s) occurred during specialization !! */'),
+            nl(S),
+            write(S,'/* ------------------------------------------ */'),
+            nl(S)
+        ;   true
+        ).
+:- dynamic
+        gx_error/1.
+:- dynamic
+        gx_warning/1.
+add_gx_error(Err) :-
+        assert(gx_error(Err)).
+add_gx_error(Err) :-
+        assert(gx_warning(Err)).
+get_logendata_id([_,ID|_LogenData],ID).
+set_logendata_id(ID,[H,_OLDID|LogenData],[H,ID|LogenData]) :- !.
+set_logendata_id(H,LD,LD2) :-
+        write(user_error,failed_set_logendata_id(H,LD,LD2)),
+        nl(user_error),
+        LD2=LD.
+get_logendata_history([History|_LogenData],History).
+set_logendata_history(History,[_|LogenData],[CHistory|LogenData]) :-
+        copy_term(History,CHistory), !.
+set_logendata_history(H,LD,LD2) :-
+        write(user_error,failed_set_logendata_history(H,LD,LD2)),
+        nl(user_error),
+        LD2=LD.
+get_memodata_requestor([REQ|_MEMODATA],REQ).
+set_memodata_requestor([_OLD|MEMODATA],Req,[Req|MEMODATA]).
+get_memodata_id([_Req,ID|_MEMODATA],ID).
+set_memodata_id([Req,_|MEMODATA],ID,[Req,ID,MEMODATA]).
+init_memodata(Requestor,Parent,[Requestor,Parent]).
+:-use_module(library(strings),[get_line/2]).
+:- dynamic
+        ignore_homeo_warnings/0.
+confirm_user(Problem,[Call,_History],c) :-
+        ignore_homeo_warnings, !,
+        format(user_error,[126,110,60,124,32,72,79,77,69,79,77,79,82,80,72,73,67,32,87,65,82,78,73,78,71,32,124,62,32,58,32,126,119,32,111,110,32,126,119,126,110],[Problem,Call]).
+confirm_user(online_unsafe_unfold(Once),[Call,History],Return) :-
+        copy_term([Call,History],FormatArgList),
+        numbervars(FormatArgList,0,_),
+        format(user_error,[126,110,60,124,32,72,79,77,69,79,77,79,82,80,72,73,67,32,87,65,82,78,73,78,71,32,124,62,32,58,32,85,78,70,79,76,68,73,78,71,32,126,119,44,126,110,72,105,115,116,111,114,121,58,32,126,119,126,110],FormatArgList),
+        flush_output(user_error),
+        (   Once==yes ->
+            write(user_error,'*** ABORTING SPECIALIZATION ***'),
+            nl(user_error),
+            halt(1)
+        ;   format(user_error,[126,110,84,121,112,101,32,39,99,39,32,116,111,32,99,111,110,116,105,110,117,101,32,117,110,102,111,108,100,44,32,39,70,39,32,116,111,32,102,97,105,108,32,98,114,97,110,99,104,44,32,39,67,39,32,116,111,32,99,111,110,116,105,110,117,101,32,119,105,116,104,111,117,116,32,102,117,114,116,104,101,114,32,105,110,116,101,114,118,101,110,116,105,111,110,44,32,97,110,121,116,104,105,110,103,32,101,108,115,101,32,116,111,32,97,98,111,114,116,58,126,110],[]),
+            get_line(user,Return),
+            (   Return==[99] ->
+                true
+            ;   Return==[70] ->
+                format(user_error,[42,42,42,32,87,65,82,78,73,78,71,58,32,85,115,101,114,32,102,111,114,99,101,100,32,97,32,98,114,97,110,99,104,32,116,111,32,102,97,105,108,33,32,42,42,42,126,110,42,42,42,32,71,101,110,101,114,97,116,101,100,32,99,111,100,101,32,105,115,32,112,114,111,98,97,98,108,121,32,105,110,99,111,114,114,101,99,116,33,32,42,42,42,126,110,126,110],[]),
+                add_gx_error(unfolding_stopped),
+                fail
+            ;   Return==[67] ->
+                assert(ignore_homeo_warnings)
+            ;   write(user_error,'*** ABORTING SPECIALIZATION ***'),
+                nl(user_error),
+                halt
+            )
+        ).
+confirm_user(online_unsafe_memo(Once),[Call,History],Return) :-
+        copy_term([Call,History],FormatArgList),
+        numbervars(FormatArgList,0,_),
+        format(user_error,[126,110,60,124,32,72,79,77,69,79,77,79,82,80,72,73,67,32,87,65,82,78,73,78,71,124,62,32,58,32,77,69,77,79,32,65,116,111,109,32,126,119,44,126,110,72,105,115,116,111,114,121,58,32,126,119,126,110],FormatArgList),
+        flush_output(user_error),
+        (   Once==yes ->
+            write(user_error,'*** ABORTING SPECIALIZATION ***'),
+            nl(user_error),
+            halt(1)
+        ;   format(user_error,[126,110,84,121,112,101,32,39,99,39,32,116,111,32,99,111,110,116,105,110,117,101,32,119,105,116,104,32,109,101,109,111,105,115,97,116,105,111,110,44,32,39,70,39,32,116,111,32,102,97,105,108,44,32,39,67,39,32,116,111,32,99,111,110,116,105,110,117,101,32,119,105,116,104,111,117,116,32,102,117,114,116,104,101,114,32,105,110,116,101,114,118,101,110,116,105,111,110,44,32,97,110,121,116,104,105,110,103,32,101,108,115,101,32,116,111,32,97,98,111,114,116,58,126,110],[]),
+            get_line(user,Return),
+            (   Return==[99] ->
+                true
+            ;   Return==[70] ->
+                format(user_error,[42,42,42,32,87,65,82,78,73,78,71,58,32,85,115,101,114,32,112,114,101,118,101,110,116,101,100,32,97,32,109,101,109,111,32,101,110,116,114,121,32,98,101,105,110,103,32,97,100,100,101,100,33,32,42,42,42,126,110,42,42,42,32,71,101,110,101,114,97,116,101,100,32,99,111,100,101,32,105,115,32,112,114,111,98,97,98,108,121,32,105,110,99,111,114,114,101,99,116,33,32,42,42,42,126,110,126,110],[]),
+                add_gx_error(memo_entry_not_added),
+                fail
+            ;   Return==[67] ->
+                assert(ignore_homeo_warnings)
+            ;   write(user_error,'*** ABORTING SPECIALIZATION ***'),
+                nl(user),
+                halt
+            )
+        ).
+generalise_online_mixed(Filters,Call,MixedGenCall,ParentID) :-
+        Call=..[F|Args],
+        gen_filters_list([Filters],Args,GArgs,_,OnlineArgs,OnlineMap),
+        OnlineCall=..[F|OnlineArgs],
+        HisMapFrom=..[F|GArgs],
+        HisMapTo=..[F|OnlineMap],
+        get_history_mixed(ParentID,History,HisMapFrom,HisMapTo),
+        generalise_online_history(OnlineCall,GenCall,History),
+        GenCall=..[F|GenOnlineArgs],
+        GenOnlineArgs=OnlineMap,
+        MixedGenCall=..[F|GArgs],
+        add_message(generalise_online_mixed,1,[77,105,120,101,100,32,71,101,110,101,114,97,108,105,115,97,116,105,111,110,58,32,39,126,119,39,46,126,110],[generalise_online_mixed(Filters,Call,MixedGenCall,ParentID)]).
+get_history_mixed(entry,[],_,_) :- !.
+get_history_mixed(ID,HistoryList,MapFrom,MapTo) :-
+        memo_table(_,History,ID,MEMODATA),
+        copy_term((MapFrom,MapTo),(CMapFrom,CMapTo)),
+        (   History=CMapFrom ->
+            HistoryList=[CMapTo|Hs]
+        ;   HistoryList=Hs
+        ),
+        get_memodata_id(MEMODATA,ParentID),
+        get_history_mixed(ParentID,Hs,MapFrom,MapTo).
+generalise_online(Call,GenCall,ParentID) :-
+        get_history(ParentID,History),
+        mnf(generalise_online_history(Call,GenCall,History)).
+generalise_online_history(Call,Call,[]).
+generalise_online_history(Call,GCall,[H|Hs]) :-
+        (   homeomorphic_embedded(H,Call) ->
+            msg(H,Call,MGU),
+            generalise_online_history(MGU,GCall,Hs)
+        ;   generalise_online_history(Call,GCall,Hs)
+        ).
+is_not_safe_to_add_memo_entry(Call,ParentID,History) :-
+        get_history(ParentID,History), !,
+        \+is_safe_to_add_l(Call,History).
+is_safe_to_add_l(_Call,[]).
+is_safe_to_add_l(Call,[H|Hs]) :-
+        (   homeomorphic_embedded(H,Call) ->
+            add_message(generalise_online_mixed,2,[72,111,109,101,111,109,111,114,112,104,105,99,32,69,109,98,101,100,100,105,110,103,58,32,126,119,32,124,62,32,126,119,33,126,110],[Call,H]),
+            fail
+        ;   is_safe_to_add_l(Call,Hs)
+        ).
+get_history(entry,[]) :- !.
+get_history(ID,[History|Hs]) :-
+        memo_table(_,History,ID,MEMODATA),
+        get_memodata_id(MEMODATA,ParentID),
+        get_history(ParentID,Hs).
+:-use_module(library(terms_vars),[varset/2]).
+filter_online(_Call,GenCall,ResCall) :-
+        varset(GenCall,Variables),
+        GenCall=..[F|_Args],
+        gensym(F,NewF),
+        ResCall=..[NewF|Variables].
+is_safecall(_Call,[]).
+is_safecall(Call,[H|Hs]) :-
+        (   homeomorphic_embedded(H,Call) ->
+            fail
+        ;   is_safecall(Call,Hs)
+        ).
+dynamic_term(X) :-
+        var(X), !,
+        fail.
+dynamic_term(X) :-
+        functor(X,F,Arity),
+        \+static_functor(F,Arity).
+:- dynamic
+        static_functor/2.
+static_functor(_X,_Y).
+homeomorphic_embedded_conjunction([],_).
+homeomorphic_embedded_conjunction([PA|PAs],[A|As]) :-
+        homeomorphic_embedded(PA,A), !,
+        homeomorphic_embedded_conjunction(PAs,As).
+homeomorphic_embedded_conjunction([PA|PAs],[_|As]) :-
+        homeomorphic_embedded_conjunction([PA|PAs],As).
+not_more_general_conjunction([],_).
+not_more_general_conjunction([PA|PAs],[A|As]) :-
+        atoms_have_same_predicate(PA,A),
+        \+strict_instance_of(PA,A),
+        mixtus_term_size_embedded(PA,A),
+        not_more_general_conjunction(PAs,As).
+not_more_general_conjunction([PA|PAs],[_|As]) :-
+        not_more_general_conjunction([PA|PAs],As).
+atoms_have_same_predicate(P,Q) :-
+        functor(P,F,N),
+        functor(Q,F,N).
+mixtus_term_size_embedded(PA,A) :-
+        mixtus_term_size(PA,PSize),
+        mixtus_term_size(A,ASize),
+        PSize=<ASize.
+mixtus_term_size(X,1) :-
+        var(X), !.
+mixtus_term_size(X,1) :-
+        atomic(X), !.
+mixtus_term_size(X,Size) :-
+        X=..[_Pred|Args],
+        l_mixtus_term_size(Args,1,Size).
+l_mixtus_term_size([],S,S).
+l_mixtus_term_size([H|T],InS,OutS) :-
+        mixtus_term_size(H,HS),
+        IntS is InS+HS,
+        l_mixtus_term_size(T,IntS,OutS).
+homeomorphic_embedded(X,Y) :-
+        var(X),
+        var(Y), !.
+homeomorphic_embedded(_X,Y) :-
+        var(Y), !,
+        fail.
+homeomorphic_embedded(X,Y) :-
+        nonvar(X),
+        dynamic_term(X),
+        nonvar(Y),
+        dynamic_term(Y), !.
+homeomorphic_embedded(X,Y) :-
+        strict_instance_of(X,Y), !,
+        fail.
+homeomorphic_embedded(X,Y) :-
+        nonvar(X),
+        nonvar(Y),
+        X=..[Func,XArg],
+        Y=..[Func,YArg], !,
+        homeomorphic_embedded(XArg,YArg), !.
+homeomorphic_embedded(X,Y) :-
+        nonvar(X),
+        nonvar(Y),
+        X=..[Func|XArgs],
+        Y=..[Func|YArgs],
+        l_homeomorphic_embedded(XArgs,YArgs), !.
+homeomorphic_embedded(X,Y) :-
+        nonvar(Y),
+        term_nesting_level(X,NX,SumX),
+        sub_term(Y,Sub),
+        term_nesting_level(Sub,NSub,SumSub),
+        NSub>=NX,
+        SumSub>=SumX,
+        homeomorphic_embedded(X,Sub), !.
+l_homeomorphic_embedded([],[]).
+l_homeomorphic_embedded([X|TX],[Y|TY]) :-
+        homeomorphic_embedded(X,Y), !,
+        l_homeomorphic_embedded(TX,TY).
+sub_term(X,Sub) :-
+        nonvar(X),
+        X=..[_F|Args],
+        member(Sub,Args).
+term_nesting_level(X,0,0) :-
+        var(X), !.
+term_nesting_level(X,1,1) :-
+        atomic(X), !.
+term_nesting_level(X,N,S) :-
+        nonvar(X), !,
+        X=..[_F|Args],
+        l_term_nesting_level(Args,NA,SA),
+        N is NA+1,
+        S is SA+1.
+l_term_nesting_level([],0,0).
+l_term_nesting_level([H|T],N,S) :-
+        term_nesting_level(H,NH,SH),
+        l_term_nesting_level(T,NT,ST),
+        (   NH>NT ->
+            N=NH
+        ;   N=NT
+        ),
+        S is SH+ST.
+:-use_module(library(terms)).
+:-use_module(library(terms_check)).
+:-use_module(library(lists)).
+variant_of(Goal,UIGoal) :-
+        variant(UIGoal,Goal).
+instance_of(Goal,UIGoal) :-
+        instance(UIGoal,Goal).
+strict_instance_of(Goal1,Goal2) :-
+        instance(Goal1,Goal2),
+        \+instance(Goal2,Goal1).
+cyclic_term(X,Seen) :-
+        seen(X,Seen), !.
+cyclic_term(X,Seen) :-
+        nonvar(X),
+        X=..[_|As],
+        member(A,As),
+        cyclic_term(A,[X|Seen]).
+seen(X,Seen) :-
+        member(X0,Seen),
+        X==X0, !.
+is_inf(X) :-
+        cyclic_term(X,[]).
+msg(X,Y,MSG) :-
+        mnf(construct_msg(X,Y,MSG)).
+construct_msg(_term1,_term2,_msg) :-
+        msg_of_pair(_term1,_term2,_msg,[],_).
+msg_of_pair(_term1,_term2,_msg,_record,_record) :-
+        _triplet=triplet(_term1,_term2,_msg),
+        triplet_recorded(_record,_triplet), !.
+msg_of_pair(_term1,_term2,_msg,_record,[_triplet|_record]) :-
+        atomic(_term1),
+        atomic(_term2),
+        _term1==_term2, !,
+        _msg=_term1,
+        _triplet=triplet(_term1,_term2,_msg).
+msg_of_pair(_term1,_term2,_msg,_inrec,[_triplet|_outrec]) :-
+        nonvar(_term1),
+        nonvar(_term2),
+        functor(_term1,_functor,_arity),
+        functor(_term2,_functor,_arity), !,
+        _term1=..[_|_subterms1],
+        _term2=..[_|_subterms2],
+        msg_of_pairs(_subterms1,_subterms2,_submsgs,_inrec,_outrec),
+        _msg=..[_functor|_submsgs],
+        _triplet=triplet(_term1,_term2,_msg).
+msg_of_pair(_term1,_term2,_fresh,_record,[_triplet|_record]) :-
+        _triplet=triplet(_term1,_term2,_fresh).
+msg_of_pairs([],[],[],_record,_record).
+msg_of_pairs([_term1|_rest1],[_term2|_rest2],[_msg|_msgs],_inrec,_outrec) :-
+        msg_of_pair(_term1,_term2,_msg,_inrec,_tmprec),
+        msg_of_pairs(_rest1,_rest2,_msgs,_tmprec,_outrec).
+triplet_recorded([_triplet|_],_template) :-
+        _triplet=triplet(_term1,_term2,_submsg),
+        _template=triplet(_term3,_term4,_submsg),
+        _term1==_term3,
+        _term2==_term4, !.
+triplet_recorded([_|_triplets],_template) :-
+        triplet_recorded(_triplets,_template).
+is_instance_of(_term1,_term2) :-
+        msg_instance_of(_term1,_term2,[],_,_).
+not_instance_of(_term1,_term2) :-
+        msg_instance_of(_term1,_term2,[],_,_), !,
+        fail.
+not_instance_of(_,_).
+is_variant_of(_term1,_term2) :-
+        msg_instance_of(_term1,_term2,[],_,_flag),
+        _flag\==less_general.
+is_combi_variant_of(_mask,_term1,_term2) :-
+        combi_instance_of(_term1,_term2,[],_,_flag,_mask),
+        _flag\==less_general.
+combi_instance_of(_term1,_term2,_record,_record,_,_mask) :-
+        atomic(_term2), !,
+        _term1==_term2.
+combi_instance_of(_term1,_term2,_inrec,_outrec,_flag,_mask) :-
+        nonvar(_term2),
+        functor(_term2,_functor,_arity),
+        nonvar(_term1),
+        functor(_term1,_functor,_arity),
+        _term1=..[_|_subterms1],
+        _term2=..[_|_subterms2],
+        _mask=atomstr(_,_maskarg,_),
+        writeq(_maskarg),
+        nl,
+        combi_instance_subterms(_subterms1,_subterms2,_inrec,_outrec,_flag,_maskarg).
+combi_instance_subterms([],[],_record,_record,_,_maskarg).
+combi_instance_subterms([_term1|_terms1],[_term2|_terms2],_inrec,_outrec,_flag,[_mask1|_masks]) :-
+        _mask1=argstr(_,_,_x),
+        atomic(_x), !,
+        combi_instance_subterms(_terms1,_terms2,_inrec,_outrec,_flag,_masks).
+combi_instance_subterms([_term1|_terms1],[_term2|_terms2],_inrec,_outrec,_flag,[_mask1|_masks]) :-
+        combi_instance_subterms(_terms1,_terms2,_inrec,_tmprec,_flag,_masks),
+        msg_instance_of(_term1,_term2,_tmprec,_outrec,_flag).
+not_variant_of(_term1,_term2) :-
+        msg_instance_of(_term1,_term2,[],_,_flag),
+        _flag\==less_general, !,
+        fail.
+not_variant_of(_,_).
+is_less_general(_term1,_term2) :-
+        msg_instance_of(_term1,_term2,[],_,_flag),
+        _flag==less_general.
+is_more_general(_term1,_term2) :-
+        msg_instance_of(_term2,_term1,[],_,_flag).
+msg_instance_of(_term1,_term2,_record,_record,_) :-
+        subst_recorded(_term2,_record,_term3), !,
+        _term1==_term3.
+msg_instance_of(_term1,_term2,_record,_record,_) :-
+        atomic(_term2), !,
+        _term1==_term2.
+msg_instance_of(_term1,_term2,_inrec,_outrec,_flag) :-
+        nonvar(_term2),
+        functor(_term2,_functor,_arity), !,
+        nonvar(_term1),
+        functor(_term1,_functor,_arity),
+        _term1=..[_|_subterms1],
+        _term2=..[_|_subterms2],
+        instance_subterms(_subterms1,_subterms2,_inrec,_outrec,_flag).
+msg_instance_of(_term1,_term2,_record,[_subst|_record],less_general) :-
+        var(_term2),
+        nonvar(_term1), !,
+        _subst=subst(_term2,_term1).
+msg_instance_of(_term1,_term2,_record,[_subst|_record],less_general) :-
+        var(_term2),
+        var(_term1),
+        recorded_subst(_term1,_record,_), !,
+        _subst=subst(_term2,_term1).
+msg_instance_of(_term1,_term2,_record,[_subst|_record],_) :-
+        var(_term2),
+        var(_term1),
+        _subst=subst(_term2,_term1).
+instance_subterms([],[],_record,_record,_).
+instance_subterms([_term1|_terms1],[_term2|_terms2],_inrec,_outrec,_flag) :-
+        instance_subterms(_terms1,_terms2,_inrec,_tmprec,_flag),
+        msg_instance_of(_term1,_term2,_tmprec,_outrec,_flag).
+subst_recorded(_term2,[_subst|_],_term3) :-
+        _subst=subst(_t2,_t3),
+        _term2==_t2, !,
+        _term3=_t3.
+subst_recorded(_term2,[_|_substs],_term3) :-
+        subst_recorded(_term2,_substs,_term3).
+recorded_subst(_term1,[_subst|_],_term3) :-
+        _subst=subst(_t3,_t1),
+        _term1==_t1, !,
+        _term3=_t3.
+recorded_subst(_term1,[_|_substs],_term3) :-
+        subst_recorded(_term1,_substs,_term3).
+construct_subst_list(_atom,_instatom,_varlist,_substlist) :-
+        msg_instance_of(_instatom,_atom,[],_record,_),
+        split_record(_record,_varlist,_substlist).
+split_record([],[],[]).
+split_record([_substrec|_record],[_var|_varlist],[_subst|_substlist]) :-
+        _substrec=subst(_var,_subst),
+        split_record(_record,_varlist,_substlist).
+fresh_atom(_atom,_freshatom) :-
+        fresh_term(_atom,_freshatom,[],_).
+fresh_term(_term,_freshterm,_record,_record) :-
+        subst_recorded(_term,_record,_freshterm), !.
+fresh_term(_term,_freshterm,_record,_record) :-
+        atomic(_term), !,
+        _freshterm=_term.
+fresh_term(_term,_freshterm,_inrec,_outrec) :-
+        nonvar(_term),
+        functor(_term,_functor,_), !,
+        _term=..[_|_subterms],
+        fresh_subterms(_subterms,_freshsubterms,_inrec,_outrec),
+        _freshterm=..[_functor|_freshsubterms].
+fresh_term(_term,_freshvar,_record,[_subst|_record]) :-
+        var(_term), !,
+        _subst=subst(_term,_freshvar).
+fresh_subterms([],[],_record,_record).
+fresh_subterms([_term|_rest],[_freshterm|_freshrest],_inrec,_outrec) :-
+        fresh_term(_term,_freshterm,_inrec,_temprec),
+        fresh_subterms(_rest,_freshrest,_temprec,_outrec).
+example1_request(A,B,C,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[dynamic,dynamic,dynamic]],example1(A,B,C),GenCall),
+        (   find_pattern(valcont2,example1(A,B,C),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[dynamic,dynamic,dynamic]],example1(A,B,C),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,D),
+            insert_pattern(valcont2,GenCall,ResidualCall,D)
+        ),
+        GenCall=example1(A,B,C).
+example2_request(A,B,C,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[dynamic,dynamic,dynamic]],example2(A,B,C),GenCall),
+        (   find_pattern(valcont2,example2(A,B,C),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[dynamic,dynamic,dynamic]],example2(A,B,C),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,D),
+            insert_pattern(valcont2,GenCall,ResidualCall,D)
+        ),
+        GenCall=example2(A,B,C).
+example3_request(A,B,C,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[dynamic,dynamic,dynamic]],example3(A,B,C),GenCall),
+        (   find_pattern(valcont2,example3(A,B,C),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[dynamic,dynamic,dynamic]],example3(A,B,C),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,D),
+            insert_pattern(valcont2,GenCall,ResidualCall,D)
+        ),
+        GenCall=example3(A,B,C).
+example4_request(A,B,C,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[dynamic,dynamic,dynamic]],example4(A,B,C),GenCall),
+        (   find_pattern(valcont2,example4(A,B,C),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[dynamic,dynamic,dynamic]],example4(A,B,C),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,D),
+            insert_pattern(valcont2,GenCall,ResidualCall,D)
+        ),
+        GenCall=example4(A,B,C).
+example5_request(A,B,C,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[dynamic,dynamic,dynamic]],example5(A,B,C),GenCall),
+        (   find_pattern(valcont2,example5(A,B,C),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[dynamic,dynamic,dynamic]],example5(A,B,C),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,D),
+            insert_pattern(valcont2,GenCall,ResidualCall,D)
+        ),
+        GenCall=example5(A,B,C).
+run_file_request(A,B,C,D,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[static,dynamic,dynamic,dynamic]],run_file(A,B,C,D),GenCall),
+        (   find_pattern(valcont2,run_file(A,B,C,D),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[static,dynamic,dynamic,dynamic]],run_file(A,B,C,D),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,E),
+            insert_pattern(valcont2,GenCall,ResidualCall,E)
+        ),
+        GenCall=run_file(A,B,C,D).
+ex1_request(A,B,C,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[dynamic,dynamic,dynamic]],ex1(A,B,C),GenCall),
+        (   find_pattern(valcont2,ex1(A,B,C),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[dynamic,dynamic,dynamic]],ex1(A,B,C),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,D),
+            insert_pattern(valcont2,GenCall,ResidualCall,D)
+        ),
+        GenCall=ex1(A,B,C).
+prog_eval_request(A,B,C,D,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[static,dynamic,dynamic,dynamic]],prog_eval(A,B,C,D),GenCall),
+        (   find_pattern(valcont2,prog_eval(A,B,C,D),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[static,dynamic,dynamic,dynamic]],prog_eval(A,B,C,D),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,E),
+            insert_pattern(valcont2,GenCall,ResidualCall,E)
+        ),
+        GenCall=prog_eval(A,B,C,D).
+fix_loop_request(A,B,C,D,E,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[static,dynamic,static,dynamic,dynamic]],fix_loop(A,B,C,D,E),GenCall),
+        (   find_pattern(valcont2,fix_loop(A,B,C,D,E),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[static,dynamic,static,dynamic,dynamic]],fix_loop(A,B,C,D,E),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,F),
+            insert_pattern(valcont2,GenCall,ResidualCall,F)
+        ),
+        GenCall=fix_loop(A,B,C,D,E).
+comm_list_eval_request(A,B,C,D,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[static,static,dynamic,dynamic]],comm_list_eval(A,B,C,D),GenCall),
+        (   find_pattern(valcont2,comm_list_eval(A,B,C,D),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[static,static,dynamic,dynamic]],comm_list_eval(A,B,C,D),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,E),
+            insert_pattern(valcont2,GenCall,ResidualCall,E)
+        ),
+        GenCall=comm_list_eval(A,B,C,D).
+comm_eval_request(A,B,C,D,E,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[static,dynamic,static,dynamic,dynamic]],comm_eval(A,B,C,D,E),GenCall),
+        (   find_pattern(valcont2,comm_eval(A,B,C,D,E),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[static,dynamic,static,dynamic,dynamic]],comm_eval(A,B,C,D,E),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,F),
+            insert_pattern(valcont2,GenCall,ResidualCall,F)
+        ),
+        GenCall=comm_eval(A,B,C,D,E).
+bool_while_eval_request(A,B,C,D,E,F,Requestor,ResidualCall,__LOGENDATA) :-
+        generalise_call([[static,static,static,static,dynamic,dynamic]],bool_while_eval(A,B,C,D,E,F),GenCall),
+        (   find_pattern(valcont2,bool_while_eval(A,B,C,D,E,F),ResidualCall,Requestor) ->
+            true
+        ;   __LOGENDATA=[_,ParentID|_],
+            filter_call([[static,static,static,static,dynamic,dynamic]],bool_while_eval(A,B,C,D,E,F),GenCall,ResidualCall),
+            true,
+            (   is_not_safe_to_add_memo_entry(GenCall,ParentID,History) ->
+                confirm_user(online_unsafe_memo(no),[GenCall,History],_)
+            ;   true
+            ),
+            init_memodata(pending(Requestor),ParentID,G),
+            insert_pattern(valcont2,GenCall,ResidualCall,G)
+        ),
+        GenCall=bool_while_eval(A,B,C,D,E,F).
+example1_u(A,B,C,(write(D),nl,E),__LOGENDATA) :-
+        program(comm_list(D),'example1.tree',[z,=,1,;,w,=,x,;,loop,while,w,>,0,z,=,z,*,y,;,w,=,w,-,1,endloop,while,'.'],[]),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([prog_eval(D,A,B,C)|HISTORY],__LOGENDATA,F),
+        (   is_safecall(prog_eval(D,A,B,C),HISTORY) ->
+            prog_eval_u(D,A,B,C,E,F)
+        ;   confirm_user(online_unsafe_unfold(no),[prog_eval(D,A,B,C),HISTORY],_),
+            prog_eval_u(D,A,B,C,E,F)
+        ).
+example2_u(A,B,C,(write(D),nl,E),__LOGENDATA) :-
+        program(comm_list(D),'example2.tree',[z,=,1,;,w,=,x,;,if,w,>,0,then,z,=,z,*,y,;,w,=,w,-,1,endif,'.'],[]),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([prog_eval(D,A,B,C)|HISTORY],__LOGENDATA,F),
+        (   is_safecall(prog_eval(D,A,B,C),HISTORY) ->
+            prog_eval_u(D,A,B,C,E,F)
+        ;   confirm_user(online_unsafe_unfold(no),[prog_eval(D,A,B,C),HISTORY],_),
+            prog_eval_u(D,A,B,C,E,F)
+        ).
+example3_u(A,B,C,(write(D),nl,E),__LOGENDATA) :-
+        program(comm_list(D),'example3.tree',[z,=,1,;,w,=,x,;,jmp,label,;,loop,while,w,>,0,z,=,z,*,y,;,label,:,w,=,w,-,1,endloop,while,;,z,=,7,'.'],[]),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([prog_eval(D,A,B,C)|HISTORY],__LOGENDATA,F),
+        (   is_safecall(prog_eval(D,A,B,C),HISTORY) ->
+            prog_eval_u(D,A,B,C,E,F)
+        ;   confirm_user(online_unsafe_unfold(no),[prog_eval(D,A,B,C),HISTORY],_),
+            prog_eval_u(D,A,B,C,E,F)
+        ).
+example4_u(A,B,C,(write(D),nl,E),__LOGENDATA) :-
+        program(comm_list(D),'example4.tree',[z,=,1,;,w,=,x,;,loop,while,w,>,0,z,=,z,*,y,;,w,=,w,-,1,;,jmp,label,endloop,while,;,label,:,z,=,8,;,z,=,7,'.'],[]),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([prog_eval(D,A,B,C)|HISTORY],__LOGENDATA,F),
+        (   is_safecall(prog_eval(D,A,B,C),HISTORY) ->
+            prog_eval_u(D,A,B,C,E,F)
+        ;   confirm_user(online_unsafe_unfold(no),[prog_eval(D,A,B,C),HISTORY],_),
+            prog_eval_u(D,A,B,C,E,F)
+        ).
+example5_u(A,B,C,(write(D),nl,E),__LOGENDATA) :-
+        program(comm_list(D),'example5.tree',[z,=,1,;,w,=,y,;,loop,while,x,>,1,y,=,w,;,loop,while,y,>,1,z,=,z,*,w,;,y,=,y,-,1,endloop,while,;,x,=,x,-,1,endloop,while,;,z,=,z,+,1,'.'],[]),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([prog_eval(D,A,B,C)|HISTORY],__LOGENDATA,F),
+        (   is_safecall(prog_eval(D,A,B,C),HISTORY) ->
+            prog_eval_u(D,A,B,C,E,F)
+        ;   confirm_user(online_unsafe_unfold(no),[prog_eval(D,A,B,C),HISTORY],_),
+            prog_eval_u(D,A,B,C,E,F)
+        ).
+run_file_u(A,B,C,D,(true->(true->E;print(parse_failed(A)),nl);print(lex_failed(A)),nl),__LOGENDATA) :-
+        lex(A,F),
+        atom_concat(A,'.tree',G),
+        program(comm_list(H),G,F,[]),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([prog_eval(H,B,C,D)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(prog_eval(H,B,C,D),HISTORY) ->
+            prog_eval_u(H,B,C,D,E,I)
+        ;   confirm_user(online_unsafe_unfold(no),[prog_eval(H,B,C,D),HISTORY],_),
+            prog_eval_u(H,B,C,D,E,I)
+        ),
+        true,
+        true.
+ex1_u(A,B,C,D,__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([run_file('pascal/example1.p',A,B,C)|HISTORY],__LOGENDATA,E),
+        (   is_safecall(run_file('pascal/example1.p',A,B,C),HISTORY) ->
+            run_file_u('pascal/example1.p',A,B,C,D,E)
+        ;   confirm_user(online_unsafe_unfold(no),[run_file('pascal/example1.p',A,B,C),HISTORY],_),
+            run_file_u('pascal/example1.p',A,B,C,D,E)
+        ).
+prog_eval_u([],_,_,0,true,__LOGENDATA).
+prog_eval_u(A,B,C,D,(initialize_store(E),update(x,B,E,F),update(y,C,F,G),H,access(z,I,D)),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(A,A,G,I)|HISTORY],__LOGENDATA,J),
+        (   is_safecall(comm_list_eval(A,A,G,I),HISTORY) ->
+            comm_list_eval_u(A,A,G,I,H,J)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(A,A,G,I),HISTORY],_),
+            comm_list_eval_u(A,A,G,I,H,J)
+        ).
+comm_list_eval_u([],_,A,B,B=A,__LOGENDATA).
+comm_list_eval_u(A,B,C,D,(E,F),__LOGENDATA) :-
+        A=[_|_],
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_eval(A,H,B,C,I)|HISTORY],__LOGENDATA,G),
+        (   is_safecall(comm_eval(A,H,B,C,I),HISTORY) ->
+            comm_eval_u(A,H,B,C,I,E,G)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_eval(A,H,B,C,I),HISTORY],_),
+            comm_eval_u(A,H,B,C,I,E,G)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(H,B,I,D)|HISTORY],__LOGENDATA,J),
+        (   is_safecall(comm_list_eval(H,B,I,D),HISTORY) ->
+            comm_list_eval_u(H,B,I,D,F,J)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(H,B,I,D),HISTORY],_),
+            comm_list_eval_u(H,B,I,D,F,J)
+        ).
+comm_eval_u([(_,abort)|_],[],_,A,B,B=A,__LOGENDATA).
+comm_eval_u([(_,while(E,F))|D],[],A,B,C,(G,H),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(F,[(www,while(E,F))|D],J)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(append(F,[(www,while(E,F))|D],J),HISTORY) ->
+            append_u(F,[(www,while(E,F))|D],J,G,I)
+        ;   confirm_user(online_unsafe_unfold(no),[append(F,[(www,while(E,F))|D],J),HISTORY],_),
+            append_u(F,[(www,while(E,F))|D],J,G,I)
+        ),
+        bool_while_eval_request(E,J,D,A,B,C,internal,H,__LOGENDATA).
+comm_eval_u([(_,ce(E,F,G))|D],[],A,B,C,(H,I,J),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(F,D,L)|HISTORY],__LOGENDATA,K),
+        (   is_safecall(append(F,D,L),HISTORY) ->
+            append_u(F,D,L,H,K)
+        ;   confirm_user(online_unsafe_unfold(no),[append(F,D,L),HISTORY],_),
+            append_u(F,D,L,H,K)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(G,D,N)|HISTORY],__LOGENDATA,M),
+        (   is_safecall(append(G,D,N),HISTORY) ->
+            append_u(G,D,N,I,M)
+        ;   confirm_user(online_unsafe_unfold(no),[append(G,D,N),HISTORY],_),
+            append_u(G,D,N,I,M)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([bool_eval(E,L,N,A,B,C)|HISTORY],__LOGENDATA,O),
+        (   is_safecall(bool_eval(E,L,N,A,B,C),HISTORY) ->
+            bool_eval_u(E,L,N,A,B,C,J,O)
+        ;   confirm_user(online_unsafe_unfold(no),[bool_eval(E,L,N,A,B,C),HISTORY],_),
+            bool_eval_u(E,L,N,A,B,C,J,O)
+        ).
+comm_eval_u([(_,jmp(E))|_],A,B,C,D,(F,!,D=C),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([find_label(E,B,A)|HISTORY],__LOGENDATA,G),
+        (   is_safecall(find_label(E,B,A),HISTORY) ->
+            find_label_u(E,B,A,F,G)
+        ;   confirm_user(online_unsafe_unfold(no),[find_label(E,B,A),HISTORY],_),
+            find_label_u(E,B,A,F,G)
+        ).
+comm_eval_u([(_,assign(id(E),D))|A],A,_,B,C,(F,update(E,G,B,C)),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(D,B,G)|HISTORY],__LOGENDATA,H),
+        (   is_safecall(expr(D,B,G),HISTORY) ->
+            expr_u(D,B,G,F,H)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(D,B,G),HISTORY],_),
+            expr_u(D,B,G,F,H)
+        ).
+expr_u(add(C,D),A,B,(E,F,B is G+H),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(C,A,G)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(expr(C,A,G),HISTORY) ->
+            expr_u(C,A,G,E,I)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(C,A,G),HISTORY],_),
+            expr_u(C,A,G,E,I)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(D,A,H)|HISTORY],__LOGENDATA,J),
+        (   is_safecall(expr(D,A,H),HISTORY) ->
+            expr_u(D,A,H,F,J)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(D,A,H),HISTORY],_),
+            expr_u(D,A,H,F,J)
+        ).
+expr_u(sub(C,D),A,B,(E,F,B is G-H),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(C,A,G)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(expr(C,A,G),HISTORY) ->
+            expr_u(C,A,G,E,I)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(C,A,G),HISTORY],_),
+            expr_u(C,A,G,E,I)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(D,A,H)|HISTORY],__LOGENDATA,J),
+        (   is_safecall(expr(D,A,H),HISTORY) ->
+            expr_u(D,A,H,F,J)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(D,A,H),HISTORY],_),
+            expr_u(D,A,H,F,J)
+        ).
+expr_u(multi(C,D),A,B,(E,F,B is G*H),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(C,A,G)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(expr(C,A,G),HISTORY) ->
+            expr_u(C,A,G,E,I)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(C,A,G),HISTORY],_),
+            expr_u(C,A,G,E,I)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(D,A,H)|HISTORY],__LOGENDATA,J),
+        (   is_safecall(expr(D,A,H),HISTORY) ->
+            expr_u(D,A,H,F,J)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(D,A,H),HISTORY],_),
+            expr_u(D,A,H,F,J)
+        ).
+expr_u(id(C),A,B,access(C,A,B),__LOGENDATA).
+expr_u(num(A),_,A,true,__LOGENDATA).
+bool_while_eval_u(A,B,C,D,E,F,G,__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([bool_eval(A,B,C,D,E,F)|HISTORY],__LOGENDATA,H),
+        (   is_safecall(bool_eval(A,B,C,D,E,F),HISTORY) ->
+            bool_eval_u(A,B,C,D,E,F,G,H)
+        ;   confirm_user(online_unsafe_unfold(no),[bool_eval(A,B,C,D,E,F),HISTORY],_),
+            bool_eval_u(A,B,C,D,E,F,G,H)
+        ).
+bool_eval_u(great(F,G),A,B,C,D,E,(H,I,(L>M->K;J)),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(F,D,L)|HISTORY],__LOGENDATA,N),
+        (   is_safecall(expr(F,D,L),HISTORY) ->
+            expr_u(F,D,L,H,N)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(F,D,L),HISTORY],_),
+            expr_u(F,D,L,H,N)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(G,D,M)|HISTORY],__LOGENDATA,O),
+        (   is_safecall(expr(G,D,M),HISTORY) ->
+            expr_u(G,D,M,I,O)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(G,D,M),HISTORY],_),
+            expr_u(G,D,M,I,O)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(A,C,D,E)|HISTORY],__LOGENDATA,P),
+        (   is_safecall(comm_list_eval(A,C,D,E),HISTORY) ->
+            comm_list_eval_u(A,C,D,E,K,P)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(A,C,D,E),HISTORY],_),
+            comm_list_eval_u(A,C,D,E,K,P)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(B,C,D,E)|HISTORY],__LOGENDATA,Q),
+        (   is_safecall(comm_list_eval(B,C,D,E),HISTORY) ->
+            comm_list_eval_u(B,C,D,E,J,Q)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(B,C,D,E),HISTORY],_),
+            comm_list_eval_u(B,C,D,E,J,Q)
+        ).
+bool_eval_u(less(F,G),A,B,C,D,E,(H,I,(L<M->K;J)),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(F,D,L)|HISTORY],__LOGENDATA,N),
+        (   is_safecall(expr(F,D,L),HISTORY) ->
+            expr_u(F,D,L,H,N)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(F,D,L),HISTORY],_),
+            expr_u(F,D,L,H,N)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(G,D,M)|HISTORY],__LOGENDATA,O),
+        (   is_safecall(expr(G,D,M),HISTORY) ->
+            expr_u(G,D,M,I,O)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(G,D,M),HISTORY],_),
+            expr_u(G,D,M,I,O)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(A,C,D,E)|HISTORY],__LOGENDATA,P),
+        (   is_safecall(comm_list_eval(A,C,D,E),HISTORY) ->
+            comm_list_eval_u(A,C,D,E,K,P)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(A,C,D,E),HISTORY],_),
+            comm_list_eval_u(A,C,D,E,K,P)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(B,C,D,E)|HISTORY],__LOGENDATA,Q),
+        (   is_safecall(comm_list_eval(B,C,D,E),HISTORY) ->
+            comm_list_eval_u(B,C,D,E,J,Q)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(B,C,D,E),HISTORY],_),
+            comm_list_eval_u(B,C,D,E,J,Q)
+        ).
+bool_eval_u(equal(F,G),A,B,C,D,E,(H,I,(L==M->K;J)),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(F,D,L)|HISTORY],__LOGENDATA,N),
+        (   is_safecall(expr(F,D,L),HISTORY) ->
+            expr_u(F,D,L,H,N)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(F,D,L),HISTORY],_),
+            expr_u(F,D,L,H,N)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([expr(G,D,M)|HISTORY],__LOGENDATA,O),
+        (   is_safecall(expr(G,D,M),HISTORY) ->
+            expr_u(G,D,M,I,O)
+        ;   confirm_user(online_unsafe_unfold(no),[expr(G,D,M),HISTORY],_),
+            expr_u(G,D,M,I,O)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(A,C,D,E)|HISTORY],__LOGENDATA,P),
+        (   is_safecall(comm_list_eval(A,C,D,E),HISTORY) ->
+            comm_list_eval_u(A,C,D,E,K,P)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(A,C,D,E),HISTORY],_),
+            comm_list_eval_u(A,C,D,E,K,P)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([comm_list_eval(B,C,D,E)|HISTORY],__LOGENDATA,Q),
+        (   is_safecall(comm_list_eval(B,C,D,E),HISTORY) ->
+            comm_list_eval_u(B,C,D,E,J,Q)
+        ;   confirm_user(online_unsafe_unfold(no),[comm_list_eval(B,C,D,E),HISTORY],_),
+            comm_list_eval_u(B,C,D,E,J,Q)
+        ).
+find_label_u(A,[(A,C)|B],[(A,C)|B],true,__LOGENDATA).
+find_label_u(A,[(_,ce(_,D,E))|C],B,(F,G),__LOGENDATA) :-
+        (   get_logendata_history(__LOGENDATA,HISTORY),
+            set_logendata_history([find_label(A,D,I)|HISTORY],__LOGENDATA,H),
+            (   is_safecall(find_label(A,D,I),HISTORY) ->
+                find_label_u(A,D,I,J,H)
+            ;   confirm_user(online_unsafe_unfold(no),[find_label(A,D,I),HISTORY],_),
+                find_label_u(A,D,I,J,H)
+            ),
+            F=J
+        ;   get_logendata_history(__LOGENDATA,HISTORY),
+            set_logendata_history([find_label(A,E,I)|HISTORY],__LOGENDATA,K),
+            (   is_safecall(find_label(A,E,I),HISTORY) ->
+                find_label_u(A,E,I,L,K)
+            ;   confirm_user(online_unsafe_unfold(no),[find_label(A,E,I),HISTORY],_),
+                find_label_u(A,E,I,L,K)
+            ),
+            F=L
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(I,C,B)|HISTORY],__LOGENDATA,M),
+        (   is_safecall(append(I,C,B),HISTORY) ->
+            append_u(I,C,B,G,M)
+        ;   confirm_user(online_unsafe_unfold(no),[append(I,C,B),HISTORY],_),
+            append_u(I,C,B,G,M)
+        ).
+find_label_u(A,[(_,ce(_,D))|C],B,(E,F),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([find_label(A,D,H)|HISTORY],__LOGENDATA,G),
+        (   is_safecall(find_label(A,D,H),HISTORY) ->
+            find_label_u(A,D,H,E,G)
+        ;   confirm_user(online_unsafe_unfold(no),[find_label(A,D,H),HISTORY],_),
+            find_label_u(A,D,H,E,G)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(H,C,B)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(append(H,C,B),HISTORY) ->
+            append_u(H,C,B,F,I)
+        ;   confirm_user(online_unsafe_unfold(no),[append(H,C,B),HISTORY],_),
+            append_u(H,C,B,F,I)
+        ).
+find_label_u(A,[(D,while(E,F))|C],B,(G,H),__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([find_label(A,F,J)|HISTORY],__LOGENDATA,I),
+        (   is_safecall(find_label(A,F,J),HISTORY) ->
+            find_label_u(A,F,J,G,I)
+        ;   confirm_user(online_unsafe_unfold(no),[find_label(A,F,J),HISTORY],_),
+            find_label_u(A,F,J,G,I)
+        ),
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(J,[(D,while(E,F))|C],B)|HISTORY],__LOGENDATA,K),
+        (   is_safecall(append(J,[(D,while(E,F))|C],B),HISTORY) ->
+            append_u(J,[(D,while(E,F))|C],B,H,K)
+        ;   confirm_user(online_unsafe_unfold(no),[append(J,[(D,while(E,F))|C],B),HISTORY],_),
+            append_u(J,[(D,while(E,F))|C],B,H,K)
+        ).
+find_label_u(A,[_|D],B,C,__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([find_label(A,D,B)|HISTORY],__LOGENDATA,E),
+        (   is_safecall(find_label(A,D,B),HISTORY) ->
+            find_label_u(A,D,B,C,E)
+        ;   confirm_user(online_unsafe_unfold(no),[find_label(A,D,B),HISTORY],_),
+            find_label_u(A,D,B,C,E)
+        ).
+append_u([],A,A,true,__LOGENDATA).
+append_u([C|D],A,[C|E],B,__LOGENDATA) :-
+        get_logendata_history(__LOGENDATA,HISTORY),
+        set_logendata_history([append(D,A,E)|HISTORY],__LOGENDATA,F),
+        (   is_safecall(append(D,A,E),HISTORY) ->
+            append_u(D,A,E,B,F)
+        ;   confirm_user(online_unsafe_unfold(no),[append(D,A,E),HISTORY],_),
+            append_u(D,A,E,B,F)
+        ).
+read_from_chars(String,Term) :-
+        mktemp('/tmp/readatomXXXXXX',TmpFile),
+        open(TmpFile,write,TmpOut),
+        display(TmpOut,String),
+        display(TmpOut,' .
+'),
+        close(TmpOut),
+        open(TmpFile,read,TmpIn),
+        read(TmpIn,Term),
+        close(TmpIn),
+        delete_file(TmpFile).
+print_usage :-
+        usage(Msg),
+        print(user_error,Msg),
+        nl,
+        print(user_error,'  Possible Options are:'),
+        nl,
+        print_options.
+print_options :-
+        recognised_option(Opt,_,Args,Msg),
+        print(user_error,'      '),
+        print(user_error,Opt),
+        print_option_args(Args,1),
+        print(user_error,': '),
+        print(user_error,Msg),
+        nl,
+        fail.
+print_options.
+print_option_args([],_).
+print_option_args([_|T],N) :-
+        print(user_error,' ARG'),
+        print(user_error,N),
+        N1 is N+1,
+        print_option_args(T,N1).
+get_options([],[],[]).
+get_options([X|T],Options,OtherArgs) :-
+        (   recognised_option(X,Opt,Values,_) ->
+            append(Values,Rest,T),
+            RT=Rest,
+            Options=[Opt|OT],
+            OtherArgs=AT
+        ;   Options=OT,
+            OtherArgs=[X|AT],
+            RT=T
+        ),
+        get_options(RT,OT,AT).
+usage('Usage: gxfile [Options] "Atom."').
+recognised_option('--help',help,[],'Prints this message').
+recognised_option('-o',outfile(Out),[Out],'Specialised filename').
+recognised_option('--add_entry',add_entry,[],'Generate entry point').
+valcont2_entry(Goal,ResCall,Opts) :-
+        (   member(outfile(A),Opts) ->
+            open(A,write,B)
+        ;   B=user
+        ),
+        statistics(runtime,[C,_]),
+        mnf(build_request_call(Goal,crossmodule,ResCall,[[],entry],REQ)),
+        REQ,
+        mnf(spec_driver),
+        true,
+        mnf(print_clauses(B)),
+        statistics(runtime,[D,_]),
+        E is D-C,
+        format(user,[126,78,47,42,32,83,112,101,99,105,97,108,105,115,97,116,105,111,110,32,116,105,109,101,32,126,119,32,109,115,32,40,114,117,110,116,105,109,101,41,32,42,47,126,110],[E]),
+        (   member(add_entry,Opts) ->
+            portray_clause(B,(Goal:-ResCall))
+        ;   true
+        ),
+        close(B).
+main(A) :-
+        main_gx(A).
+main(_) :-
+        print_usage.
+main_gx(A) :-
+        get_options(A,Opts,[AtomGoal|_]),
+        (   member(help,Opts) ->
+            fail
+        ;   true
+        ), !,
+        read_from_chars(AtomGoal,Goal),
+        valcont2_entry(Goal,_Res,Opts),
+        count_errors_occured(B),
+        (   B>0 ->
+            format(user,[126,110,42,42,42,32,126,119,32,101,114,114,111,114,115,32,111,99,99,117,114,114,101,100,32,33,126,110],[B]),
+            halt(1)
+        ;   true
+        ).

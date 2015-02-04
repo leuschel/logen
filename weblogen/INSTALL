@@ -1,0 +1,139 @@
+Installation
+~~~~~~~~~~~~
+
+Requirements:
+1. Ciao Prolog (logen needs it).
+2. SWI Prolog (required for syntax highlighting. Ciao cannot give position
+information while parsing). Version 5.4.7 is known to work. Version 5.2.13 (the
+one supplied in Debian GNU/Linux) compiles the backend, but will produce
+spurious errors rendering Weblogen useless.
+3. Sicstus Prolog (optional: allows use of BTA).
+4. PHP 5. PHP 4 is not supported any more. XSL Support is a must. We have a
+test page that ensures that your PHP is compatible.
+5. A webserver. Any server that supports PHP 5 should be fine.
+6. Make. Required by build process.
+
+Step 1:
+Change to the logen directory and run the install.sh script. This will compile
+logen as well as installing Weblogen.
+
+cd weblogen
+sh install.sh
+
+If you do not want to run the automatic installer, or you it doesn't work go to
+the section titled "Manual Installation" later in this file.
+
+Step 2:
+Install PHP as explained below
+
+
+MAC PHP Installation instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Download the PHP installer
+ (http://www2.entropy.ch/download/Entropy-PHP-5.0.4-1.dmg) from:
+	http://www.entropy.ch/software/macosx/php/
+This contains php5 with expat and xslt support :-)
+Run the Installer.
+
+Edit /etc/httpd/users/<USERNAME>.conf  (e.g. <USERNAME> = leuschel)
+to enable FollowSymLinks (you don't have to do this and the installer can cope
+if symlinks aren't followed, but it can make things easier):
+ 
+For example, the file /etc/httpd/users/leuschel.conf should now look like this:
+<Directory "/Users/leuschel/Sites/">
+    Options Indexes MultiViews FollowSymLinks
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Directory>
+
+You may need to restart the Apache Webserver
+(In System Preferences/Sharing/Services Turn Personal Web Sharing off and on
+again).
+
+PHP Installation Instructions for other platforms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On Debian:
+(as root) apt-get install php5-xsl
+
+This will install PHP5 with XSL support.
+(I know what you're thinking. Debian is really easy. Macs are a total pain.
+Go figure.)
+
+
+PHP5 Instructions
+~~~~~~~~~~~~~~~~~
+
+Make sure that DOM and XSL are available. This is important for instance on Suse
+which has a separate package for DOM, php5-dom, which must be installed.
+
+Possible Problems
+~~~~~~~~~~~~~~~~~
+
+If errors are reported every time you specialise even though there is nothing
+wrong the specialisation goal/annotations, it may be because you have
+compiled PHP with --enable-sigchild. This causes all processes to return -1 on
+exit which leads weblogen to think the process failed. To solve this, recompile
+PHP with --disable-sigchild.
+
+
+
+Manual Installation
+~~~~~~~~~~~~~~~~~~~
+
+This assumes you are installing weblogen in a user's home directory.
+
+(0. Change to the logen directory and run make. This requires that Ciao and
+make are installed and will create the logen executable.)
+
+1. Copy or symbolically link "public_html" of weblogen into the home directory.
+	e.g.
+	cp -r logen/weblogen/public_html ~/public_html/weblogen
+	ln -s logen/weblogen/public_html ~/public_html/weblogen
+
+2. In this directory create a file called config.php. This file is a PHP file
+and so must be syntactically correct PHP. It also should produce no output so
+the first line must start with '<?' and the last line must end with '?>'. You
+can copy the config.php.example file in this directory to use as a template.
+
+(a) add a line $backend_dir = '<path to backend>';
+This is the location of the logen/weblogen/backend directory from the logen
+tarball.
+
+(b) add a line $logen_dir = '<path to logen>';
+This is the location of the logen directory from the logen tarball.
+
+(c) add a line $ciao_dir = '<path to ciao>';
+This is the location of the ciao binary directory, e.g. /home/user/CiaoDE/bin
+
+You need to insure that all these paths are accessible to your webserver, since
+they contain executables that Weblogen requires.
+
+There are many more configuration options, but these ones are all compulsory
+and cannot be skipped. The others all have defaults; please see
+config.php.example in this directory. (The installer creates this file for you.)
+
+3. Enter the backend directory and create a Makefile.inc file.
+	cd logen/weblogen/backend; vi Makefile.inc
+
+Add:
+SWIPL=pl or SWIPL=swipl depending on the name of your SWI Prolog executable.
+
+Add:
+ENABLE_BTA=true or ENABLE_BTA=false depending on whether you want the automatic
+BTA to be compiled. (Note doing this won't enable it in the intercace unless you
+add a line $enable_bta = true; to config.php file.)
+
+Again, this file is created automatically by the install.sh script. The BTA is
+automatically enabled if a sicstus executable can be found.
+
+4. Run make.
+	make
+
+5. Connect to the web page http://localhost/~username/weblogen/setup.html to
+test your PHP installation. You may have to recompile/reconfigure if your PHP
+is incompatible.
+
+6. Go to http://localhost/~username/weblogen/ to use weblogen.

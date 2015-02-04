@@ -1,0 +1,259 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen matlab.pl "run1([X])"
+ % Generating GX File
+ % done
+ % Finished running cogen in 93.79799999297354 ms (runtime)
+ % Compiling GX File
+{Compiling /Users/leuschel/svn_root/logen/examples/experiments/matlab.pl.gx
+WARNING: (lns 480-483) Predicate parse/2 undefined in source
+}
+ % Calling Compiled File
+ % Specialising for run1([_])
+
+/* run1([A]) :- run1__0(A). */
+run1__0(A) :-
+        eval_while__1(B,const(1),A,_),
+        print_value__2(B).
+
+/* eval_while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)],env([x/A,y/B],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]),env([x/C,y/D],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])])) :- eval_while__1(D,B,A,C). */
+eval_while__1(B,const(C),const(D),A) :-
+        D>0,
+        E is C*D,
+        F is D-1,
+        eval_while__1(B,const(E),const(F),A).
+eval_while__1(B,B,A,A).
+
+/* print_value(A) :- print_value__2(A). */
+print_value__2(const(A)) :-
+        write('    '),
+        write(A),
+        nl,
+        nl.
+print_value__2(undef) :-
+        write('    undefined!'),
+        nl,
+        nl.
+print_value__2(matrix([[]])) :-
+        write('    []'),
+        nl.
+print_value__2(matrix(A)) :-
+        print_rows__3(A),
+        nl.
+
+/* print_rows(A) :- print_rows__3(A). */
+print_rows__3([]).
+print_rows__3([A|B]) :-
+        print_row__4(A),
+        nl,
+        print_rows__3(B).
+
+/* print_row(A) :- print_row__4(A). */
+print_row__4([]).
+print_row__4([A|B]) :-
+        print_element__5(A),
+        print_row__4(B).
+
+/* print_element(A) :- print_element__5(A). */
+print_element__5(const(A)) :-
+        write('    '),
+        write(A).
+/* Specialisation time 3.436999999679184 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen matlab.pl "run1([X])" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 145.944999991225 ms (runtime)
+ % Compiling GX File
+{Compiling /Users/leuschel/svn_root/logen/examples/experiments/matlab.pl.gx
+WARNING: (lns 910-925) Predicate parse/2 undefined in source
+}
+ % Calling Compiled File
+ % Specialising for run1([_])
+
+/* run1([A]) :- run1__0(A). */
+run1__0(A) :-
+        eval_while__1(B,const(1),A,_),
+        print_value__2(B).
+
+/* eval_while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)],env([x/A,y/B],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]),env([x/C,y/D],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])])) :- eval_while__1(D,B,A,C). */
+eval_while__1(B,const(C),const(D),A) :-
+        D>0,
+        E is C*D,
+        F is D-1,
+        eval_while__1(B,const(E),const(F),A).
+eval_while__1(B,B,A,A).
+
+/* print_value(A) :- print_value__2(A). */
+print_value__2(const(A)) :-
+        write('    '),
+        write(A),
+        nl,
+        nl.
+print_value__2(undef) :-
+        write('    undefined!'),
+        nl,
+        nl.
+print_value__2(matrix([[]])) :-
+        write('    []'),
+        nl.
+print_value__2(matrix(A)) :-
+        print_rows__3(A),
+        nl.
+
+/* print_rows(A) :- print_rows__3(A). */
+print_rows__3([]).
+print_rows__3([A|B]) :-
+        print_row__4(A),
+        nl,
+        print_rows__3(B).
+
+/* print_row(A) :- print_row__4(A). */
+print_row__4([]).
+print_row__4([A|B]) :-
+        print_element__5(A),
+        print_row__4(B).
+
+/* print_element(A) :- print_element__5(A). */
+print_element__5(const(A)) :-
+        write('    '),
+        write(A).
+/* Specialisation time 39.95199999700717 ms (runtime) */
+
+
+
+ONLINE
+
+
+
+[Mottisfont:logen/examples/experiments] leuschel% logen matlab_online.pl "run1([X])"
+ % Generating GX File
+ % done
+ % Finished running cogen in 122.893999990794 ms (runtime)
+ % Compiling GX File
+{Compiling /Users/leuschel/svn_root/logen/examples/experiments/matlab_online.pl.gx
+WARNING: (lns 898-901) Predicate parse/2 undefined in source
+}
+ % Calling Compiled File
+ % Specialising for run1([_])
+ % Mixed Generalisation: 'generalise_online_mixed([static,static,struct(env,[(type list(struct(/,[static,online]))),static]),struct(env,[(type list(struct(/,[static,online]))),static])],eval_while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)],env([x/const(_1719),y/const(_1684)],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]),env([x/_857,y/_862],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])])),eval_while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)],env([x/const(_1719),y/const(_1684)],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]),env([x/_857,y/_862],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])])),run1__0(_618))'.
+
+/* run1([A]) :- run1__0(A). */
+run1__0(const(A)) :-
+        A>0,
+        B is 1*A,
+        C is A-1,
+        C>0,
+        D is B*C,
+        E is C-1,
+        eval_while__1(_,F,D,E),
+        print_value__2(F).
+run1__0(const(A)) :-
+        A>0,
+        B is 1*A,
+        _ is A-1,
+        print_value__2(const(B)).
+run1__0(_) :-
+        print_value__2(const(1)).
+
+/* eval_while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)],env([x/const(A),y/const(B)],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]),env([x/C,y/D],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])])) :- eval_while__1(C,D,B,A). */
+eval_while__1(C,D,B,A) :-
+        A>0,
+        E is B*A,
+        F is A-1,
+        eval_while__1(C,D,E,F).
+eval_while__1(const(A),const(B),B,A).
+
+/* print_value(A) :- print_value__2(A). */
+print_value__2(const(A)) :-
+        write('    '),
+        write(A),
+        nl,
+        nl.
+print_value__2(undef) :-
+        write('    undefined!'),
+        nl,
+        nl.
+print_value__2(matrix([[]])) :-
+        write('    []'),
+        nl.
+print_value__2(matrix(A)) :-
+        print_rows__3(A),
+        nl.
+
+/* print_rows(A) :- print_rows__3(A). */
+print_rows__3([]).
+print_rows__3([A|B]) :-
+        print_row__4(A),
+        nl,
+        print_rows__3(B).
+
+/* print_row(A) :- print_row__4(A). */
+print_row__4([]).
+print_row__4([A|B]) :-
+        print_element__5(A),
+        print_row__4(B).
+
+/* print_element(A) :- print_element__5(A). */
+print_element__5(const(A)) :-
+        write('    '),
+        write(A).
+/* Specialisation time 11.90999999888835 ms (runtime) */
+[Mottisfont:logen/examples/experiments] leuschel% 
+
+
+
+| ?- statistics(runtime,_), pe(run1([X])), statistics(runtime,[_,T2]), nl,print(T2),nl.
+run1([A]) :-
+        'run1.1'(A).
+
+% 'run1.1'(A):-run1([A])
+'run1.1'(const(A)) :-
+        0<A,
+        B is A,
+        C is A-1,
+        'eval_whilebin_op>1'(C, B, D),
+        (   D=const(E),
+            write('    '),
+            write(E),
+            nl,
+            nl
+        ;   D=undef,
+            write('    undefined!'),
+            nl,
+            nl
+        ;   D=matrix([[]]),
+            write('    []'),
+            nl
+        ;   D=matrix(F),
+            print_rows1(F),
+            nl
+        ).
+'run1.1'(_) :-
+        write('    '),
+        write(1),
+        nl,
+        nl.
+
+% 'eval_whilebin_op>1'(A,B,C):-eval_while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)],env([x/const(A),y/const(B)],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]),env([x/D,y/C],[function(fact,[y],[x],[x,y],[assign(var(y),const(1),true),while(bin_op(>,var(x),const(0)),[assign(var(y),bin_op(*,var(y),var(x)),true),assign(var(x),bin_op(-,var(x),const(1)),true)])])]))
+'eval_whilebin_op>1'(A, B, C) :-
+        0<A,
+        D is B*A,
+        E is A-1,
+        'eval_whilebin_op>1'(E, D, C).
+'eval_whilebin_op>1'(_, A, const(A)).
+
+% print_rows1(A):-print_rows(A)
+print_rows1([]).
+print_rows1([A|B]) :-
+        print_row1(A),
+        nl,
+        print_rows1(B).
+
+% print_row1(A):-print_row(A)
+print_row1([]).
+print_row1([const(A)|B]) :-
+        write('    '),
+        write(A),
+        print_row1(B).
+
+390
+

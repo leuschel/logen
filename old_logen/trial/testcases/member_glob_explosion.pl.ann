@@ -1,0 +1,21 @@
+%% Logen Annotation File
+(:-module(member_glob_explosion,[])).
+logen(0, test(A,B)) :-
+        logen(unfold, inboth(A,[a,b,c,d,e,f,g,h],B)).
+logen(1, inboth(A,B,C)) :-
+        logen(unfold, member_u(A,B)),
+        logen(unfold, mem(A,C)).
+logen(2, mem(A,[A|_])).
+logen(3, mem(A,[_|B])) :-
+        logen(memo, mem(A,B)).
+logen(4, member_u(A,[A|_])).
+logen(5, member_u(A,[_|B])) :-
+        logen(unfold, member_u(A,B)).
+:- filter
+        inboth(dynamic, (type list(static)), dynamic).
+:- filter
+        mem(static, dynamic).
+:- filter
+        member_u(dynamic, (type list(static))).
+:- filter
+        test(dynamic, dynamic).

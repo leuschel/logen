@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+\title{Automatic Binding Time Analysis Algorithm}
+\author{John P. Gallagher \and Kim S. Henriksen}
+\begin{document}
+\maketitle
+\section{Introduction to the BTA problem}
+The problem is as follows.  Given a logic program and a goal or set of goals
+described by a pattern, type etc, decide on an unfolding rule for offline
+partial evaluation.
+
+An unfolding rule, in this context, is defined by an annotation of the program.
+Each body atom of the program is marked as follows:
+\begin{itemize}
+\item
+{\em memo}:  do not select the atom for unfolding.
+\item
+{\em unfold}:  the atom is selected for unfolding whenever it is the leftmost
+selectable atom in the resolvent.
+\item
+{\em call}:  the atom is selected for unfolding whenever it is the leftmost
+selectable atom in the resolvent,
+and the complete computation tree is constructed (that is, the atom is completely
+evaluated).
+{\em rescall}:  do not select the atom for unfolding.   This is no
+different from {\em memo} as regards unfolding, but there is a difference in
+code generation, since atoms marked {\em rescall} are assumed to be defined
+outside the program.
+\end{itemize}
+The main decision to make is therefore between selecting or not selecting
+each atom ({\em memo} or {\em rescall} versus {\em unfold} or {\em call}.
+
+For a given atom, the choice of annotation depends on two main considerations.
+\begin{itemize}
+\item
+The state of instantiation of the atom when it is potentially selectable.
+\item
+The need to ensure termination of unfolding.
+\end{itemize}
+The first consideration can be solved by fairly standard static analysis of the program with 
+respect to the given goal(s).  The second requires an analysis of the termination
+behaviour of the program itself (to ensure termination of unfolding) and also the
+termination behaviour of the partial evaluation algorithm (to ensure global
+termination).
+
+\section{Propagating Call and Success Patterns}
+
+We use the analysis framework described in \cite{Gallagher-Boulanger-Saglam-ILPS95}
+and \cite{Codish-Demoen}.  
+This consists of the following steps:
+\begin{itemize}
+\item
+Abstract a program to a {\em domain program}, in which every non-variable
+term $f(x_1,\ldots,x_n)$ in a clause  (starting with innermost terms)
+is replaced by a fresh variable $u$, and an atom
+$denotes(f(x_1,\ldots,x_n),u)$ is added to the clause body. 
+\item
+Supply a definition of the $denotes$ predicate.  This is formally a
+pre-interpretation of the function symbols of the program over an abstract
+domain $D$.  It can also be seen as a complete bottom-up deterministic
+tree automaton in which the set of states is $D$, and the $denotes$ predicate
+gives the transitions.
+\item
+The bottom-up step: Compute the least model of the transformed program together with
+the $denotes$ program.  This yields a set of {\em success patterns}
+over the abstract domain $D$.
+\item
+The top-down step: Compute call patterns by using a magic-set transformation,
+with
+respect to the given goal abstracted in the domain $D$.  The answer
+predicates in the magic-set program are the success patterns obtained
+from the previous step.  Note that the abstract domain defined by
+a $denotes$ predicate is {\em condensing}, which means that the
+call patterns computed in this way are as precise as those derived from
+a goal-directed analysis.
+\item
+Use the call patterns to derive a call pattern for each body atom, as
+well as a single call pattern for each predicate.
+\end{itemize}
+
+\section{Defining the Abstract Domain From Regular Types}
+
+We have developed a novel technique for defining an abstract domain
+based on regular types. 
+Given some regular types, a {\em determinisation} procedure is applied.
+Following this a {\em completion} is derived.  The result is a definition
+of types which are (a) disjoint and (b) recognise every term in the
+given signature (the set of functions occurring in the program
+and goals).
+
+To be described in detail by Kim.....
+
+Typically we start from some standard regular types.  These are the
+set of ground terms, and the set of all terms.  These sets are not normally
+thought of as types.  A novel aspect of our approach is that it allows
+mode information to be integrated seamlessly with type information.
+
+The type consisting of ground terms is called $static$.
+The set of all terms, called $dynamic$  including both ground and non-ground terms,
+is realised by adding a special constant $v$ with type $var$.
+$v$ also has the type $dynamic$.  The constant $v$ does not appear in
+any program or goal.  Hence, the only way it can appear in the
+argument of a call or success pattern is that if that argument is
+possibly variable.  The use of such constants, called {\em no-term
+elements} in  \cite{Gallagher-Boulanger-Saglam-ILPS95}
+is a way of tracking freeness information in a model-based, declarative
+analysis.
+
+The standard types are as follows.
+
+\begin{verbatim}
+a -> static.[] -> static.[static|static] -> static.% f(static,static,....,static) -> static  for each f[] -> list.[dynamic|list] -> list.v -> var.v -> dynamic.a -> dynamic.[] -> dynamic.[dynamic|dynamic] -> dynamic.% f(dynamic,dynamic,....,dynamic) -> dynamic  for each f
+\end{verbatim}
+User defined types can then be added to these before the determinsation
+process.  Note that the presence of the types $static$ and $dynamic$
+ensures that the determinised automaton is also complete.
+
+\section{Derivation of Filters}
+
+The filters are simply the call patterns for each predicate.
+
+\section{Analysis of Annotated Programs}
+
+The process of deriving annotations is an iterative one.
+Starting from a program in which every call is marked as unfold,
+we derive call patterns and filters.  Some of the unfold annotations
+are then changed to {\em memo} (or {\em rescall} if the
+derived call pattern is considered too general to be
+unfolded.  Then the analysis is re-run.
+
+Each atom marked at memo is simply ignored when computing the
+abstract model of the program (the bottom-up step).  Memo-ed
+atoms are simply omitted, since they contribute no answers.
+
+In the top-down step, the ``query clauses" in the magic set transformation
+are modified so that the answer atoms for memo-ed atoms are omitted.
+
+ \end{document}

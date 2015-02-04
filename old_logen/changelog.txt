@@ -1,0 +1,61 @@
+$Revision: 1.11 $
+
+13/09/2004-
+* Bug fix if goal has full stop on the end
+* Unseen updates to BTA
+* First release of *untested* benchmarking libs - see Tests menu
+
+7/09/2004-
+* Mainly unseen improvements.
+* Fixed some small issues with BTA
+* Added debugging stages to BTA
+* Cleaned up some code
+
+1/09/2004-
+* Exporting to html will open web browser on Win32 platforms
+* Improved unknown matching when source code and annotation become out of sync
+* Insert filter dialog creates proper filter template (with arity)
+* Safety check takes into account arity of calls
+* double clicking filter shows predicate in code window
+* Fixed bugs in autobta
+* Added builtin support to convex hull analysis
+* Started PyLogen manual, basic toolbar only so far
+* Added transpose example
+
+19/08/2004-
+* Exporting to html added, colour coded annotations with mouse over
+* Find added
+* "find-as-you-type" added press "/" to begin
+* Fixed bug where newline was added on each save
+* pythonw should be used automatically on OS X now
+* Fixed various bugs in distribution building
+
+11/08/2004-
+* Keyb shortcuts Ctrl+ (O)pen (N)ew (S)ave (E)dit
+* Menu keyb shortcuts Alt + underlined char
+* online annotation using safety: is_safe(is(A,B), ground(B)).
+* Tabbed panes for output window
+* Keyb shortcut to change anns Alt-n/p (next/previous)
+* Preferences Saved with anns 
+* Specialisation Goal History
+* Improved error messages
+
+05/08/2004-
+* Fixed Filemenu Bug on Mac
+* Extended Recent File list to 10 items with clear button 
+* Added basic clp support back into logen
+
+04/08/2004-
+* Added "New" Button to PyLogen interface
+* Fixed Bug in Sanity Check (Caused error when running)
+* Added BTA menu
+* Removed Analyse Menu
+* Removed clutter from Spec Bar
+
+03/08/2004-
+* Add insert Filter Toolbar option
+
+
+
+
+

@@ -1,0 +1,8 @@
+:- module('int_env',[]).
+
+logen(lookup, lookup(X,[X|_],[Val|_],Val)).
+logen(lookup, lookup(X,[Y|T],[_|ValT],Res)) :-
+        logen(call, X\=Y),
+        logen(unfold, lookup(X,T,ValT,Res)).
+:- filter
+        lookup(static,static,type(list(dynamic)),dynamic).

@@ -1,0 +1,37 @@
+/* file: /Users/mal/CVS/cogen/logen_examples/map.ann */
+
+:- multifile residual/1, filter/2, ann_clause/3, table/1, static_consult/1.
+:- dynamic residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+static_consult([]).
+
+ann_clause(1, map(_,[],[]), true).
+ann_clause(3, reduce(_,A,[],A), true).
+ann_clause(4, reduce(A,B,[C|D],E), (memo(reduce(A,B,D,F)),call(G=..[A,C,F,E]),ucall(G))).
+ann_clause(5, q(a,b), true).
+ann_clause(6, q(b,c), true).
+ann_clause(7, q(c,d), true).
+ann_clause(8, q(d,e), true).
+ann_clause(9, reduce_add(A,B), unfold(reduce(add,0,A,B))).
+ann_clause(10, add(A,B,C), rescall(C is A+B)).
+ann_clause(11, rev(A,B), memo(rev(A,[],B))).
+ann_clause(12, rev([],A,A), true).
+ann_clause(13, rev([A|B],C,D), memo(rev(B,[A|C],D))).
+ann_clause(2, map(A,[B|C],[D|E]), (call(F=..[A,B,D]),mcall(F),memo(map(A,C,E)))).
+
+residual(map(_,_,_)).
+residual(reduce(_,_,_,_)).
+residual(q(_,_)).
+residual(reduce_add(_,_)).
+residual(add(_,_,_)).
+residual(rev(_,_)).
+residual(rev(_,_,_)).
+
+filter(map(_,_,_), [static,dynamic,dynamic]).
+filter(reduce(_,_,_,_), [static,dynamic,dynamic,dynamic]).
+filter(q(_,_), [dynamic,dynamic]).
+filter(reduce_add(_,_), [dynamic,dynamic]).
+filter(add(_,_,_), [dynamic,dynamic,dynamic]).
+filter(rev(_,_), [dynamic,dynamic]).
+filter(rev(_,_,_), [dynamic,dynamic,dynamic]).
+

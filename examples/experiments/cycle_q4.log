@@ -1,0 +1,97 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen cycle_q4.pl "bench4" 
+ % Generating GX File
+ ! An error occurred
+! Unknown declaration ensure_loaded(xsb_emu_for_sics)
+ ! An error occurred
+! Unknown declaration ensure_loaded(database_cycle)
+ % done
+ % Finished running cogen in 116.2049999912949 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for bench4
+
+/* bench4 :- bench4__0. */
+bench4__0 :-
+        ensure_loaded(database_cycle),
+        abolish_all_tables,
+        cputime(A),
+        b4__1,
+        cputime(B),
+        C is B-A,
+        print(C),
+        nl.
+
+/* b4 :- b4__1. */
+b4__1 :-
+        holds_read__2(_),
+        fail.
+b4__1.
+
+/* holds_read(steve,q(A)) :- holds_read__2(A). */
+holds_read__2(A) :-
+        holds_read__3(B,A),
+        holds_read__4(B).
+
+/* holds_read(steve,p(A,B)) :- holds_read__3(B,A). */
+holds_read__3(B,A) :-
+        p(A,B).
+
+/* holds_read(steve,not(q(A))) :- holds_read__4(A). */
+holds_read__4(A) :-
+        \+holds_read__2(A).
+/* Specialisation time 1.33199999984508 ms (runtime) */
+
+*** Warning: 2 Error(s) occurred!
+
+
+[Mottisfont:logen/examples/experiments] leuschel% logen cycle_q4.pl "bench4" -w
+ % Generating GX File
+ ! An error occurred
+! Unknown declaration ensure_loaded(xsb_emu_for_sics)
+ ! An error occurred
+! Unknown declaration ensure_loaded(database_cycle)
+ % done
+ % Finished running cogen in 145.8139999912328 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for bench4
+
+<| HOMEOMORPHIC WARNING|> : MEMO Atom holds_read(steve,not(q(A))),
+History: [holds_read(steve,q(B)),b4,bench4]
+
+Type 'c' to continue with memoisation, 'F' to fail, 'C' to continue without further intervention, anything else to abort:
+|: c
+
+/* bench4 :- bench4__0. */
+bench4__0 :-
+        ensure_loaded(database_cycle),
+        abolish_all_tables,
+        cputime(A),
+        b4__1,
+        cputime(B),
+        C is B-A,
+        print(C),
+        nl.
+
+/* b4 :- b4__1. */
+b4__1 :-
+        holds_read__2(_),
+        fail.
+b4__1.
+
+/* holds_read(steve,q(A)) :- holds_read__2(A). */
+holds_read__2(A) :-
+        holds_read__3(B,A),
+        holds_read__4(B).
+
+/* holds_read(steve,p(A,B)) :- holds_read__3(B,A). */
+holds_read__3(B,A) :-
+        p(A,B).
+
+/* holds_read(steve,not(q(A))) :- holds_read__4(A). */
+holds_read__4(A) :-
+        \+holds_read__2(A).
+/* Specialisation time 10.82099999899 ms (runtime) */
+
+*** Warning: 2 Error(s) occurred!
+

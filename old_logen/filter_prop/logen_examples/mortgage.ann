@@ -1,0 +1,11 @@
+:- multifile residual/1, clp_residual/1, filter/2, ann_clause/3, table/1, static_consult/1.
+:- dynamic residual/1, clp_residual/1, filter/2, ann_clause/3, table/1, static_consult/1.
+static_consult([]).
+
+
+residual(mortgage(A,B,C,D,E)).
+clp_residual(mortgage(A,B,C,D,E)).
+
+filter(mortgage(A,B,C,D,E),[semi,dynamic,semi,semi,dynamic]).
+ann_clause(2,mortgage(A,B,C,D,E),constraint([B = 0,E = A])).
+ann_clause(3,mortgage(A,B,C,D,E),','(constraint([A>=0,B >= 1,F = (B - 1),G = ((A + (A * C)) - D)]),clpmemo(mortgage(G,F,C,D,E)))).

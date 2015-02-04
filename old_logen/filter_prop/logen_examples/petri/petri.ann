@@ -1,0 +1,41 @@
+/* file: petri.ann */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+
+residual(unsafe).
+filter(unsafe,[]).
+ann_clause(1,unsafe,memo(model_check(A))).
+
+residual(model_check(A)).
+filter(model_check(A),[dynamic]).
+ann_clause(2,model_check(A),(unfold(initial_marking(B)),
+	memo(search_unsafe(A,B)))).
+
+filter(initial_marking(A),[dynamic]).
+ann_clause(3,initial_marking([s(A),s(0),0,0,0]),true).
+/*
+ann_clause(3,initial_marking([A,s(0),0,0,0]),true).
+*/
+
+filter(unsafe_marking(A),[type(list(dynamic))]).
+ann_clause(4,unsafe_marking([A,0,0,0,B]),true).
+ann_clause(5,unsafe_marking([0,A,0,0,B]),true).
+/*
+ann_clause(unsafe_marking([A,B,s(s(C)),D,E]),true).
+*/
+
+residual(search_unsafe(A,B)).
+filter(search_unsafe(A,B),[dynamic,type(list(dynamic))]).
+ann_clause(6,search_unsafe([],A),unfold(unsafe_marking(A))).
+ann_clause(7,search_unsafe([A|B],C),
+	(unfold(trans(A,C,D)),memo(search_unsafe(B,D)))).
+
+filter(trans(A,B,C),[dynamic,type(list(dynamic)),dynamic]).
+ann_clause(8,trans(enter_cs,[s(A),s(B),C,D,E],[A,B,s(C),D,E]),true).
+ann_clause(9,trans(exit_cs,[A,B,s(C),D,E],[A,s(B),C,s(D),E]),true).
+ann_clause(10,trans(restart,[A,B,C,s(D),E],[s(A),B,C,D,s(E)]),true).
+

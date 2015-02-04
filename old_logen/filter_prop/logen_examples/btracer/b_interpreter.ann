@@ -1,0 +1,444 @@
+/* file: btracer/b_interpreter.ann */
+
+:- multifile residual/1, clp_residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic residual/1, clp_residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+
+static_consult([module('~/CVS/BTracer/kernel_mappings'),
+                module('~/CVS/BTracer/b_global_sets'),
+                module('~/CVS/BTracer/xmltools'),
+                module('~/CVS/BTracer/store'),
+                module('~/CVS/BTracer/b_global_sets'),
+                module('~/CVS/BTracer/BTypes'),
+                module('~/CVS/BTracer/bmachine',[b_operation/4,b_machine_precompile/0]),
+                module('~/CVS/BTracer/b_state_model_check'),
+                module(library(clpfd))]).
+
+ 
+ /*  -------------------- for .gx file:
+:-module(gx,[state_violates_invariant_m/2, state_satisfies_invariant_m/2]).
+
+:- use_module('~/CVS/cogen2/logen_source/memo').
+:- use_module('~/CVS/cogen2/logen_source/pp').
+
+:- use_module(kernel_mappings).
+:- ['~/CVS/cogen2/logen_examples/btracer/b_interpreter.ann'].
+
+*/
+
+% use_module('~/CVS/cogen2/logen_examples/btracer/b_interpreter.gx').
+% ['~/CVS/BTracer/btracer'],system:working_directory(_,'/Users/mal/CVS/cogen2/logen_source').
+
+
+residual(b_test_boolean_expression(A,B,C)).
+filter(b_test_boolean_expression(A,B,C),
+          [static,type(list(struct(bind,[nonvar,dynamic]))),
+                  type(list(struct(bind,[nonvar,dynamic])))]).
+ann_clause(1,b_test_boolean_expression([],A,B),true).
+ann_clause(2,b_test_boolean_expression('PredicateParenthesis'(A,[B]),C,D),
+       unfold(b_test_boolean_expression(B,C,D))).
+ann_clause(3,b_test_boolean_expression('Not'(A,[B]),C,D),
+       unfold(b_not_test_boolean_expression(B,C,D))).
+ann_clause(4,b_test_boolean_expression('And'(A,[B,C]),D,E),
+   ','(unfold(debug_print(and1(B))),','(unfold(debug_nl),
+   ','(unfold(b_test_boolean_expression(B,D,E)),
+   ','(unfold(debug_print(and2(C))),
+   ','(unfold(debug_nl),unfold(b_test_boolean_expression(C,D,E)))))))).
+ann_clause(5,b_test_boolean_expression('Implication'(A,[B,C]),D,E),
+   ';'(memo(b_not_test_boolean_expression(B,D,E)),
+       hide_nf(','(memo(b_test_boolean_expression(B,D,E)),
+       memo(b_test_boolean_expression(C,D,E)))))).
+ann_clause(6,b_test_boolean_expression('Equivalence'(A,[B,C]),D,E),
+  ';'(hide_nf(','(memo(b_test_boolean_expression(B,D,E)),
+    memo(b_test_boolean_expression(C,D,E)))),hide_nf(','(memo(b_not_test_boolean_expression(B,D,E)),memo(b_not_test_boolean_expression(C,D,E)))))).
+ann_clause(7,b_test_boolean_expression('Or'(A,[B,C]),D,E),
+   ';'(memo(b_test_boolean_expression(B,D,E)),
+     hide_nf(','(memo(b_not_test_boolean_expression(B,D,E)),
+     memo(b_test_boolean_expression(C,D,E)))))).
+ann_clause(8,b_test_boolean_expression('In'(A,[B,'IntegerSet'(C,D)]),E,F),
+  ','(call(integerset_in_boolean_type(C,G)),
+  ','(unfold(debug_print(integerset_in_boolean_type(C,G))),','(unfold(debug_nl),
+  ','(call('!'),
+  ','(memo(b_compute_expression(B,E,F,H)),
+  ','(resif(hide_nf(call(H = (cons_expr(I,nil_expr)))),rescall(true),
+    hide_nf(call(I = H))),
+    ','(call('=..'(J,[G,I])),','(unfold(debug_print(integerset_in_boolean_type(J))),
+    ','(unfold(debug_nl),rescall(call(J)))))))))))).
+ann_clause(9,b_test_boolean_expression('In'(A,[B,C]),D,E),
+  ','(call('=..'(C,[F,G,[H,I]])),
+  ','(call(binary_in_boolean_type(F,J)),
+  ','(unfold(debug_print(binary_in_bool(F,H,I))),
+  ','(unfold(debug_nl),','(rescall(print('!')),
+  ','(unfold(b_compute_expression(H,D,E,K)),
+  ','(unfold(debug_nl),
+  ','(unfold(b_compute_expression(I,D,E,L)),
+  ','(unfold(debug_nl),
+  ','(unfold(b_compute_expression(B,D,E,M)),
+  ','(resif(hide_nf(call(M = (cons_expr(N,nil_expr)))),
+        rescall(true),hide_nf(call(N = M))),
+  ','(call('=..'(O,[J,N,K,L])),
+  ','(unfold(debug_print(binary_in_bool_kernel_call(O))),
+  ','(unfold(debug_nl),rescall(call(O))))))))))))))))).
+ann_clause(10,b_test_boolean_expression('In'(A,[B,C]),D,E),
+   ','(unfold(b_compute_expression(B,D,E,F)),
+   ','(resif(hide_nf(call(F = (cons_expr(G,nil_expr)))),
+         rescall(true),hide_nf(call(G = F))),
+   ','(unfold(b_compute_expression(C,D,E,H)),
+   ','(unfold(debug_nl),
+       resif(hide_nf(call(H = (global_set(I)))),
+       hide_nf(','(unfold(debug_print(in_type(G,I))),','(unfold(debug_nl),
+       rescall(global_type(G,I))))),
+     hide_nf(','(unfold(debug_print(check_element_of(G,H))),
+     ','(unfold(debug_nl),
+     rescall(check_element_of(G,H))))))))))).
+ann_clause(11,b_test_boolean_expression(A,B,C),
+ ','(call('=..'(A,[D,E,[F,G]])),
+ ','(call(binary_boolean_operator(D,H)),','(unfold(debug_print(binary_bool(D))),
+ ','(unfold(debug_nl),
+ ','(call('!'),
+ ','(unfold(b_compute_expression(F,B,C,I)),','(unfold(debug_nl),
+ ','(unfold(b_compute_expression(G,B,C,J)),','(unfold(debug_nl),
+ ','(call('=..'(K,[H,I,J])),
+ ','(unfold(debug_print(binary_bool_kernel_call(K))),','(unfold(debug_nl),
+ rescall(call(K))))))))))))))).
+ann_clause(12,b_test_boolean_expression(A,B,C),
+ ','(call('=..'(A,[D,E,[F,G]])),
+ ','(call(binary_boolean_operator_arg1islist(D,H)),
+ ','(unfold(debug_print(binary_bool_arg1(D,F,G))),','(unfold(debug_nl),
+ ','(rescall(print('!')),
+ ','(unfold(b_compute_expression(F,B,C,I)),
+ ','(resif(hide_nf(call(I = (cons_expr(J,nil_expr)))),rescall(true),hide_nf(call(J = I))),
+ ','(unfold(debug_nl),
+ ','(unfold(b_compute_expression(G,B,C,K)),','(unfold(debug_nl),
+ ','(call('=..'(L,[H,J,K])),','(unfold(debug_print(binary_bool_kernel_call(L))),','(unfold(debug_nl),rescall(call(L)))))))))))))))).
+
+residual(b_not_test_boolean_expression(A,B,C)).
+filter(b_not_test_boolean_expression(A,B,C),
+          [static,type(list(struct(bind,[nonvar,dynamic]))),
+                  type(list(struct(bind,[nonvar,dynamic])))]).
+                  
+ann_clause(13,b_not_test_boolean_expression([],A,B),
+    ','(rescall(print(b_not_empty)),','(rescall(nl),','(rescall(print('!')),rescall(fail))))).
+ann_clause(14,b_not_test_boolean_expression('PredicateParenthesis'(A,[B]),C,D),
+    unfold(b_not_test_boolean_expression(B,C,D))).
+ann_clause(15,b_not_test_boolean_expression('Not'(A,[B]),C,D),
+    unfold(b_test_boolean_expression(B,C,D))).
+ann_clause(16,b_not_test_boolean_expression('And'(A,[B,C]),D,E),
+  ';'(memo(b_not_test_boolean_expression(B,D,E)),hide_nf(','(memo(b_test_boolean_expression(B,D,E)),memo(b_not_test_boolean_expression(C,D,E)))))).
+ann_clause(17,b_not_test_boolean_expression('Implication'(A,[B,C]),D,E),','(memo(b_test_boolean_expression(B,D,E)),memo(b_not_test_boolean_expression(C,D,E)))).
+ann_clause(18,b_not_test_boolean_expression('Equivalence'(A,[B,C]),D,E),';'(hide_nf(','(memo(b_test_boolean_expression(B,D,E)),memo(b_not_test_boolean_expression(C,D,E)))),hide_nf(','(memo(b_not_test_boolean_expression(B,D,E)),memo(b_test_boolean_expression(C,D,E)))))).
+ann_clause(19,b_not_test_boolean_expression('Or'(A,[B,C]),D,E),
+ ','(unfold(b_not_test_boolean_expression(B,D,E)),
+     unfold(b_not_test_boolean_expression(C,D,E)))).
+ann_clause(20,b_not_test_boolean_expression('In'(A,[B,'IntegerSet'(C,D)]),E,F),
+   ','(call(integerset_not_in_boolean_type(C,G)),
+   ','(unfold(debug_print(integerset_not_in_boolean_type(ntSet,G))),','(unfold(debug_nl),
+   ','(call('!'),','(memo(b_compute_expression(B,E,F,H)),
+   ','(resif(hide_nf(call(H = (cons_expr(I,nil_expr)))),
+   rescall(true),hide_nf(call(I = H))),','(call('=..'(J,[G,I])),
+   ','(unfold(debug_print(integerset_not_in_boolean_type(J))),
+   ','(unfold(debug_nl),rescall(call(J)))))))))))).
+ann_clause(21,b_not_test_boolean_expression('In'(A,[B,C]),D,E),
+   ','(call('=..'(C,[F,G,[H,I]])),
+   ','(call(binary_not_in_boolean_type(F,J)),
+   ','(unfold(debug_print(binary_not_in_bool(F,H,I))),','(unfold(debug_nl),
+   ','(call('!'),
+   ','(unfold(b_compute_expression(H,D,E,K)),
+   ','(unfold(debug_nl),
+   ','(unfold(b_compute_expression(I,D,E,L)),','(unfold(debug_nl),
+   ','(unfold(b_compute_expression(B,D,E,M)),
+   ','(resif(hide_nf(call(M = (cons_expr(N,nil_expr)))),rescall(true),hide_nf(call(N = M))),
+   ','(call('=..'(O,[J,N,K,L])),','(unfold(debug_print(binary_not_in_bool_kernel_call(O))),
+   ','(unfold(debug_nl),rescall(call(O))))))))))))))))).
+ann_clause(22,b_not_test_boolean_expression(A,B,C),
+ ','(call('=..'(A,[D,E,[F,G]])),
+ ','(call(negate_binary_boolean_operator(D,H)),','(rescall(print('!')),
+ ','(call('=..'(I,[H,E,[F,G]])),
+ memo(b_test_boolean_expression(I,B,C))))))).
+
+residual(b_compute_expression(A,B,C,D)).
+filter(b_compute_expression(A,B,C,D),
+          [static,type(list(struct(bind,[nonvar,dynamic]))),
+                  type(list(struct(bind,[nonvar,dynamic]))),dynamic]).
+
+ann_clause(23,b_compute_expression([],A,B,nil_expr),rescall(print('!'))).
+ann_clause(24,b_compute_expression([A|B],C,D,cons_expr(E,F)),
+ ','(unfold(b_compute_expression(A,C,D,E)),
+ ','(unfold(b_compute_expression(B,C,D,F)),rescall(print('!'))))).
+ann_clause(25,b_compute_expression('ExpressionParenthesis'(A,[B]),C,D,E),
+    unfold(b_compute_expression(B,C,D,E))).
+ann_clause(26,b_compute_expression('Boolean'('FALSE',A),B,C,D),call(D = (term(false)))).
+ann_clause(27,b_compute_expression('Boolean'('TRUE',A),B,C,D),call(D = (term(true)))).
+ann_clause(28,b_compute_expression('BooleanSet'(A,B),C,D,E),call(E = ([term(true),term(false)]))).
+ann_clause(29,b_compute_expression('EmptySet'(A,B),C,D,E),call(empty_set(E))).
+ann_clause(30,b_compute_expression('EmptySequence'(A,B),C,D,E),call(empty_sequence(E))).
+ann_clause(31,b_compute_expression('Identifier'(A,B),C,D,E),
+ ','(unfold(debug_print(call_lookup_value(A,C,D,E))),
+ ','(unfold(debug_nl),
+ ','(unfold(lookup_value_in_store_and_global_sets(A,C,D,E)),
+ ','(unfold(debug_print(b_comp_expr_id(A,E))),unfold(debug_nl)))))).
+ann_clause(32,b_compute_expression('IdentifierComposed'(A,[B]),C,D,E),
+  unfold(b_compute_expression(B,C,D,E))).
+ann_clause(33,b_compute_expression('ListExpression'(A,B),C,D,E),
+   unfold(b_compute_list_of_expression(B,C,D,E))).
+ann_clause(34,b_compute_expression('ExtensionSet'(A,[B]),C,D,E),
+ ','(memo(b_compute_expression(B,C,D,F)),memo(convert_list_of_expressions_into_set(F,E)))).
+ann_clause(35,b_compute_expression('ExtensionSet'(A),B,C,D),
+ ','(memo(b_compute_expression(A,B,C,E)),','(unfold(debug_print('SimpleExtensionSet'(E))),','(rescall(nl),call(D = ([E])))))).
+ann_clause(36,b_compute_expression('ExtensionSequence'(A,[B]),C,D,E),
+ ','(memo(b_compute_expression(B,C,D,F)),memo(convert_list_of_expressions_into_sequence(F,E)))).
+ann_clause(37,b_compute_expression('PredicateExpression'(A,[B]),C,D,E),';'(hide_nf(','(rescall(print(pred_exp(B))),','(memo(b_test_boolean_expression(B,C,D)),call(E = (term(true)))))),hide_nf(','(memo(b_not_test_boolean_expression(B,C,D)),call(E = (term(false))))))).
+ann_clause(38,b_compute_expression('OrderedPair'(A,[B,C]),D,E,','(F,G)),','(unfold(debug_print(pair)),','(memo(b_compute_expression(B,D,E,F)),','(memo(b_compute_expression(C,D,E,G)),unfold(debug_print(pair(F,G))))))).
+ann_clause(39,b_compute_expression(A,B,C,D),
+ ','(call(nonvar(A)),','(call('=..'(A,[E,F,[G]])),
+ ','(call(unary_function(E,H)),','(rescall(print('!')),
+ ','(unfold(debug_print(unary_fun(E))),
+ ','(unfold(b_compute_expression(G,B,C,I)),
+ ','(unfold(debug_print(arg1(E,I))),
+ ','(rescall(expand_global_sets(I,J)),
+ ','(call('=..'(K,[H,J,D])),
+ ','(unfold(debug_print(kernel_call(K))),','(unfold(debug_nl),
+ ','(rescall(call(K)),','(unfold(debug_print(kernel_res(K))),unfold(debug_nl))))))))))))))).
+ann_clause(40,b_compute_expression(A,B,C,D),
+','(call('=..'(A,[E,F,[G,H]])),
+ ','(call(binary_function(E,I)),','(rescall(print('!')),','(unfold(debug_print(binary_fun(E))),
+ ','(unfold(b_compute_expression(G,B,C,J)),
+ ','(unfold(debug_print(arg1(E,J))),
+ ','(unfold(b_compute_expression(H,B,C,K)),
+ ','(unfold(debug_print(arg2(E,K))),','(memo(expand_global_sets(J,L))
+ ,','(rescall(expand_global_sets(K,M)),
+ ','(call('=..'(N,[I,L,M,D])),
+ ','(rescall(call(N)),','(unfold(debug_print(kernel_res(N))),unfold(debug_nl))))))))))))))).
+ann_clause(41,b_compute_expression('Integer'(A,B),C,D,int(A)),rescall(print('!'))).
+
+residual(expand_global_sets(A,B)).
+filter(expand_global_sets(A,B),[dynamic,dynamic]).
+ann_clause(42,expand_global_sets(A,B),memo(when(nonvar(A),';'('->'(A = (global_set(C)),','(all_elements_of_type(C,B),','(print('^'),','(print(C),print('^ '))))),B = A)))).
+
+residual(convert_list_of_expressions_into_sequence(A,B)).
+filter(convert_list_of_expressions_into_sequence(A,B),[dynamic,dynamic]).
+ann_clause(43,convert_list_of_expressions_into_sequence(nil_expr,nil_seq),true).
+ann_clause(44,convert_list_of_expressions_into_sequence(cons_expr(A,B),cons(A,C)),memo(convert_list_of_expressions_into_sequence(B,C))).
+
+residual(convert_list_of_expressions_into_set(A,B)).
+filter(convert_list_of_expressions_into_set(A,B),[dynamic,dynamic]).
+ann_clause(45,convert_list_of_expressions_into_set(nil_expr,[]),true).
+ann_clause(46,convert_list_of_expressions_into_set(cons_expr(A,B),[A|C]),memo(convert_list_of_expressions_into_set(B,C))).
+
+residual(b_compute_list_of_expression(A,B,C,D)).
+filter(b_compute_list_of_expression(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(47,b_compute_list_of_expression([],A,B,nil_expr),true).
+ann_clause(48,b_compute_list_of_expression([A|B],C,D,cons_expr(E,F)),','(memo(b_compute_expression(A,C,D,E)),memo(b_compute_list_of_expression(B,C,D,F)))).
+
+
+residual(lookup_value_in_store_and_global_sets(A,B,C)).
+filter(lookup_value_in_store_and_global_sets(A,B,C),[dynamic,dynamic,dynamic]).
+
+ann_clause(49,lookup_value_in_store_and_global_sets(A,B,C),
+   if(unfold(lookup_value(A,B,D)),
+       call(D = C),
+       if(call(b_global_set(A)),
+                call(C = (global_set(A))),
+                if(call(b_reserved_identifier(A)),
+                      call(C = (reserved_id(A))),
+                      if(call(lookup_global_constant(A,E)),
+                         call(C = E),
+                         hide_nf(','(rescall(print(lookup_failed(A,B))),
+                                 ','(rescall(nl),call(C = (term(A)))))))
+          ))
+       )).
+
+residual(lookup_value_in_store_and_global_sets(A,B,C,D)).
+filter(lookup_value_in_store_and_global_sets(A,B,C,D),
+          [static,type(list(struct(bind,[nonvar,dynamic]))),
+                  type(list(struct(bind,[nonvar,dynamic]))),dynamic]).
+ann_clause(50,lookup_value_in_store_and_global_sets(A,B,C,D),
+    if(call(lookup_value(A,B,C,E)),
+       call(E = D),
+       if(call(b_global_set(A)),
+          call(D = (global_set(A))),
+          if(call(b_reserved_identifier(A)),
+             call(D = (reserved_id(A))),
+             if(call(lookup_global_constant(A,F)),
+                call(D = F),
+                hide_nf(','(rescall(print(llookup_failed(A,C))),
+                        ','(rescall(nl),call(D = (term(A))))))))
+       )
+    
+    )).
+
+residual(b_reserved_identifier(A)).
+filter(b_reserved_identifier(A),[dynamic]).
+ann_clause(51,b_reserved_identifier('NAT'),true).
+ann_clause(52,b_reserved_identifier('NAT1'),true).
+ann_clause(53,b_reserved_identifier('NATURAL'),true).
+ann_clause(54,b_reserved_identifier('INT'),true).
+ann_clause(55,b_reserved_identifier('INTEGER'),true).
+ann_clause(56,b_reserved_identifier('BOOL'),true).
+
+
+residual(b_compute_expressions(A,B,C,D)).
+filter(b_compute_expressions(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(57,b_compute_expressions([],A,B,[]),true).
+ann_clause(58,b_compute_expressions([A|B],C,D,[E|F]),
+','(memo(b_compute_expression(A,C,D,E)),memo(b_compute_expressions(B,C,D,F)))).
+
+residual(b_execute_statement(A,B,C,D)).
+filter(b_execute_statement(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(59,b_execute_statement('SubstitutionBecomeEqualVariables'(A,[B,'ListExpression'(C,D)]),E,F,G),','(unfold(debug_print('assign: ')),','(memo(get_identifiers(B,H)),','(memo(b_compute_expressions(D,E,F,I)),memo(store_values(H,I,G)))))).
+ann_clause(60,b_execute_statement('SubstitutionBegin'(A,[B]),C,D,E),memo(b_execute_statement(B,C,D,E))).
+ann_clause(61,b_execute_statement('SubstitutionChoice'(A,[B,C]),D,E,F),','(unfold(debug_print(choice(B,C))),','(unfold(debug_nl),';'(memo(b_execute_statement(B,D,E,F)),memo(b_execute_statement(C,D,E,F)))))).
+ann_clause(62,b_execute_statement('SubstitutionBecomeEqualVariables'(A,[B,C]),D,E,F),','(unfold(debug_print('assign: ')),','(memo(get_identifier_from_single_arg(B,G)),','(unfold(debug_print(id)),','(unfold(debug_print(' := ')),','(memo(b_compute_expression(C,D,E,H)),','(unfold(debug_print(val(H))),','(unfold(debug_nl),';'(hide_nf(','(call(H = (abort(I))),','(memo(store_value(abort__flag__info,I,[],J)),','(rescall(print(abort_assign(I))),','(rescall(nl),memo(store_value(G,H,J,F))))))),hide_nf(','(memo(not_top_level_functor(H,abort)),memo(store_value(G,H,[],F))))))))))))).
+ann_clause(63,b_execute_statement('SubstitutionSetIn'(A,[B,C]),D,E,F),','(unfold(debug_print('assign from set: ')),','(memo(get_identifier_from_single_arg(B,G)),','(unfold(debug_print(id)),','(unfold(debug_print(' := ')),','(memo(b_compute_expression(C,D,E,H)),','(unfold(debug_print(set(H))),','(unfold(debug_nl),','(memo(member(I,H)),','(unfold(debug_print(val(I))),','(unfold(debug_nl),';'(hide_nf(','(call(I = (abort(J))),','(memo(store_value(abort__flag__info,J,[],K)),','(rescall(print(abort_assign(J))),','(rescall(nl),memo(store_value(G,I,K,F))))))),hide_nf(','(memo(not_top_level_functor(I,abort)),memo(store_value(G,I,[],F)))))))))))))))).
+ann_clause(64,b_execute_statement('SubstitutionBecomeEqualFunction'(A,['CallFunction'(B,[C,D]),E]),F,G,H),','(unfold(debug_print(assignfun)),','(unfold(debug_nl),','(memo(get_identifier_from_single_arg(C,I)),','(unfold(debug_print(I)),','(memo(b_compute_expression(D,F,G,J)),','(unfold(debug_print(J)),','(unfold(debug_print(' := ')),','(memo(b_compute_expression(E,F,G,K)),','(unfold(debug_print(rhsval(K))),','(unfold(debug_nl),','(memo(lookup_value_for_existing_id(I,G,L)),','(memo(override(L,J,K,M)),memo(store_value(I,M,[],H))))))))))))))).
+ann_clause(65,b_execute_statement('SubstitutionPrecondition'(A,[B,C]),D,E,F),','(rescall(print('*** Non-outermost PRE construct')),','(rescall(nl),';'(hide_nf(','(memo(b_test_boolean_expression(B,D,E)),','(rescall(print('PRE ok')),','(rescall(nl),','(memo(b_execute_statement(C,D,E,F)),','(unfold(debug_print(newstate(F))),unfold(debug_nl))))))),hide_nf(','(memo(b_not_test_boolean_expression(B,D,E)),','(rescall(print('PRE false  => ABORT')),','(rescall(nl),memo(store_value(abort,pre_condition_violated(B),E,F)))))))))).
+ann_clause(66,b_execute_statement('SubstitutionSelect'(A,[B,'Then'(C,[D])|E]),F,G,H),';'(hide_nf(','(memo(b_test_boolean_expression(B,F,G)),','(unfold(debug_print('In PreCond')),','(unfold(debug_nl),memo(b_execute_statement(D,F,G,H)))))),hide_nf(';'(hide_nf(','(memo(member('When'(I,[J,K]),E)),','(memo(b_test_boolean_expression(J,F,G)),','(unfold(debug_print('In When')),','(unfold(debug_nl),memo(b_execute_statement(K,F,G,H))))))),hide_nf(','(unfold(debug_print('In Else of Select')),','(unfold(debug_nl),','(memo(member('Else'(L,[M]),E)),memo(b_execute_statement(M,F,G,H)))))))))).
+ann_clause(67,b_execute_statement('SubstitutionAny'(A,[B,C,D]),E,F,G),','(unfold(debug_print(any)),','(call(B = ('ListIdent'(H,I))),','(memo(l_get_identifier(I,J)),','(unfold(debug_print(par(J))),','(memo(same_length(J,K)),','(memo(set_up_localstate(J,K,E,L)),','(unfold(debug_print(where)),','(unfold(debug_nl),','(memo(b_test_boolean_expression(C,L,F)),','(unfold(debug_print(where_precondition_ok)),','(unfold(debug_nl),','(memo(b_execute_statement(D,L,F,G)),','(unfold(debug_print(newstate(G))),unfold(debug_nl))))))))))))))).
+ann_clause(68,b_execute_statement('Then'(A,[B]),C,D,E),','(unfold(debug_print(then)),memo(b_execute_statement(B,C,D,E)))).
+ann_clause(69,b_execute_statement('SubstitutionSkip'(A,[]),B,C,D),','(unfold(debug_print(skip)),call(D = []))).
+ann_clause(70,b_execute_statement('Parallel'(A,B),C,D,E),','(rescall(print('!')),','(unfold(debug_print(par)),','(memo(b_execute_statements_in_parallel(B,C,D,E)),','(unfold(debug_print(end_par)),unfold(debug_nl)))))).
+ann_clause(71,b_execute_statement('SubstitutionIf'(A,[B,'Then'(C,[D]),'Else'(E,[F])]),G,H,I),','(unfold(debug_print(if_then_else)),','(unfold(debug_nl),','(memo(b_execute_if_then_else(B,D,F,G,H,I)),','(unfold(debug_print(newstate(I))),unfold(debug_nl)))))).
+ann_clause(72,b_execute_statement('SubstitutionIf'(A,[B,'Then'(C,[D])]),E,F,G),','(unfold(debug_print(if_then)),','(unfold(debug_nl),','(memo(b_execute_if_then_else(B,D,'SubstitutionSkip'(H,I),E,F,G)),','(unfold(debug_print(newstate(G))),unfold(debug_nl)))))).
+ann_clause(73,b_execute_statement(A,B,C,D),','(rescall(print(uncovered_statement(A))),','(rescall(nl),rescall(fail)))).
+
+residual(b_execute_if_then_else(A,B,C,D,E,F)).
+filter(b_execute_if_then_else(A,B,C,D,E,F),[dynamic,dynamic,dynamic,dynamic,dynamic,dynamic]).
+ann_clause(74,b_execute_if_then_else(A,B,C,D,E,F),','(memo(b_test_boolean_expression(A,D,E)),','(unfold(debug_print(if_test_ok)),','(unfold(debug_nl),memo(b_execute_statement(B,D,E,F)))))).
+ann_clause(75,b_execute_if_then_else(A,B,C,D,E,F),','(memo(b_not_test_boolean_expression(A,D,E)),','(unfold(debug_print(if_neg_test_ok)),','(unfold(debug_nl),memo(b_execute_statement(C,D,E,F)))))).
+
+residual(store_values(A,B,C)).
+filter(store_values(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(76,store_values([],[],[]),true).
+ann_clause(77,store_values([A|B],[C|D],E),','(resif(hide_nf(call(C = (abort(F)))),hide_nf(','(memo(store_value(abort__flag__info,F,[],[G])),','(memo(store_value(A,C,[],[H])),','(rescall(print(abort_multi_assign(F))),','(rescall(nl),call(E = ([G,H|I]))))))),hide_nf(','(memo(store_value(A,C,[],[H])),call(E = ([H|I]))))),memo(store_values(B,D,I)))).
+
+residual(b_execute_statements_in_parallel(A,B,C,D)).
+filter(b_execute_statements_in_parallel(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(78,b_execute_statements_in_parallel([],A,B,[]),true).
+ann_clause(79,b_execute_statements_in_parallel([A|B],C,D,E),','(memo(b_execute_statement(A,C,D,F)),','(unfold(debug_print(par1(F))),','(unfold(debug_nl),','(memo(b_execute_statements_in_parallel(B,C,D,G)),','(unfold(debug_print(app(F,G))),','(unfold(debug_nl),memo(append(F,G,E))))))))).
+
+residual(b_execute_top_level_statement(A,B,C,D)).
+filter(b_execute_top_level_statement(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(80,b_execute_top_level_statement('SubstitutionPrecondition'(A,[B,C]),D,E,F),','(unfold(debug_print(top_level_pre)),','(unfold(debug_nl),','(memo(b_test_boolean_expression(B,D,E)),','(unfold(debug_print(top_level_precondition_ok)),','(unfold(debug_nl),','(memo(b_execute_statement(C,D,E,F)),','(unfold(debug_print(newstate(F))),unfold(debug_nl))))))))).
+ann_clause(81,b_execute_top_level_statement(A,B,C,D),','(resnot(A = ('SubstitutionPrecondition'(E,[F,G]))),memo(b_execute_statement(A,B,C,D)))).
+
+residual(b_execute_operation(A,B,C,D)).
+filter(b_execute_operation(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(82,b_execute_operation(A,B,C,D),memo(b_execute_operation(E,A,B,C,D))).
+
+residual(b_execute_operation(A,B,C,D,E)).
+filter(b_execute_operation(A,B,C,D,E),[dynamic,dynamic,dynamic,dynamic,dynamic]).
+ann_clause(83,b_execute_operation(A,B,C,D,E),','(memo(b_execute_operation2(A,B,C,E,F)),memo(store_updates_and_normalise(F,C,D)))).
+
+residual(b_execute_operation_wo_normalise(A,B,C,D,E)).
+filter(b_execute_operation_wo_normalise(A,B,C,D,E),[dynamic,dynamic,dynamic,dynamic,dynamic]).
+ann_clause(84,b_execute_operation_wo_normalise(A,B,C,D,E),','(memo(b_execute_operation2(A,B,C,E,F)),memo(store_updates(F,C,D)))).
+
+residual(b_execute_operation2(A,B,C,D,E)).
+filter(b_execute_operation2(A,B,C,D,E),[dynamic,dynamic,dynamic,dynamic,dynamic]).
+ann_clause(85,b_execute_operation2(A,B,C,D,E),','(memo(b_operation(A,F,G,H)),','(memo(same_length(F,I)),','(memo(set_up_localstate(F,I,[],J)),','(rescall('=..'(K,[A|I])),','(unfold(debug_nl),','(unfold(debug_print('Attempting Operation ------------> ')),','(unfold(debug_print(K)),','(unfold(debug_nl),','(unfold(debug_print(call(b_execute_top_level_statement(H,J,C,L)))),','(unfold(debug_nl),','(memo(b_execute_top_level_statement(H,J,C,L)),','(memo(lookup_value_for_existing_id(abort__flag__info,L,C,D)),','(unfold(debug_print('Operation Successful ------> ')),','(memo(get_results(G,L,M,E)),','(unfold(debug_print(results(M))),','(unfold(debug_nl),resif(hide_nf(call(M = [])),hide_nf(call(B = K)),rescall('=..'(B,['-->',K,M])))))))))))))))))))).
+
+residual(get_results(A,B,C,D)).
+filter(get_results(A,B,C,D),[dynamic,dynamic,dynamic,dynamic]).
+ann_clause(86,get_results([],A,[],A),true).
+ann_clause(87,get_results([A|B],C,[D|E],F),','(memo(lookup_and_delete_value(A,D,C,G)),memo(get_results(B,G,E,F)))).
+
+residual(debug_print(A)).
+filter(debug_print(A),[dynamic]).
+ann_clause(88,debug_print(A),true).
+
+residual(debug_nl).
+filter(debug_nl,[]).
+ann_clause(89,debug_nl,true).
+
+residual(member(A,B)).
+filter(member(A,B),[dynamic,dynamic]).
+ann_clause(90,member(A,[A|B]),true).
+ann_clause(91,member(A,[B|C]),memo(member(A,C))).
+
+residual(get_arguments(A,B,C)).
+filter(get_arguments(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(92,get_arguments([],A,A),true).
+ann_clause(93,get_arguments([A|B],C,D),','(rescall('=..'(E,[A,F,G])),','(memo(member(E,C)),memo(get_arguments(B,G,D))))).
+ann_clause(94,get_arguments([A|B],C,D),','(rescall('=..'(E,[A,F,G])),','(resnot(member(E,C)),','(rescall(print('### illegal XMLArgs in get_arguments')),','(rescall(nl),','(rescall(print('### expected tag: ')),','(rescall(print(A)),','(rescall(nl),','(rescall(print('### XMLArgs: ')),','(rescall(print(C)),','(rescall(nl),rescall(fail)))))))))))).
+
+residual(get_name(A,B)).
+filter(get_name(A,B),[dynamic,dynamic]).
+ann_clause(95,get_name(A,B),','(memo(member('Name'(C,D),A)),memo(get_identifier(D,B)))).
+
+residual(l_get_identifier(A,B)).
+filter(l_get_identifier(A,B),[dynamic,dynamic]).
+ann_clause(96,l_get_identifier([],[]),true).
+ann_clause(97,l_get_identifier([A|B],[C|D]),','(memo(get_identifier_from_single_arg(A,C)),memo(l_get_identifier(B,D)))).
+
+residual(get_identifier_from_single_arg(A,B)).
+filter(get_identifier_from_single_arg(A,B),[dynamic,dynamic]).
+ann_clause(98,get_identifier_from_single_arg(A,B),memo(get_identifier([A],B))).
+
+residual(get_identifiers(A,B)).
+filter(get_identifiers(A,B),[dynamic,dynamic]).
+ann_clause(99,get_identifiers('Identifiers'(A,B),C),memo(get_identifiers1(B,C))).
+
+residual(get_identifiers1(A,B)).
+filter(get_identifiers1(A,B),[dynamic,dynamic]).
+ann_clause(100,get_identifiers1([],[]),true).
+ann_clause(101,get_identifiers1(['IdentifierComposed'(A,['Identifier'(B,C)])|D],[B|E]),memo(get_identifiers1(D,E))).
+
+residual(get_identifier(A,B)).
+filter(get_identifier(A,B),[dynamic,dynamic]).
+ann_clause(102,get_identifier(A,B),memo(member('Identifier'(B,C),A))).
+ann_clause(103,get_identifier(A,B),','(memo(member('IdentifierComposed'(C,D),A)),memo(get_identifier(D,B)))).
+ann_clause(104,get_identifier(A,B),','(memo(member('Identifiers'(C,D),A)),memo(get_identifier(D,B)))).
+
+residual(get_identifier_nr_from_composed(A,B,C)).
+filter(get_identifier_nr_from_composed(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(105,get_identifier_nr_from_composed(A,B,0),memo(member('Identifier'(B,C),A))).
+ann_clause(106,get_identifier_nr_from_composed(A,B,C),','(memo(member('IdentifierComposed'(D,E),A)),','(memo(get_identifier_nr_from_composed(E,B,F)),rescall(C is (F + 1))))).
+
+
+
+
+
+
+
+
+
+residual(state_satisfies_invariant(A)).
+filter(state_satisfies_invariant(A),[dynamic]).
+ann_clause(9171,state_satisfies_invariant(A),
+  ','(call(b_set_up_valid_state(A)),
+  ','(call(b_extract_types_and_invariant(B,C,D)),
+      memo(b_test_boolean_expression(D,[],A))))).
+
+residual(state_violates_invariant(A)).
+filter(state_violates_invariant(A),[dynamic]).
+ann_clause(9172,state_violates_invariant(A),
+  ','(call((print('/* '),b_machine_precompile,b_types_precompile,
+            b_check_and_precompile_global_set_type_definitions,
+            b_set_up_valid_state(A),
+            print(set_up(A)),nl)),','(
+      call((b_extract_types_and_invariant(B,C,D),print(beti(B,C,D)),
+             print(' */'), nl)),
+      memo(b_not_test_boolean_expression(D,[],A))))).
+      
+      
+      residual(s(A)).
+filter(s(A),[dynamic]).
+ann_clause(9172,s(A),
+  ','(call((b_machine_precompile,b_types_precompile,
+            b_check_and_precompile_global_set_type_definitions,
+            b_set_up_valid_state(A),
+            print(set_up(A)),nl)),','(
+      call((b_extract_types_and_invariant(B,C,D),print(beti(B,C,D)),nl)),
+      hide_nf(memo(b_not_test_boolean_expression(D,[],A)))))).
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+     

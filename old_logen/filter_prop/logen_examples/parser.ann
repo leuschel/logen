@@ -1,0 +1,39 @@
+
+:- multifile static_consult/1, ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1, static_consult/1.
+
+static_consult([]).
+
+ann_clause(1,nont(X,T,R), (unfold(t(a,T,V)),memo(nont(X,V,R)))).
+ann_clause(2,nont(X,T,R), (unfold(t(X,T,R)))).
+
+ann_clause(3,t(X,[X|Es],Es),true).
+
+filter(nont(X,T,R),[static,dynamic,dynamic]).
+residual(nont(_,_,_)).
+
+/*
+
+Proposal for new version of annotation:
+
+:- use_module(logen).
+:- use_package(logen).
+
+:- residual nont/3.
+:- filter nont(static,dynamic,dynamic).
+
+nont(X,T,R) :- 'logen:unfold'(t(a,T,V)), 'logen:memo'(nont(X,V,R)).
+nont(X,T,R) :- 'logen:unfold'(t(X,T,R)).
+
+:- filter t(static,dynamic,dynamic).
+
+t(X,[Y|Es],Es) :- 'logen:call'(X=Y).
+
+
+other possible annotations:
+
+:- filter test(type(list(dynamic)),nonvar,
+               type(struct(cons,[static,dynamic])),tree(dynamic)).
+
+:- type tree(A) -->  nil | tree(A,tree(A),tree(A)).
+*/

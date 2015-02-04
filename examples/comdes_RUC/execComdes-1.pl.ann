@@ -1,0 +1,365 @@
+logen(test/1,test(A)) :-
+        logen(unfold,zeroList(A,B)),
+        logen(unfold,trueList(A,C)),
+        logen(unfold,exec(airPumpSystem(C,B,B,B,_,_,_,_))).
+logen(zeroList/2,zeroList(0,[])).
+logen(zeroList/2,zeroList(A,[0|B])) :-
+        logen(call,A>0),
+        logen(call,C is A-1),
+        logen(unfold,zeroList(C,B)).
+logen(trueList/2,trueList(0,[])).
+logen(trueList/2,trueList(A,[true|B])) :-
+        logen(call,A>0),
+        logen(call,C is A-1),
+        logen(unfold,trueList(C,B)).
+logen(exec/1,exec(A)) :-
+        logen(unfold,expandDesign((A,true),B)),
+        logen(memo,oneStepExec(B)).
+logen(oneStepExec/1,oneStepExec(A)) :-
+        logen(call,A\==[]),
+        logen(unfold,oneStepExpand(A,B)),
+        logen(rescall,write(A)),
+        logen(rescall,nl),
+        logen(rescall,nl),
+        logen(memo,oneStepExec(B)).
+logen(oneStepExec/1,oneStepExec([])).
+logen(oneStepExpand/2,oneStepExpand([true|A],B)) :-
+        logen(unfold,oneStepExpand(A,B)).
+logen(oneStepExpand/2,oneStepExpand([A|B],[C|D])) :-
+        logen(unfold,component(A,E,C)),
+        logen(unfold,solve(E)),
+        logen(unfold,oneStepExpand(B,D)).
+logen(oneStepExpand/2,oneStepExpand([],[])).
+logen(expandDesign/2,expandDesign(A,B)) :-
+        logen(unfold,conjunct(A,C,D)),
+        logen(unfold,expandDesign(C,E)),
+        logen(unfold,expandDesign(D,F)),
+        logen(unfold,app(E,F,B)).
+logen(expandDesign/2,expandDesign(true,[])).
+logen(expandDesign/2,expandDesign(A,B)) :-
+        logen(unfold,box(A)),
+        logen(unfold,comdesClause(A,C)),
+        logen(unfold,expandDesign(C,B)).
+logen(expandDesign/2,expandDesign(A,[B])) :-
+        logen(unfold,machine(A,B)).
+logen(expandDesign/2,expandDesign(A,[A])) :-
+        logen(unfold,basicComponent(A)).
+logen(conjunct/3,conjunct((A,B),A,B)).
+logen(component/3,component(A,B,C)) :-
+        logen(unfold,basicComponent(A)),
+        logen(unfold,comdesClause(A,(B,C))).
+logen(component/3,component(A,true,true)) :-
+        logen(unfold,basicComponent(A)),
+        logen(unfold,comdesClause(A,true)).
+logen(app/3,app([],A,A)).
+logen(app/3,app([A|B],C,[A|D])) :-
+        logen(unfold,app(B,C,D)).
+logen(box/1,box(A)) :-
+        logen(unfold,comdesClause(box(A),true)).
+logen(basicComponent/1,basicComponent(A)) :-
+        logen(unfold,comdesClause(basicComponent(A),true)).
+logen(machine/2,machine(A,B)) :-
+        logen(unfold,comdesClause(machine(A,B),true)).
+logen(solve/1,solve(true)).
+logen(solve/1,solve((A,B))) :-
+        logen(unfold,solve(A)),
+        logen(unfold,solve(B)).
+logen(solve/1,solve(A)) :-
+        logen(call,A\==true),
+        logen(unfold,builtin(A)),
+        logen(rescall,call(A)).
+logen(solve/1,solve(A)) :-
+        logen(unfold,comdesClause(A,B)),
+        logen(unfold,solve(B)).
+logen(builtin/1,builtin(A)) :-
+        logen(call,functor(A,B,C)),
+        logen(unfold,builtin_export(_,B,C,_)).
+logen(builtin_export/4,builtin_export(arithmetic,is,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,<,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,=<,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,>,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,>=,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,=:=,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,=\=,2,0)).
+logen(builtin_export/4,builtin_export(arithmetic,arithexpression,1,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,name,2,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,atom_codes,2,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,number_codes,2,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,number_codes,3,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,atom_length,2,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,atom_concat,3,0)).
+logen(builtin_export/4,builtin_export(atomic_basic,sub_atom,4,0)).
+logen(builtin_export/4,builtin_export(attributes,attach_attribute,2,0)).
+logen(builtin_export/4,builtin_export(attributes,get_attribute,2,0)).
+logen(builtin_export/4,builtin_export(attributes,update_attribute,2,0)).
+logen(builtin_export/4,builtin_export(attributes,detach_attribute,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,term,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,int,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,nnegint,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,flt,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,num,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,atm,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,struct,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,gnd,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,constant,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,callable,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,operator_specifier,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,list,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,list,2,list(?,pred(1)))).
+logen(builtin_export/4,builtin_export(basic_props,member,2,0)).
+logen(builtin_export/4,builtin_export(basic_props,sequence,2,sequence(?,pred(1)))).
+logen(builtin_export/4,builtin_export(basic_props,sequence_or_list,2,sequence_or_list(?,pred(1)))).
+logen(builtin_export/4,builtin_export(basic_props,character_code,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,string,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,predname,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,atm_or_atm_list,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,compat,2,compat(?,pred(1)))).
+logen(builtin_export/4,builtin_export(basic_props,iso,1,0)).
+logen(builtin_export/4,builtin_export(basic_props,not_further_inst,2,0)).
+logen(builtin_export/4,builtin_export(basic_props,regtype,1,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,',',2,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,;,2,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,->,2,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,!,0,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,\+,1,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,if,3,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,true,0,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,fail,0,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,repeat,0,0)).
+logen(builtin_export/4,builtin_export(basiccontrol,call,1,call(goal))).
+logen(builtin_export/4,builtin_export(basiccontrol,srcdbg_spy,6,srcdbg_spy(goal,?,?,?,?,?))).
+logen(builtin_export/4,builtin_export(data_facts,asserta_fact,1,asserta_fact(fact))).
+logen(builtin_export/4,builtin_export(data_facts,asserta_fact,2,asserta_fact(fact,?))).
+logen(builtin_export/4,builtin_export(data_facts,assertz_fact,1,assertz_fact(fact))).
+logen(builtin_export/4,builtin_export(data_facts,assertz_fact,2,assertz_fact(fact,?))).
+logen(builtin_export/4,builtin_export(data_facts,current_fact,1,current_fact(fact))).
+logen(builtin_export/4,builtin_export(data_facts,current_fact,2,current_fact(fact,?))).
+logen(builtin_export/4,builtin_export(data_facts,retract_fact,1,retract_fact(fact))).
+logen(builtin_export/4,builtin_export(data_facts,retractall_fact,1,retractall_fact(fact))).
+logen(builtin_export/4,builtin_export(data_facts,current_fact_nb,1,current_fact_nb(fact))).
+logen(builtin_export/4,builtin_export(data_facts,retract_fact_nb,1,retract_fact_nb(fact))).
+logen(builtin_export/4,builtin_export(data_facts,close_predicate,1,close_predicate(fact))).
+logen(builtin_export/4,builtin_export(data_facts,open_predicate,1,open_predicate(fact))).
+logen(builtin_export/4,builtin_export(data_facts,set_fact,1,set_fact(fact))).
+logen(builtin_export/4,builtin_export(data_facts,erase,1,0)).
+logen(builtin_export/4,builtin_export(exceptions,catch,3,catch(goal,?,goal))).
+logen(builtin_export/4,builtin_export(exceptions,intercept,3,intercept(goal,?,goal))).
+logen(builtin_export/4,builtin_export(exceptions,throw,1,0)).
+logen(builtin_export/4,builtin_export(exceptions,halt,0,0)).
+logen(builtin_export/4,builtin_export(exceptions,halt,1,0)).
+logen(builtin_export/4,builtin_export(exceptions,abort,0,0)).
+logen(builtin_export/4,builtin_export(io_aux,message,2,0)).
+logen(builtin_export/4,builtin_export(io_aux,message_lns,4,0)).
+logen(builtin_export/4,builtin_export(io_aux,error,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,warning,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,note,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,message,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,debug,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,inform_user,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,display_string,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,display_list,1,0)).
+logen(builtin_export/4,builtin_export(io_aux,display_term,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,get_code,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,get_code,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,get1_code,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,get1_code,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,peek_code,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,peek_code,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,skip_code,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,skip_code,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,put_code,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,put_code,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,nl,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,nl,0,0)).
+logen(builtin_export/4,builtin_export(io_basic,tab,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,tab,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,code_class,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,getct,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,getct1,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,display,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,display,1,0)).
+logen(builtin_export/4,builtin_export(io_basic,displayq,2,0)).
+logen(builtin_export/4,builtin_export(io_basic,displayq,1,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,set_prolog_flag,2,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,current_prolog_flag,2,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,prolog_flag,3,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,push_prolog_flag,2,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,pop_prolog_flag,1,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,prompt,2,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,gc,0,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,nogc,0,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,fileerrors,0,0)).
+logen(builtin_export/4,builtin_export(prolog_flags,nofileerrors,0,0)).
+logen(builtin_export/4,builtin_export(streams_basic,open,3,0)).
+logen(builtin_export/4,builtin_export(streams_basic,close,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,set_input,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,current_input,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,set_output,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,current_output,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,character_count,2,0)).
+logen(builtin_export/4,builtin_export(streams_basic,line_count,2,0)).
+logen(builtin_export/4,builtin_export(streams_basic,line_position,2,0)).
+logen(builtin_export/4,builtin_export(streams_basic,flush_output,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,flush_output,0,0)).
+logen(builtin_export/4,builtin_export(streams_basic,clearerr,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,current_stream,3,0)).
+logen(builtin_export/4,builtin_export(streams_basic,stream_code,2,0)).
+logen(builtin_export/4,builtin_export(streams_basic,absolute_file_name,2,0)).
+logen(builtin_export/4,builtin_export(streams_basic,absolute_file_name,7,0)).
+logen(builtin_export/4,builtin_export(streams_basic,sourcename,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,stream,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,stream_alias,1,0)).
+logen(builtin_export/4,builtin_export(streams_basic,io_mode,1,0)).
+logen(builtin_export/4,builtin_export(system_info,get_arch,1,0)).
+logen(builtin_export/4,builtin_export(system_info,get_os,1,0)).
+logen(builtin_export/4,builtin_export(system_info,this_module,1,this_module(addmodule))).
+logen(builtin_export/4,builtin_export(system_info,current_module,1,0)).
+logen(builtin_export/4,builtin_export(system_info,ciaolibdir,1,0)).
+logen(builtin_export/4,builtin_export(term_basic,=,2,0)).
+logen(builtin_export/4,builtin_export(term_basic,arg,3,0)).
+logen(builtin_export/4,builtin_export(term_basic,functor,3,0)).
+logen(builtin_export/4,builtin_export(term_basic,=..,2,0)).
+logen(builtin_export/4,builtin_export(term_basic,copy_term,2,0)).
+logen(builtin_export/4,builtin_export(term_basic,'C',3,0)).
+logen(builtin_export/4,builtin_export(term_compare,==,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,\==,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,\=,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,@<,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,@=<,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,@>,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,@>=,2,0)).
+logen(builtin_export/4,builtin_export(term_compare,compare,3,0)).
+logen(builtin_export/4,builtin_export(term_typing,var,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,nonvar,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,atom,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,integer,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,float,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,number,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,atomic,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,ground,1,0)).
+logen(builtin_export/4,builtin_export(term_typing,type,2,0)).
+logen(comdesClause/2,comdesClause(box(airPumpSystem(_,_,_,_,_,_,_,_)),true)).
+logen(comdesClause/2,comdesClause(box(psu(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(apu(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(cu(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(cpu(_,_)),true)).
+logen(comdesClause/2,comdesClause(airPumpSystem(A,B,C,D,E,F,G,H),(psu(I,C),apu((J,G,H),(K,L,D)),cpu((E,F,M,N),(A,B,J,I)),cu((K,L),(M,I,N,J))))).
+logen(comdesClause/2,comdesClause(psu(A,B),(isd11(A,C),signalCond(C,D),limitCheck(D,E),osd11(E,B)))).
+logen(comdesClause/2,comdesClause(apu((A,B,C),(D,E,F)),(isd23(D,G),isd21(E,H),isd22(F,I),limitCheckBool(G,J),signalCond(I,K),limitCheck(K,L),limitCheckBool(H,M),osd21(M,B),osd23(J,C),osd22(L,A)))).
+logen(comdesClause/2,comdesClause(cu((A,B),(C,D,E,F)),(isd41(C,G),isd42(D,H),isd43(E,I),isd44(F,J),tyrePressureController(G,H,I,K),cylPressureController(J,I,L),osd41(K,B),osd42(L,A)))).
+logen(comdesClause/2,comdesClause(basicComponent(tyrePressureController(_,_,_,_)),true)).
+logen(comdesClause/2,comdesClause(basicComponent(cylPressureController(_,_,_)),true)).
+logen(comdesClause/2,comdesClause(basicComponent(copyStream(_,_)),true)).
+logen(comdesClause/2,comdesClause(basicComponent(scaler1(_,_,_)),true)).
+logen(comdesClause/2,comdesClause(basicComponent(scaler2(_,_,_)),true)).
+logen(comdesClause/2,comdesClause(basicComponent(mux(_,_,_)),true)).
+logen(comdesClause/2,comdesClause(tyrePressureController([A|B],[C|D],[E|F],[G|H]),(tyrePressureControllerLogic(A,C,E,G),tyrePressureController(B,D,F,H)))).
+logen(comdesClause/2,comdesClause(tyrePressureController([],[],[],[]),true)).
+logen(comdesClause/2,comdesClause(tyrePressureControllerLogic(A,B,C,D),(A<B,C=false,D=true))).
+logen(comdesClause/2,comdesClause(tyrePressureControllerLogic(A,B,_,C),(A>=B,C=false))).
+logen(comdesClause/2,comdesClause(tyrePressureControllerLogic(_,_,A,B),(A=true,B=false))).
+logen(comdesClause/2,comdesClause(cylPressureController([A|B],[C|D],[E|F]),(cylPressureControllerLogic(A,C,E),cylPressureController(B,D,F)))).
+logen(comdesClause/2,comdesClause(cylPressureController([],[],[]),true)).
+logen(comdesClause/2,comdesClause(cylPressureControllerLogic(A,B,C),(maxVal(D),A<D,B=false,C=true))).
+logen(comdesClause/2,comdesClause(cylPressureControllerLogic(_,A,B),(A=true,B=false))).
+logen(comdesClause/2,comdesClause(cylPressureControllerLogic(A,_,B),(maxVal(C),A>=C,B=false))).
+logen(comdesClause/2,comdesClause(box(isd11(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd11(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd21(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd22(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd23(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd21(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd22(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd23(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd31(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd32(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd33(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd34(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd31(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd32(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd33(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd41(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd42(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd43(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(isd44(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd41(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(osd42(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(signalCond(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(limitCheck(_,_)),true)).
+logen(comdesClause/2,comdesClause(box(limitCheckBool(_,_)),true)).
+logen(comdesClause/2,comdesClause(isd11(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd11(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd21(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd22(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd23(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd21(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd22(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd23(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd41(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd42(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd43(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd44(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd41(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd42(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(copyStream([],[]),true)).
+logen(comdesClause/2,comdesClause(copyStream([A|B],[C|D]),(A=C,copyStream(B,D)))).
+logen(comdesClause/2,comdesClause(signalCond(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(limitCheck(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(limitCheckBool(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(cpu((_,A,B,C),(D,E,F,G)),(isd31(D,H),isd32(E,I),isd33(F,A),isd34(G,B),mux(H,I,J),scaler1(H,_,K),scaler2(H,_,L),osd31(J,C),osd32(K,A),osd33(L,B)))).
+logen(comdesClause/2,comdesClause(mux([A|B],[C|D],[E|F]),(muxLogic(A,C,E),mux(B,D,F)))).
+logen(comdesClause/2,comdesClause(mux([],[],[]),true)).
+logen(comdesClause/2,comdesClause(muxLogic(A,_,B),(A=true,B is 0))).
+logen(comdesClause/2,comdesClause(muxLogic(A,B,C),(A=false,tyrePressure(B,C)))).
+logen(comdesClause/2,comdesClause(tyrePressure(1,20),true)).
+logen(comdesClause/2,comdesClause(tyrePressure(2,25),true)).
+logen(comdesClause/2,comdesClause(tyrePressure(3,28),true)).
+logen(comdesClause/2,comdesClause(tyrePressure(4,35),true)).
+logen(comdesClause/2,comdesClause(tyrePressure(5,40),true)).
+logen(comdesClause/2,comdesClause(scaler1([A|B],[C|D],[E|F]),(scaler1Logic(A,C,E),scaler1(B,D,F)))).
+logen(comdesClause/2,comdesClause(scaler1([],[],[]),true)).
+logen(comdesClause/2,comdesClause(scaler1Logic(A,_,B),(A=true,B is 0))).
+logen(comdesClause/2,comdesClause(scaler1Logic(A,B,C),(A=false,real(B),C is B/2))).
+logen(comdesClause/2,comdesClause(scaler2([A|B],[C|D],[E|F]),(scaler2Logic(A,C,E),scaler2(B,D,F)))).
+logen(comdesClause/2,comdesClause(scaler2([],[],[]),true)).
+logen(comdesClause/2,comdesClause(scaler2Logic(A,_,B),(A=true,B is 0))).
+logen(comdesClause/2,comdesClause(scaler2Logic(A,B,C),(A=false,real(B),C is B/3))).
+logen(comdesClause/2,comdesClause(isd31(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd32(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd33(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(isd34(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd31(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd32(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(osd33(A,A),copyStream(A,A))).
+logen(comdesClause/2,comdesClause(real(_),true)).
+logen(comdesClause/2,comdesClause(maxVal(_),true)).
+:- filter
+        test(static).
+:- filter
+        zeroList(static,static).
+:- filter
+        trueList(static,static).
+:- filter
+        exec(dynamic).
+:- filter
+        oneStepExec(type(list(nonvar))).
+:- filter
+        oneStepExpand(static,static).
+:- filter
+        expandDesign(static,static).
+:- filter
+        conjunct(static,static,static).
+:- filter
+        component(static,static,static).
+:- filter
+        app(static,static,static).
+:- filter
+        box(static).
+:- filter
+        basicComponent(static).
+:- filter
+        machine(static,static).
+:- filter
+        solve(static).
+:- filter
+        comdesClause(static,static).

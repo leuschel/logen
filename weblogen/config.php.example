@@ -1,0 +1,55 @@
+<?php
+
+# $admin_email is the email address that appears at the bottom of all pages
+$admin_email = 'webmaster@localhost.localdomain';
+
+# this points to the directory containing backend stuff for weblogen
+$backend_dir = '/home/user/logen/weblogen/backend';
+
+# this points to the directory containing the cogen executable
+$logen_dir = '/home/user/logen';
+
+# this points to the directory containing the ciaoc executable
+$ciao_dir = '/usr/local/bin';
+
+# this declares whether the autobta is enabled
+$enable_bta = false;
+
+# Uncomment the following line to disable safe mode
+# $safe = false;
+
+# The following line controls whether watchdog mode is enabled by default
+$default_watchdog = false;
+
+# The following lines control various timeouts:
+# This is the default timeout
+$maxtime = 10;
+$timeouts = Array();
+# By uncommenting out the following lines you override the default timeout
+# for a specific action
+# Making the timeouts longer than the apache/PHP timeout is pointless!
+# $timeouts['specialise'] = 10;
+# $timeouts['show_annotated'] = 10;
+# $timeouts['gx'] = 10;
+# $timeouts['highlight'] = 10;
+# $timeouts['auto_bta'] = 10;
+# $timeouts['simple_bta'] = 10;
+# $timeouts['modify_anns'] = 10;
+
+# These next two lines control how respecialisation occurs using ecce and asap
+# comment out either line to remove the appropriate button from the interface.
+$ecce_url = 'http://www.stups.uni-duesseldorf.de/~pe/ecce/index.php';
+$asap_url = 'http://www.stups.uni-duesseldorf.de/~asap/asap-online-demo/index.php';
+
+# uncomment the following lines and set the values appropriately, if you want
+# bug submitting to be enabled. This requires a database to be created.
+# To do this run ../backend/create_db.sh, although you will have to set up the
+# account and privileges yourself.
+#$db_name = 'weblogen';
+#$db_username = 'weblogen';
+#$db_password = 'password';
+
+# Uncomment this line to have errors printed to the screen instead of the
+# webserver error log
+# ini_set('display_errors', true);
+?>

@@ -1,0 +1,76 @@
+(:-module(comb,[])).
+logen(big, big(0,_)).
+logen(big, big(s(A),B)) :-
+        logen(unfold, int(cst(3)+cst(5),C)),
+        logen(unfold, int(plus(var(aa),plus(var(aa),var(aa))),[aa],[C],_)),
+        logen(unfold, match(*(a+b),B)),
+        logen(memo, big(A,B)).
+logen(int, int(cst(A),_,_,A)).
+logen(int, int(var(A),B,C,D)) :-
+        logen(unfold, lookup(A,B,C,D)).
+logen(int, int(plus(A,B),C,D,E)) :-
+        logen(unfold, int(A,C,D,F)),
+        logen(unfold, int(B,C,D,G)),
+        logen(rescall, E is F+G).
+logen(int, int(minus(A,B),C,D,E)) :-
+        logen(unfold, int(A,C,D,F)),
+        logen(unfold, int(B,C,D,G)),
+        logen(rescall, E is F-G).
+logen(int, int(fun(A),B,C,D)) :-
+        logen(unfold, def0(A,E)),
+        logen(memo, int(E,B,C,D)).
+logen(def0, def0(one,cst(1))).
+logen(def0, def0(rec,fun(rec))).
+logen(def0, def0(big,fun(big(fun(big))))).
+logen(lookup, lookup(A,[A|_],[B|_],B)).
+logen(lookup, lookup(A,[B|C],[_|D],E)) :-
+        logen(call, A\=B),
+        logen(unfold, lookup(A,C,D,E)).
+logen(test, test(A)) :-
+        logen(unfold, int(minus(plus(var(xx),cst(4)),var(zz)),[aa,bb,cc,dd,ee,ff,gg,zz,yy,xx],[0,0,0,0,0,0,0,1,2,3],A)).
+logen(int, int(cst(A),A)).
+logen(int, int(A+B,C)) :-
+        logen(unfold, int(A,D)),
+        logen(unfold, int(B,E)),
+        logen(rescall, C is D+E).
+logen(int, int(A-B,C)) :-
+        logen(unfold, int(A,D)),
+        logen(unfold, int(B,E)),
+        logen(rescall, C is D-E).
+logen(int, int(fun(A),B)) :-
+        logen(unfold, def(A,C)),
+        logen(memo, int(C,B)).
+logen(def, def(rec,fun(rec))).
+logen(match, match(A,B)) :-
+        logen(unfold, regexp(A,B,[])).
+logen(regexp, regexp(eps,A,A)).
+logen(regexp, regexp(A,[A|B],B)) :-
+        logen(call, atomic(A)).
+logen(regexp, regexp(A+_,B,C)) :-
+        logen(unfold, regexp(A,B,C)).
+logen(regexp, regexp(_+A,B,C)) :-
+        logen(unfold, regexp(A,B,C)).
+logen(regexp, regexp([A|B],C,D)) :-
+        logen(unfold, regexp(A,C,E)),
+        logen(unfold, regexp(B,E,D)).
+logen(regexp, regexp(*(A),B,C)) :-
+        logen(memo, regexp([A|*(A)],B,C)).
+logen(regexp, regexp(*(_),A,A)).
+:- filter
+        big(dynamic, dynamic).
+:- filter
+        def0(static, dynamic).
+:- filter
+        def(static, dynamic).
+:- filter
+        int(static, dynamic).
+:- filter
+        int(static, (type list(static)), (type list(dynamic)), dynamic).
+:- filter
+        lookup(static, (type list(static)), (type list(dynamic)), dynamic).
+:- filter
+        match(static, dynamic).
+:- filter
+        regexp(static, dynamic, dynamic).
+:- filter
+        test(dynamic).

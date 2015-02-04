@@ -1,0 +1,89 @@
+NAME
+     logen -- offline partial evaluator for Prolog
+
+SYNOPSIS
+     logen [-cdgmsvw...] file ["Atom."] [-o file] [-spec_file file]
+
+DESCRIPTION
+     Use the command to specialize a Prolog file (usually with .pl extension).
+     Logen is an offline partial evaluation system written using the so called
+     "cogen approach". Basically, the cogen is a system which: based upon an
+     annotated version of the program to be specialised produces a specialised
+     partial evaluator for that program. This partial evaluator is called a
+     generating extension (and is given the .gx extension by logen). The
+     generating extension can be used to specialise the program in an efficient
+     manner. 
+
+     The following options are available:
+
+     -c      Run the cogen only, i.e. only generate the .gx file but do
+             not run it to produce the specialized program.
+             
+     --compile_gx
+             Compile the .gx files using ciaoc rather than loading them with
+             ciao.
+             
+     -d      Generate the .gx file with debugging built-in.
+     -d2     Like -d but print even more debugging messages.
+
+     -g      Display the gx file.
+
+     -m      Display the memo table, i.e., a list of the predicate calls for
+             which specialized versions were produced.
+             
+     -o GFile
+             Generate the generating exentension in file "GFile" rather than the
+             default File.gx.
+     
+     -s      Run silently.
+     
+     --safe  Run in safe sandbox mode, i.e., only execute the builtins from
+             the Prolog file that are on the whitelist of safe calls.
+     
+     --spec_file SFile
+             Generate the specialized program in SFile rather than the default.
+             
+     -v      Run cogen in verbose mode, printing information messages.
+     -vv     Same as -v but print more messages.
+     -vvv    Same as -vv but print full debugging messages.
+     
+     -w      Run the .gx in watchdog mode, i.e., supervise the unfolding
+             and memoisation and stop when a potential infinite loop is
+             suspected.
+             
+             
+     The -vv option overrides the -v option and the -vvv overrides -v and -vv.
+     
+     The -d2 option overrides the -d option.
+     
+     The dot after the specialization atom can be dropped. If no specialization
+     atom is provided then the user will be prompted for one, unless the -c
+     option was specified.
+     
+     The options can provided in any order and even follow the file and
+     the specialization atom. The specialization atom must be quoted and
+     must be provided after the file to specialize.
+
+EXAMPLES
+    
+     logen append.pl "append([a,b,c],X,Y)."
+     
+     
+ENVIRONMENT
+     The following environment variables affect the execution of logen:
+     
+     cogen3_source_directory   Tells logen where to find its files.
+                               Normally not required as the wrapper script
+                               will use the --logen_dir option.
+                                
+SEE ALSO
+
+    Use Pylogen or Weblogen to generate the .ann files.
+    
+    
+HISTORY
+    Logen(C) 1996-2005 Michael Leuschel, Jesper Joergensen and Stephen-John Craig.
+    Logen Python and Web Interface developed by Stephen-John Craig and Dan Elphick.
+    All rights reserved.
+    Free for academic and non-commercial use and evaluation purposes.
+    Contact us for commercial or other uses.

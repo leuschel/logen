@@ -1,0 +1,13 @@
+(:-module(hide_nf,[])).
+logen(p, p(A)) :-
+        logen(rescall, ground(A)),
+        hide_nf(logen(call,A=b)).
+logen(t, t(A,B)) :-
+        logen(rescall, var(A)),
+        hide_nf(logen(unfold, r(A,B))).
+logen(r, r(a,_)).
+logen(r, r(b,_)).
+:- filter
+        p(dynamic).
+:- filter
+        t(dynamic, dynamic).

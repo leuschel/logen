@@ -1,0 +1,675 @@
+/*  --------------------  */
+/*  GENERATING EXTENSION  */
+/*  --------------------  */
+:-module(gx,_).
+
+:- use_module(memo).
+:- use_module(pp).
+:- use_module('cogen-tools').
+
+map_m(B,C,D,E) :- 
+  ((
+    find_pattern(map(B,C,D),E)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(B,F,G),[static,dynamic,dynamic],H),
+    call_residue(findall(I,','(map_u(B,F,G,J),I = (clause(H,J))),K),L),
+    pp(K),
+    lookup_pattern(map(B,C,D),E)
+  )).
+map_m(M,N,O,P) :- 
+  ((
+    find_pattern(map(M,N,O),P)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(M,Q,R),[static,dynamic,dynamic],S),
+    call_residue(findall(T,','(map_u(M,Q,R,U),T = (clause(S,U))),V),W),
+    pp(V),
+    lookup_pattern(map(M,N,O),P)
+  )).
+map_m(X,Y,Z,A1) :- 
+  ((
+    find_pattern(map(X,Y,Z),A1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(X,B1,C1),[static,dynamic,dynamic],D1),
+    call_residue(findall(E1,','(map_u(X,B1,C1,F1),E1 = (clause(D1,F1))),G1),H1),
+    pp(G1),
+    lookup_pattern(map(X,Y,Z),A1)
+  )).
+map_m(I1,J1,K1,L1) :- 
+  ((
+    find_pattern(map(I1,J1,K1),L1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(I1,M1,N1),[static,dynamic,dynamic],O1),
+    call_residue(findall(P1,','(map_u(I1,M1,N1,Q1),P1 = (clause(O1,Q1))),R1),S1),
+    pp(R1),
+    lookup_pattern(map(I1,J1,K1),L1)
+  )).
+reduce_m(T1,U1,V1,W1,X1) :- 
+  ((
+    find_pattern(reduce(T1,U1,V1,W1),X1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(T1,Y1,Z1,A2),[static,dynamic,dynamic,dynamic],B2),
+    call_residue(findall(C2,','(reduce_u(T1,Y1,Z1,A2,D2),C2 = (clause(B2,D2))),E2),F2),
+    pp(E2),
+    lookup_pattern(reduce(T1,U1,V1,W1),X1)
+  )).
+reduce_m(G2,H2,I2,J2,K2) :- 
+  ((
+    find_pattern(reduce(G2,H2,I2,J2),K2)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(G2,L2,M2,N2),[static,dynamic,dynamic,dynamic],O2),
+    call_residue(findall(P2,','(reduce_u(G2,L2,M2,N2,Q2),P2 = (clause(O2,Q2))),R2),S2),
+    pp(R2),
+    lookup_pattern(reduce(G2,H2,I2,J2),K2)
+  )).
+reduce_m(T2,U2,V2,W2,X2) :- 
+  ((
+    find_pattern(reduce(T2,U2,V2,W2),X2)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(T2,Y2,Z2,A3),[static,dynamic,dynamic,dynamic],B3),
+    call_residue(findall(C3,','(reduce_u(T2,Y2,Z2,A3,D3),C3 = (clause(B3,D3))),E3),F3),
+    pp(E3),
+    lookup_pattern(reduce(T2,U2,V2,W2),X2)
+  )).
+reduce_m(G3,H3,I3,J3,K3) :- 
+  ((
+    find_pattern(reduce(G3,H3,I3,J3),K3)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(G3,L3,M3,N3),[static,dynamic,dynamic,dynamic],O3),
+    call_residue(findall(P3,','(reduce_u(G3,L3,M3,N3,Q3),P3 = (clause(O3,Q3))),R3),S3),
+    pp(R3),
+    lookup_pattern(reduce(G3,H3,I3,J3),K3)
+  )).
+q_m(T3,U3,V3) :- 
+  ((
+    find_pattern(q(T3,U3),V3)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(W3,X3),[dynamic,dynamic],Y3),
+    call_residue(findall(Z3,','(q_u(W3,X3,A4),Z3 = (clause(Y3,A4))),B4),C4),
+    pp(B4),
+    lookup_pattern(q(T3,U3),V3)
+  )).
+q_m(D4,E4,F4) :- 
+  ((
+    find_pattern(q(D4,E4),F4)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(G4,H4),[dynamic,dynamic],I4),
+    call_residue(findall(J4,','(q_u(G4,H4,K4),J4 = (clause(I4,K4))),L4),M4),
+    pp(L4),
+    lookup_pattern(q(D4,E4),F4)
+  )).
+q_m(N4,O4,P4) :- 
+  ((
+    find_pattern(q(N4,O4),P4)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(Q4,R4),[dynamic,dynamic],S4),
+    call_residue(findall(T4,','(q_u(Q4,R4,U4),T4 = (clause(S4,U4))),V4),W4),
+    pp(V4),
+    lookup_pattern(q(N4,O4),P4)
+  )).
+q_m(X4,Y4,Z4) :- 
+  ((
+    find_pattern(q(X4,Y4),Z4)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(A5,B5),[dynamic,dynamic],C5),
+    call_residue(findall(D5,','(q_u(A5,B5,E5),D5 = (clause(C5,E5))),F5),G5),
+    pp(F5),
+    lookup_pattern(q(X4,Y4),Z4)
+  )).
+reduce_add_m(H5,I5,J5) :- 
+  ((
+    find_pattern(reduce_add(H5,I5),J5)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(K5,L5),[dynamic,dynamic],M5),
+    call_residue(findall(N5,','(reduce_add_u(K5,L5,O5),N5 = (clause(M5,O5))),P5),Q5),
+    pp(P5),
+    lookup_pattern(reduce_add(H5,I5),J5)
+  )).
+reduce_add_m(R5,S5,T5) :- 
+  ((
+    find_pattern(reduce_add(R5,S5),T5)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(U5,V5),[dynamic,dynamic],W5),
+    call_residue(findall(X5,','(reduce_add_u(U5,V5,Y5),X5 = (clause(W5,Y5))),Z5),A6),
+    pp(Z5),
+    lookup_pattern(reduce_add(R5,S5),T5)
+  )).
+reduce_add_m(B6,C6,D6) :- 
+  ((
+    find_pattern(reduce_add(B6,C6),D6)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(E6,F6),[dynamic,dynamic],G6),
+    call_residue(findall(H6,','(reduce_add_u(E6,F6,I6),H6 = (clause(G6,I6))),J6),K6),
+    pp(J6),
+    lookup_pattern(reduce_add(B6,C6),D6)
+  )).
+reduce_add_m(L6,M6,N6) :- 
+  ((
+    find_pattern(reduce_add(L6,M6),N6)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(O6,P6),[dynamic,dynamic],Q6),
+    call_residue(findall(R6,','(reduce_add_u(O6,P6,S6),R6 = (clause(Q6,S6))),T6),U6),
+    pp(T6),
+    lookup_pattern(reduce_add(L6,M6),N6)
+  )).
+add_m(V6,W6,X6,Y6) :- 
+  ((
+    find_pattern(add(V6,W6,X6),Y6)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(Z6,A7,B7),[dynamic,dynamic,dynamic],C7),
+    call_residue(findall(D7,','(add_u(Z6,A7,B7,E7),D7 = (clause(C7,E7))),F7),G7),
+    pp(F7),
+    lookup_pattern(add(V6,W6,X6),Y6)
+  )).
+add_m(H7,I7,J7,K7) :- 
+  ((
+    find_pattern(add(H7,I7,J7),K7)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(L7,M7,N7),[dynamic,dynamic,dynamic],O7),
+    call_residue(findall(P7,','(add_u(L7,M7,N7,Q7),P7 = (clause(O7,Q7))),R7),S7),
+    pp(R7),
+    lookup_pattern(add(H7,I7,J7),K7)
+  )).
+add_m(T7,U7,V7,W7) :- 
+  ((
+    find_pattern(add(T7,U7,V7),W7)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(X7,Y7,Z7),[dynamic,dynamic,dynamic],A8),
+    call_residue(findall(B8,','(add_u(X7,Y7,Z7,C8),B8 = (clause(A8,C8))),D8),E8),
+    pp(D8),
+    lookup_pattern(add(T7,U7,V7),W7)
+  )).
+add_m(F8,G8,H8,I8) :- 
+  ((
+    find_pattern(add(F8,G8,H8),I8)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(J8,K8,L8),[dynamic,dynamic,dynamic],M8),
+    call_residue(findall(N8,','(add_u(J8,K8,L8,O8),N8 = (clause(M8,O8))),P8),Q8),
+    pp(P8),
+    lookup_pattern(add(F8,G8,H8),I8)
+  )).
+rev_m(R8,S8,T8) :- 
+  ((
+    find_pattern(rev(R8,S8),T8)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(U8,V8),[dynamic,dynamic],W8),
+    call_residue(findall(X8,','(rev_u(U8,V8,Y8),X8 = (clause(W8,Y8))),Z8),A9),
+    pp(Z8),
+    lookup_pattern(rev(R8,S8),T8)
+  )).
+rev_m(B9,C9,D9) :- 
+  ((
+    find_pattern(rev(B9,C9),D9)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(E9,F9),[dynamic,dynamic],G9),
+    call_residue(findall(H9,','(rev_u(E9,F9,I9),H9 = (clause(G9,I9))),J9),K9),
+    pp(J9),
+    lookup_pattern(rev(B9,C9),D9)
+  )).
+rev_m(L9,M9,N9) :- 
+  ((
+    find_pattern(rev(L9,M9),N9)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(O9,P9),[dynamic,dynamic],Q9),
+    call_residue(findall(R9,','(rev_u(O9,P9,S9),R9 = (clause(Q9,S9))),T9),U9),
+    pp(T9),
+    lookup_pattern(rev(L9,M9),N9)
+  )).
+rev_m(V9,W9,X9) :- 
+  ((
+    find_pattern(rev(V9,W9),X9)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(Y9,Z9),[dynamic,dynamic],A10),
+    call_residue(findall(B10,','(rev_u(Y9,Z9,C10),B10 = (clause(A10,C10))),D10),E10),
+    pp(D10),
+    lookup_pattern(rev(V9,W9),X9)
+  )).
+rev_m(F10,G10,H10,I10) :- 
+  ((
+    find_pattern(rev(F10,G10,H10),I10)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(J10,K10,L10),[dynamic,dynamic,dynamic],M10),
+    call_residue(findall(N10,','(rev_u(J10,K10,L10,O10),N10 = (clause(M10,O10))),P10),Q10),
+    pp(P10),
+    lookup_pattern(rev(F10,G10,H10),I10)
+  )).
+rev_m(R10,S10,T10,U10) :- 
+  ((
+    find_pattern(rev(R10,S10,T10),U10)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(V10,W10,X10),[dynamic,dynamic,dynamic],Y10),
+    call_residue(findall(Z10,','(rev_u(V10,W10,X10,A11),Z10 = (clause(Y10,A11))),B11),C11),
+    pp(B11),
+    lookup_pattern(rev(R10,S10,T10),U10)
+  )).
+rev_m(D11,E11,F11,G11) :- 
+  ((
+    find_pattern(rev(D11,E11,F11),G11)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(H11,I11,J11),[dynamic,dynamic,dynamic],K11),
+    call_residue(findall(L11,','(rev_u(H11,I11,J11,M11),L11 = (clause(K11,M11))),N11),O11),
+    pp(N11),
+    lookup_pattern(rev(D11,E11,F11),G11)
+  )).
+rev_m(P11,Q11,R11,S11) :- 
+  ((
+    find_pattern(rev(P11,Q11,R11),S11)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(T11,U11,V11),[dynamic,dynamic,dynamic],W11),
+    call_residue(findall(X11,','(rev_u(T11,U11,V11,Y11),X11 = (clause(W11,Y11))),Z11),A12),
+    pp(Z11),
+    lookup_pattern(rev(P11,Q11,R11),S11)
+  )).
+map_m(B12,C12,D12,E12) :- 
+  ((
+    find_pattern(map(B12,C12,D12),E12)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(B12,F12,G12),[static,dynamic,dynamic],H12),
+    call_residue(findall(I12,','(map_u(B12,F12,G12,J12),I12 = (clause(H12,J12))),K12),L12),
+    pp(K12),
+    lookup_pattern(map(B12,C12,D12),E12)
+  )).
+map_m(M12,N12,O12,P12) :- 
+  ((
+    find_pattern(map(M12,N12,O12),P12)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(M12,Q12,R12),[static,dynamic,dynamic],S12),
+    call_residue(findall(T12,','(map_u(M12,Q12,R12,U12),T12 = (clause(S12,U12))),V12),W12),
+    pp(V12),
+    lookup_pattern(map(M12,N12,O12),P12)
+  )).
+map_m(X12,Y12,Z12,A13) :- 
+  ((
+    find_pattern(map(X12,Y12,Z12),A13)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(X12,B13,C13),[static,dynamic,dynamic],D13),
+    call_residue(findall(E13,','(map_u(X12,B13,C13,F13),E13 = (clause(D13,F13))),G13),H13),
+    pp(G13),
+    lookup_pattern(map(X12,Y12,Z12),A13)
+  )).
+map_m(I13,J13,K13,L13) :- 
+  ((
+    find_pattern(map(I13,J13,K13),L13)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(map(I13,M13,N13),[static,dynamic,dynamic],O13),
+    call_residue(findall(P13,','(map_u(I13,M13,N13,Q13),P13 = (clause(O13,Q13))),R13),S13),
+    pp(R13),
+    lookup_pattern(map(I13,J13,K13),L13)
+  )).
+reduce_m(T13,U13,V13,W13,X13) :- 
+  ((
+    find_pattern(reduce(T13,U13,V13,W13),X13)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(T13,Y13,Z13,A14),[static,dynamic,dynamic,dynamic],B14),
+    call_residue(findall(C14,','(reduce_u(T13,Y13,Z13,A14,D14),C14 = (clause(B14,D14))),E14),F14),
+    pp(E14),
+    lookup_pattern(reduce(T13,U13,V13,W13),X13)
+  )).
+reduce_m(G14,H14,I14,J14,K14) :- 
+  ((
+    find_pattern(reduce(G14,H14,I14,J14),K14)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(G14,L14,M14,N14),[static,dynamic,dynamic,dynamic],O14),
+    call_residue(findall(P14,','(reduce_u(G14,L14,M14,N14,Q14),P14 = (clause(O14,Q14))),R14),S14),
+    pp(R14),
+    lookup_pattern(reduce(G14,H14,I14,J14),K14)
+  )).
+reduce_m(T14,U14,V14,W14,X14) :- 
+  ((
+    find_pattern(reduce(T14,U14,V14,W14),X14)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(T14,Y14,Z14,A15),[static,dynamic,dynamic,dynamic],B15),
+    call_residue(findall(C15,','(reduce_u(T14,Y14,Z14,A15,D15),C15 = (clause(B15,D15))),E15),F15),
+    pp(E15),
+    lookup_pattern(reduce(T14,U14,V14,W14),X14)
+  )).
+reduce_m(G15,H15,I15,J15,K15) :- 
+  ((
+    find_pattern(reduce(G15,H15,I15,J15),K15)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce(G15,L15,M15,N15),[static,dynamic,dynamic,dynamic],O15),
+    call_residue(findall(P15,','(reduce_u(G15,L15,M15,N15,Q15),P15 = (clause(O15,Q15))),R15),S15),
+    pp(R15),
+    lookup_pattern(reduce(G15,H15,I15,J15),K15)
+  )).
+q_m(T15,U15,V15) :- 
+  ((
+    find_pattern(q(T15,U15),V15)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(W15,X15),[dynamic,dynamic],Y15),
+    call_residue(findall(Z15,','(q_u(W15,X15,A16),Z15 = (clause(Y15,A16))),B16),C16),
+    pp(B16),
+    lookup_pattern(q(T15,U15),V15)
+  )).
+q_m(D16,E16,F16) :- 
+  ((
+    find_pattern(q(D16,E16),F16)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(G16,H16),[dynamic,dynamic],I16),
+    call_residue(findall(J16,','(q_u(G16,H16,K16),J16 = (clause(I16,K16))),L16),M16),
+    pp(L16),
+    lookup_pattern(q(D16,E16),F16)
+  )).
+q_m(N16,O16,P16) :- 
+  ((
+    find_pattern(q(N16,O16),P16)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(Q16,R16),[dynamic,dynamic],S16),
+    call_residue(findall(T16,','(q_u(Q16,R16,U16),T16 = (clause(S16,U16))),V16),W16),
+    pp(V16),
+    lookup_pattern(q(N16,O16),P16)
+  )).
+q_m(X16,Y16,Z16) :- 
+  ((
+    find_pattern(q(X16,Y16),Z16)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(q(A17,B17),[dynamic,dynamic],C17),
+    call_residue(findall(D17,','(q_u(A17,B17,E17),D17 = (clause(C17,E17))),F17),G17),
+    pp(F17),
+    lookup_pattern(q(X16,Y16),Z16)
+  )).
+reduce_add_m(H17,I17,J17) :- 
+  ((
+    find_pattern(reduce_add(H17,I17),J17)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(K17,L17),[dynamic,dynamic],M17),
+    call_residue(findall(N17,','(reduce_add_u(K17,L17,O17),N17 = (clause(M17,O17))),P17),Q17),
+    pp(P17),
+    lookup_pattern(reduce_add(H17,I17),J17)
+  )).
+reduce_add_m(R17,S17,T17) :- 
+  ((
+    find_pattern(reduce_add(R17,S17),T17)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(U17,V17),[dynamic,dynamic],W17),
+    call_residue(findall(X17,','(reduce_add_u(U17,V17,Y17),X17 = (clause(W17,Y17))),Z17),A18),
+    pp(Z17),
+    lookup_pattern(reduce_add(R17,S17),T17)
+  )).
+reduce_add_m(B18,C18,D18) :- 
+  ((
+    find_pattern(reduce_add(B18,C18),D18)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(E18,F18),[dynamic,dynamic],G18),
+    call_residue(findall(H18,','(reduce_add_u(E18,F18,I18),H18 = (clause(G18,I18))),J18),K18),
+    pp(J18),
+    lookup_pattern(reduce_add(B18,C18),D18)
+  )).
+reduce_add_m(L18,M18,N18) :- 
+  ((
+    find_pattern(reduce_add(L18,M18),N18)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(reduce_add(O18,P18),[dynamic,dynamic],Q18),
+    call_residue(findall(R18,','(reduce_add_u(O18,P18,S18),R18 = (clause(Q18,S18))),T18),U18),
+    pp(T18),
+    lookup_pattern(reduce_add(L18,M18),N18)
+  )).
+add_m(V18,W18,X18,Y18) :- 
+  ((
+    find_pattern(add(V18,W18,X18),Y18)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(Z18,A19,B19),[dynamic,dynamic,dynamic],C19),
+    call_residue(findall(D19,','(add_u(Z18,A19,B19,E19),D19 = (clause(C19,E19))),F19),G19),
+    pp(F19),
+    lookup_pattern(add(V18,W18,X18),Y18)
+  )).
+add_m(H19,I19,J19,K19) :- 
+  ((
+    find_pattern(add(H19,I19,J19),K19)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(L19,M19,N19),[dynamic,dynamic,dynamic],O19),
+    call_residue(findall(P19,','(add_u(L19,M19,N19,Q19),P19 = (clause(O19,Q19))),R19),S19),
+    pp(R19),
+    lookup_pattern(add(H19,I19,J19),K19)
+  )).
+add_m(T19,U19,V19,W19) :- 
+  ((
+    find_pattern(add(T19,U19,V19),W19)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(X19,Y19,Z19),[dynamic,dynamic,dynamic],A20),
+    call_residue(findall(B20,','(add_u(X19,Y19,Z19,C20),B20 = (clause(A20,C20))),D20),E20),
+    pp(D20),
+    lookup_pattern(add(T19,U19,V19),W19)
+  )).
+add_m(F20,G20,H20,I20) :- 
+  ((
+    find_pattern(add(F20,G20,H20),I20)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(add(J20,K20,L20),[dynamic,dynamic,dynamic],M20),
+    call_residue(findall(N20,','(add_u(J20,K20,L20,O20),N20 = (clause(M20,O20))),P20),Q20),
+    pp(P20),
+    lookup_pattern(add(F20,G20,H20),I20)
+  )).
+rev_m(R20,S20,T20) :- 
+  ((
+    find_pattern(rev(R20,S20),T20)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(U20,V20),[dynamic,dynamic],W20),
+    call_residue(findall(X20,','(rev_u(U20,V20,Y20),X20 = (clause(W20,Y20))),Z20),A21),
+    pp(Z20),
+    lookup_pattern(rev(R20,S20),T20)
+  )).
+rev_m(B21,C21,D21) :- 
+  ((
+    find_pattern(rev(B21,C21),D21)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(E21,F21),[dynamic,dynamic],G21),
+    call_residue(findall(H21,','(rev_u(E21,F21,I21),H21 = (clause(G21,I21))),J21),K21),
+    pp(J21),
+    lookup_pattern(rev(B21,C21),D21)
+  )).
+rev_m(L21,M21,N21) :- 
+  ((
+    find_pattern(rev(L21,M21),N21)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(O21,P21),[dynamic,dynamic],Q21),
+    call_residue(findall(R21,','(rev_u(O21,P21,S21),R21 = (clause(Q21,S21))),T21),U21),
+    pp(T21),
+    lookup_pattern(rev(L21,M21),N21)
+  )).
+rev_m(V21,W21,X21) :- 
+  ((
+    find_pattern(rev(V21,W21),X21)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(Y21,Z21),[dynamic,dynamic],A22),
+    call_residue(findall(B22,','(rev_u(Y21,Z21,C22),B22 = (clause(A22,C22))),D22),E22),
+    pp(D22),
+    lookup_pattern(rev(V21,W21),X21)
+  )).
+rev_m(F22,G22,H22,I22) :- 
+  ((
+    find_pattern(rev(F22,G22,H22),I22)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(J22,K22,L22),[dynamic,dynamic,dynamic],M22),
+    call_residue(findall(N22,','(rev_u(J22,K22,L22,O22),N22 = (clause(M22,O22))),P22),Q22),
+    pp(P22),
+    lookup_pattern(rev(F22,G22,H22),I22)
+  )).
+rev_m(R22,S22,T22,U22) :- 
+  ((
+    find_pattern(rev(R22,S22,T22),U22)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(V22,W22,X22),[dynamic,dynamic,dynamic],Y22),
+    call_residue(findall(Z22,','(rev_u(V22,W22,X22,A23),Z22 = (clause(Y22,A23))),B23),C23),
+    pp(B23),
+    lookup_pattern(rev(R22,S22,T22),U22)
+  )).
+rev_m(D23,E23,F23,G23) :- 
+  ((
+    find_pattern(rev(D23,E23,F23),G23)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(H23,I23,J23),[dynamic,dynamic,dynamic],K23),
+    call_residue(findall(L23,','(rev_u(H23,I23,J23,M23),L23 = (clause(K23,M23))),N23),O23),
+    pp(N23),
+    lookup_pattern(rev(D23,E23,F23),G23)
+  )).
+rev_m(P23,Q23,R23,S23) :- 
+  ((
+    find_pattern(rev(P23,Q23,R23),S23)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(rev(T23,U23,V23),[dynamic,dynamic,dynamic],W23),
+    call_residue(findall(X23,','(rev_u(T23,U23,V23,Y23),X23 = (clause(W23,Y23))),Z23),A24),
+    pp(Z23),
+    lookup_pattern(rev(P23,Q23,R23),S23)
+  )).
+map_u(B,[],[],true).
+reduce_u(C,D,[],D,true).
+reduce_u(E,F,[G|H],I,','(J,K)) :- 
+  reduce_m(E,F,H,L,J),
+  '=..'(M,[E,G,L,I]),
+  add_extra_argument([95,117],M,K,N),
+  call(N).
+q_u(a,b,true).
+q_u(b,c,true).
+q_u(c,d,true).
+q_u(d,e,true).
+reduce_add_u(O,P,Q) :- 
+  reduce_u(add,0,O,P,Q).
+add_u(R,S,T,T is (R + S)).
+rev_u(U,V,W) :- 
+  rev_m(U,[],V,W).
+rev_u([],X,X,true).
+rev_u([Y|Z],A1,B1,C1) :- 
+  rev_m(Z,[Y|A1],B1,C1).
+map_u(D1,[E1|F1],[G1|H1],','(I1,J1)) :- 
+  '=..'(K1,[D1,E1,G1]),
+  add_extra_argument([95,109],K1,I1,L1),
+  call(L1),
+  map_m(D1,F1,H1,J1).
+map_u(M1,[],[],true).
+reduce_u(N1,O1,[],O1,true).
+reduce_u(P1,Q1,[R1|S1],T1,','(U1,V1)) :- 
+  reduce_m(P1,Q1,S1,W1,U1),
+  '=..'(X1,[P1,R1,W1,T1]),
+  add_extra_argument([95,117],X1,V1,Y1),
+  call(Y1).
+q_u(a,b,true).
+q_u(b,c,true).
+q_u(c,d,true).
+q_u(d,e,true).
+reduce_add_u(Z1,A2,B2) :- 
+  reduce_u(add,0,Z1,A2,B2).
+add_u(C2,D2,E2,E2 is (C2 + D2)).
+rev_u(F2,G2,H2) :- 
+  rev_m(F2,[],G2,H2).
+rev_u([],I2,I2,true).
+rev_u([J2|K2],L2,M2,N2) :- 
+  rev_m(K2,[J2|L2],M2,N2).
+map_u(O2,[P2|Q2],[R2|S2],','(T2,U2)) :- 
+  '=..'(V2,[O2,P2,R2]),
+  add_extra_argument([95,109],V2,T2,W2),
+  call(W2),
+  map_m(O2,Q2,S2,U2).
+
+/* GX file Generated in 830 ms */

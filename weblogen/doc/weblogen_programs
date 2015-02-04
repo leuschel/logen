@@ -1,0 +1,105 @@
+Weblogen Programs
+
+While Weblogen is written in PHP, it uses several Prolog programs to process
+it's input. These programs are:
+
+1) highlight
+2) show_annotated
+3) manual_annotate
+4) logen
+
+(1), (2) and (3) were designed and implemented for weblogen, while logen is a
+stand-alone application.
+
+1) highlight takes a file as its single argument. It parses that file and
+outputs an XML representation of that program. Markup is used to highlight
+the names of declared predicates (the arity is recorded as an attribute) as
+well as double quoted strings and lists. The output is then written to standard
+output.
+
+<article>
+  <source>
+    prolog source goes here
+  </source>
+</article>
+
+If the file is not parseable, highlight will terminate with a non-zero value
+and print an error message on standard error.
+
+This program is written in SWI Prolog and is not easily portable to Ciao, since
+Ciao does not support read_term(X, [subterm_positions(S)]), where S gives is
+a structure detailing the character positions of the components making up X.
+
+2) show_annotated takes two files as arguments. The first is a prolog source
+file and the second is the annotation file for that source. It outputs an XML
+representation of the annotated prolog source similarly to (1), except that
+annotations are recorded in the mark-up (along with the arity of the call if
+applicable). In addition the filters are also printed in a separate element.
+
+<article>
+  <source>
+    prolog source goes here
+  </source>
+  <filters>
+    filters go here
+  </filters>
+</article>
+
+If either file is not parseable, show_annotated will terminate with a non-zero
+value and print an error message on standard error.
+
+show_annotated can also take extra parameters which affect the XML produced.
+This is useful in conjunction with the logen watchdog mode which detects
+problems with the specialisation process and generates reports which Weblogen
+processes. Weblogen then uses the information in these reports to give extra
+parameters to show_annotated.
+
+E.g. ./show_annotated --mark_filter match 2 match.pl match.pl.ann
+This will annotate match.pl as normal, except that the filter for match/2 will
+have extra markup indicating that the filter is unsafe.
+
+./show_annotated --correctable_filter match 2 1 match.pl match.pl.ann
+This will annotate match.pl as normal, except that the filter for match/2 will
+have extra markup indicating that the second first argument is unsafe. It will
+also include markup indicating how to fix this problem. (The XSLT will then
+generate the appropriate Javascript to do this).
+
+./show_annotated --correctable_filter_replace match 2 'match(static, static)' match.pl match.pl.ann
+Here the filter will be marked unsafe as in mark_filter, but a fix will be
+generated which will replace the filter with 'match(static, static)'.
+
+./show_annotated --extra_info unsafe match1 4 2 '[(',', 1)]' match.pl match.pl.ann
+This will mark as 'unsafe' a path in the second clause in match1/4. The path
+is a prolog list that gives instructions how to traverse the clause to find
+the offending predicate. The path information is highly dependent on the
+internal logen description of annotations.
+
+./show_annotated --correctable unsafe match1 4 2 '[(',', 1)]' memo match.pl match.pl.ann
+As above, but the XML will indicate that to fix the problem, the predicate
+should be annotated 'memo'.
+
+./show_annotated --correct_hide_nf match1 4 2 '[(',', 1)]' 'match(static, static)' memo match.pl match.pl.ann
+Here this will mark a path as requiring a hide_nf annotation to be inserted.
+
+You can have multiple extra parameters, if required. For instance if a filter
+contains two parameters that need making dynamic, you just repeat the
+--correctable_filter twice each time giving the parameter number. Obviously
+if you change the same annotations twice, you may get unpredictable results.
+
+3) manual_annotate takes two files as arguments. The first is a prolog source
+
+file and the second is the name of the annotation file to be created. It then
+reads from standard input a line containing a list of annotations in a prolog
+list and then any lines following are treated as filters or type declarations.
+An annotation file is then created with the filters appended to the end.
+
+Example stdin:
+[unfold, rescall, unfold, memo].
+:- filter
+	match(static, dynamic).
+
+If the source file, annotation list or filters are not parseable,
+manual_annotate will terminate with a non-zero value and print an error message
+on standard error.
+
+4) logen is described elsewhere.

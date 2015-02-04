@@ -1,0 +1,12 @@
+/* file: craig/int.pe.int___ */
+/* benchmark info: 0 ms */
+
+/* atom specialised: int(c(p),A,[b(infflag,B),b(a,C)]) */
+
+int(c(p),A,[b(infflag,B),b(a,C)]) :- int__0(A,B,C).
+
+int__1(B,C,B).
+int__0(B,true,C) :- 
+  int__0(B,true,C).
+int__0(D,false,E) :- 
+  int__1(D,false,E).

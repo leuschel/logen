@@ -1,0 +1,336 @@
+[Mottisfont:examples/experiments/gopal] leuschel% logen valcont2.pl "example1(X,Y,Z)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 69.99799999475646 ms (runtime)
+ % Compiling GX File
+{Reading /Users/leuschel/svn_root/logen/examples/experiments/gopal/lex.pl
+WARNING: (lns 72-75) predicate get_tokens/2 is already defined with arity 1
+WARNING: (lns 78-83) predicate tokenize/4 is already defined with arity 2
+WARNING: (lns 102-107) predicate read_word/5 is already defined with arity 3
+WARNING: (lns 108-109) predicate word_chars/5 is already defined with arity 3
+}
+{Compiling /Users/leuschel/svn_root/logen/examples/experiments/gopal/lex.pl
+WARNING: (lns 8-17) Predicate print_message/2 undefined in source
+WARNING: (lns 8-17) Predicate print_message/2 undefined in source
+WARNING: (lns 18-21) Predicate get0/1 undefined in source
+WARNING: (lns 28-34) Predicate get0/1 undefined in source
+WARNING: (lns 35-39) Predicate get0/1 undefined in source
+WARNING: (lns 51-55) Predicate get0/1 undefined in source
+}
+ % Calling Compiled File
+ % Specialising for example1(_,_,_)
+parsing(example1.tree)done_parsing(example1.tree)
+:-use_module(memory).
+:-use_module(dcg).
+:-use_module(lex,[lex/2]).
+
+/* example1(A,B,C) :- example1__0(A,B,C). */
+example1__0(A,B,C) :-
+        write([(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))]),
+        nl,
+        initialize_store(D),
+        update(x,A,D,E),
+        update(y,B,E,F),
+        update(z,1,F,G),
+        access(x,G,H),
+        update(w,H,G,I),
+        bool_while_eval__1(I,J),
+        K=J,
+        access(z,K,C).
+
+/* bool_while_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],A,B) :- bool_while_eval__1(A,B). */
+bool_while_eval__1(A,B) :-
+        access(w,A,C),
+        (   C>0 ->
+            access(z,A,D),
+            access(y,A,E),
+            F is D*E,
+            update(z,F,A,G),
+            access(w,G,H),
+            I is H-1,
+            update(w,I,G,J),
+            bool_while_eval__1(J,K),
+            B=K
+        ;   B=A
+        ).
+/* Specialisation time 2.959999999723702 ms (runtime) */
+
+
+
+[Mottisfont:examples/experiments/gopal] leuschel% logen valcont2.pl "example1(X,Y,Z)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 106.52699999202 ms (runtime)
+ % Compiling GX File
+{Reading /Users/leuschel/svn_root/logen/examples/experiments/gopal/lex.pl
+WARNING: (lns 72-75) predicate get_tokens/2 is already defined with arity 1
+WARNING: (lns 78-83) predicate tokenize/4 is already defined with arity 2
+WARNING: (lns 102-107) predicate read_word/5 is already defined with arity 3
+WARNING: (lns 108-109) predicate word_chars/5 is already defined with arity 3
+}
+{Compiling /Users/leuschel/svn_root/logen/examples/experiments/gopal/lex.pl
+WARNING: (lns 8-17) Predicate print_message/2 undefined in source
+WARNING: (lns 8-17) Predicate print_message/2 undefined in source
+WARNING: (lns 18-21) Predicate get0/1 undefined in source
+WARNING: (lns 28-34) Predicate get0/1 undefined in source
+WARNING: (lns 35-39) Predicate get0/1 undefined in source
+WARNING: (lns 51-55) Predicate get0/1 undefined in source
+}
+ % Calling Compiled File
+ % Specialising for example1(_,_,_)
+parsing(example1.tree)done_parsing(example1.tree)
+:-use_module(memory).
+:-use_module(dcg).
+:-use_module(lex,[lex/2]).
+
+/* example1(A,B,C) :- example1__0(A,B,C). */
+example1__0(A,B,C) :-
+        write([(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))]),
+        nl,
+        initialize_store(D),
+        update(x,A,D,E),
+        update(y,B,E,F),
+        update(z,1,F,G),
+        access(x,G,H),
+        update(w,H,G,I),
+        bool_while_eval__1(I,J),
+        K=J,
+        access(z,K,C).
+
+/* bool_while_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],A,B) :- bool_while_eval__1(A,B). */
+bool_while_eval__1(A,B) :-
+        access(w,A,C),
+        (   C>0 ->
+            access(z,A,D),
+            access(y,A,E),
+            F is D*E,
+            update(z,F,A,G),
+            access(w,G,H),
+            I is H-1,
+            update(w,I,G,J),
+            bool_while_eval__1(J,K),
+            B=K
+        ;   B=A
+        ).
+/* Specialisation time 27.26299999795769 ms (runtime) */
+
+
+
+On Minimax:
+
+[Minimax:examples/experiments/gopal] leuschel% logen valcont2_nonterm.pl "example1(X,Y,Z)" -w
+
+/* Specialisation time 80.94799999393612 ms (runtime) */
+
+[comm_eval([(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],C,[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],D,E),
+comm_list_eval([(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],F,G),
+comm_list_eval([(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],H,I),
+comm_list_eval([(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],J,K),
+bool_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],L,M),
+bool_while_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],N,O),
+comm_eval([(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],P,[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],Q,R),
+comm_list_eval([(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],S,T),
+comm_list_eval([(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],U,V),
+comm_list_eval([(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],W,X),
+prog_eval([(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],Y,Z,A1),
+
+example1(B1,C1,D1)]
+
+
+[Mottisfont:examples/experiments/gopal] leuschel% logen valcont2_online.pl "example1(X,Y,Z)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 96.05599999280443 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for example1(_,_,_)
+parsing(example1.tree)done_parsing(example1.tree)
+ % Mixed Generalisation: 'generalise_online_mixed([static,static,static,static,online,online],bool_while_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],_1446,_1499),bool_while_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],_1446,_1499),example1__0(_631,_632,_633))'.
+:-use_module(memory).
+:-use_module(dcg).
+:-use_module(lex,[lex/2]).
+
+/* example1(A,B,C) :- example1__0(A,B,C). */
+example1__0(A,B,C) :-
+        write([(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))]),
+        nl,
+        initialize_store(D),
+        update(x,A,D,E),
+        update(y,B,E,F),
+        update(z,1,F,G),
+        access(x,G,H),
+        update(w,H,G,I),
+        access(w,I,J),
+        (   J>0 ->
+            access(z,I,K),
+            access(y,I,L),
+            M is K*L,
+            update(z,M,I,N),
+            access(w,N,O),
+            P is O-1,
+            update(w,P,N,Q),
+            bool_while_eval__1(Q,R),
+            S=R
+        ;   S=I
+        ),
+        T=S,
+        access(z,T,C).
+
+/* bool_while_eval(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1)))),(www,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],[],[(none,assign(id(z),num(1))),(none,assign(id(w),id(x))),(none,while(great(id(w),num(0)),[(none,assign(id(z),multi(id(z),id(y)))),(none,assign(id(w),sub(id(w),num(1))))]))],A,B) :- bool_while_eval__1(A,B). */
+bool_while_eval__1(A,B) :-
+        access(w,A,C),
+        (   C>0 ->
+            access(z,A,D),
+            access(y,A,E),
+            F is D*E,
+            update(z,F,A,G),
+            access(w,G,H),
+            I is H-1,
+            update(w,I,G,J),
+            bool_while_eval__1(J,K),
+            B=K
+        ;   B=A
+        ).
+/* Specialisation time 8.238999999231002 ms (runtime) */
+
+
+
+
+mixtus
+
+
+| ?-  statistics(runtime,_), pe(example1(X,Y,Z)), statistics(runtime,[_,T2]), nl,print(T2),nl.
+example1(A, B, C) :-
+        example11(A, B, C).
+
+% example11(A,B,C):-example1(A,B,C)
+example11(A, B, C) :-
+        program(comm_list(D), 'example1.tree', [z,=,1,;,w,=,x,;,loop,while,w,>,0,z,=,z,*,y,;,w,=,w,-,1,endloop,while,'.'], []),
+        write(D),
+        nl,
+        (   D=[],
+            C=0
+        ;   initialize_store(E),
+            update(x, A, E, F),
+            update(y, B, F, G),
+            comm_list_eval1(D, D, G, H),
+            access(z, H, C)
+        ).
+
+% comm_list_eval1(A,A,B,C):-comm_list_eval(A,A,B,C)
+comm_list_eval1([], _, A, A).
+comm_list_eval1([(_,abort)|_], A, B, C) :-
+        comm_list_eval1([], A, B, C).
+comm_list_eval1([(_,while(A,B))|C], D, E, F) :-
+        append6(B, A, B, C, G),
+        (   A=great(H,I),
+            expr2(H, E, J),
+            expr2(I, E, K),
+            (   K<J ->
+                comm_list_eval1(G, D, E, L)
+            ;   comm_list_eval1(C, D, E, L)
+            ),
+            comm_list_eval1([], D, L, F)
+        ;   A=less(M,N),
+            expr2(M, E, O),
+            expr2(N, E, P),
+            (   O<P ->
+                comm_list_eval1(G, D, E, Q)
+            ;   comm_list_eval1(C, D, E, Q)
+            ),
+            comm_list_eval1([], D, Q, F)
+        ;   A=equal(R,S),
+            expr2(R, E, T),
+            expr2(S, E, U),
+            (   T==U ->
+                comm_list_eval1(G, D, E, V)
+            ;   comm_list_eval1(C, D, E, V)
+            ),
+            comm_list_eval1([], D, V, F)
+        ).
+comm_list_eval1([(_,ce(A,B,C))|D], E, F, G) :-
+        append4(B, D, H),
+        append4(C, D, I),
+        (   A=great(J,K),
+            expr2(J, F, L),
+            expr2(K, F, M),
+            (   M<L ->
+                comm_list_eval1(H, E, F, N)
+            ;   comm_list_eval1(I, E, F, N)
+            ),
+            comm_list_eval1([], E, N, G)
+        ;   A=less(O,P),
+            expr2(O, F, Q),
+            expr2(P, F, R),
+            (   Q<R ->
+                comm_list_eval1(H, E, F, S)
+            ;   comm_list_eval1(I, E, F, S)
+            ),
+            comm_list_eval1([], E, S, G)
+        ;   A=equal(T,U),
+            expr2(T, F, V),
+            expr2(U, F, W),
+            (   V==W ->
+                comm_list_eval1(H, E, F, X)
+            ;   comm_list_eval1(I, E, F, X)
+            ),
+            comm_list_eval1([], E, X, G)
+        ).
+comm_list_eval1([(_,jmp(A))|_], B, C, D) :-
+        find_label2(A, B, E), !,
+        comm_list_eval1(E, B, C, D).
+comm_list_eval1([(_,assign(id(A),B))|C], D, E, F) :-
+        expr2(B, E, G),
+        update(A, G, E, H),
+        comm_list_eval1(C, D, H, F).
+
+% append6(A,B,A,C,D):-append(A,[(www,while(B,A))|C],D)
+append6([], A, B, C, [(www,while(A,B))|C]).
+append6([A|B], C, D, E, [A|F]) :-
+        append6(B, C, D, E, F).
+
+% expr2(A,B,C):-expr(A,B,C)
+expr2(add(A,B), C, D) :-
+        expr2(A, C, E),
+        expr2(B, C, F),
+        D is E+F.
+expr2(sub(A,B), C, D) :-
+        expr2(A, C, E),
+        expr2(B, C, F),
+        D is E-F.
+expr2(multi(A,B), C, D) :-
+        expr2(A, C, E),
+        expr2(B, C, F),
+        D is E*F.
+expr2(id(A), B, C) :-
+        access(A, B, C).
+expr2(num(A), _, A).
+
+% append4(A,B,C):-append(A,B,C)
+append4([], A, A).
+append4([A|B], C, [A|D]) :-
+        append4(B, C, D).
+
+% find_label2(A,B,C):-find_label(A,B,C)
+find_label2(A, [(A,B)|C], [(A,B)|C]).
+find_label2(A, [(_,ce(_,B,_))|C], D) :-
+        find_label2(A, B, E),
+        append4(E, C, D).
+find_label2(A, [(_,ce(_,_,B))|C], D) :-
+        find_label2(A, B, E),
+        append4(E, C, D).
+find_label2(A, [(_,ce(_,B))|C], D) :-
+        find_label2(A, B, E),
+        append4(E, C, D).
+find_label2(A, [(B,while(C,D))|E], F) :-
+        find_label2(A, D, G),
+        append2(G, B, C, D, E, F).
+find_label2(A, [_|B], C) :-
+        find_label2(A, B, C).
+
+% append2(A,B,C,D,E,F):-append(A,[(B,while(C,D))|E],F)
+append2([], A, B, C, D, [(A,while(B,C))|D]).
+append2([A|B], C, D, E, F, [A|G]) :-
+        append2(B, C, D, E, F, G).
+
+420

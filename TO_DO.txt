@@ -1,0 +1,8 @@
+TO DO file for LOGEN
+--------------------
+
+* In rev_nonterm: Ciao seems to fail after a certain accumulator length, rather
+than loop. Check that Ciao at least throws an exception.
+
+* In watchdog mode: homemorphic does not compute static and dynamic functors;
+hence all functors are assumed static which could endanger termination

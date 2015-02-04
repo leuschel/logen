@@ -1,0 +1,5 @@
+goal=solve([app(X,Y,Z)])
+entry=:- filter solve((type list(dynamic))).
+iter=50000
+benchmark=solve([app([a,b,c], [d,e,f],X)])
+norm=list

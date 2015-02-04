@@ -1,0 +1,9 @@
+
+:- module(append, []).
+
+logen(test, test(C,D)) :- logen(unfold, app([a,a,c|C], [x,y], D)).
+logen(append, app([],B,B)).
+logen(append, app([X|Xs],Y, [X|Zs])) :- logen(memo, app(Xs,Y,Zs)).
+
+:- filter app(dynamic, dynamic, dynamic).
+:- filter test(dynamic,dynamic).

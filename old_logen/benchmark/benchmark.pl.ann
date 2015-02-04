@@ -1,0 +1,59 @@
+(:-module(benchmark,[])).
+logen(stack_call, stack_call(A,[])) :-
+        logen(rescall, call(A)).
+logen(stack_call, stack_call(_,[0|_])).
+logen(stack_call, stack_call(A,[B|C])) :-
+        logen(call, B>0),
+        logen(memo, stack_call(A,C)),
+        logen(call, D is B-1),
+        logen(unfold, stack_call(A,[D|C])).
+logen(calc_total, calc_total([A],A)).
+logen(calc_total, calc_total([A|B],C)) :-
+        logen(unfold, calc_total(B,D)),
+        logen(call, C is A*D).
+logen(run_benchmark, run_benchmark(A,B,C,D)) :-
+        logen(rescall, ensure_loaded(A)),
+        logen(rescall, statistics(runtime,[_,E])),
+        logen(memo, stack_call(B,C)),
+        logen(rescall, statistics(runtime,[_,F])),
+        logen(unfold, calc_total(C,G)),
+        logen(rescall, D is F-E),
+        logen(rescall, format([126,78,66,101,110,99,104,109,97,114,107,32,99,111,109,112,108,101,116,101,100,32,105,110,32,126,119,109,115,32,102,111,114,32,126,119,32,114,117,110,115,126,110],[D,G])).
+logen(benchmark_spec_only, benchmark_spec_only(A,B,C,D)) :-
+        logen(unfold, split_components(_,E,_,A)),
+        logen(call, atom_concat(F,'.pl',A)),
+        logen(call, atom_concat(F,'.spec',G)),
+        logen(call, atom_concat(E,'.spec',H)),
+        logen(memo, run_benchmark(G,H:B,C,D)).
+logen(benchmark_specialised_file, benchmark_specialised_file(A,B,C)) :-
+        logen(unfold, split_components(_,D,_,A)),
+        logen(call, atom_concat(E,'.pl',A)),
+        logen(call, atom_concat(E,'.spec',F)),
+        logen(call, atom_concat(D,'.spec',G)),
+        logen(memo, run_benchmark(F,G:B,C,H)),
+        logen(memo, run_benchmark(A,B,C,I)),
+        logen(unfold, calc_total(C,J)),
+        logen(rescall, format([81,117,101,114,121,32,126,119,32,126,119,32,116,105,109,101,115,58,126,110],[B,J])),
+        logen(rescall, K is I-H),
+        logen(rescall, format([79,114,105,103,105,110,97,108,32,80,114,111,103,114,97,109,58,32,126,119,109,115,32,126,110],[I])),
+        logen(rescall, format([83,112,101,99,105,97,108,105,115,101,100,32,80,114,111,103,114,97,109,58,32,126,119,109,115,32,126,110],[H])),
+        logen(rescall, format([32,32,32,32,68,105,102,102,101,114,101,110,99,101,32,105,115,32,126,119,109,115,126,110],[K])).
+logen(split_components, split_components(A,B,C,D)) :-
+        logen(call, use_module(library(lists))),
+        logen(call, name(D,E)),
+        logen(call, append(F,G,E)),
+        not(logen(call,memberchk(47,G))),
+        not(logen(call,memberchk(92,G))),
+        logen(call, !),
+        if(logen(call,memberchk(46,G)), (logen(call,append(H,I,G)),logen(call,I=[46|J]),not(logen(call,memberchk(46,J))),logen(call,!)), (logen(call,H=G),logen(call,I=[]))),
+        logen(call, name(A,F)),
+        logen(call, name(B,H)),
+        logen(call, name(C,I)).
+:- filter
+        run_benchmark(static, static_or_free, static, dynamic).
+:- filter
+        stack_call(static_or_free, static).
+:- filter
+        benchmark_specialised_file(static, static_or_free, static).
+:- filter
+        benchmark_spec_only(static, static_or_free, static, dynamic).

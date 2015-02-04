@@ -1,0 +1,55 @@
+logen(l_solve/1,l_solve([])).
+logen(l_solve/1,l_solve([A|B])) :-
+        logen(unfold,solve_literal(A)),
+        logen(unfold,l_solve(B)).
+        
+logen(solve_literal/1,solve_literal(not(A))) :-
+        resnot(logen(unfold,solve_literal(A))).
+logen(solve_literal/1,solve_literal(A)) :-
+        if(logen(unfold,user_predicate(A)),logen(memo,solve_atom(A)),logen(call,fail)).
+logen(solve_literal/1,solve_literal(A)) :-
+        logen(unfold,built_in(A)).
+        
+logen(built_in/2,built_in(=(X,Y))) :-
+  logen(rescall,(X = Y)).
+logen(built_in/2,built_in(is(X,Y))) :-
+  logen(rescall,(X is Y)).
+
+logen(solve_atom/1,solve_atom(A)) :-
+        logen(unfold,my_clause(A,B)),
+        logen(unfold,l_solve(B)).
+        
+        
+logen(user_predicate/1,user_predicate(Call)) :-
+  logen(unfold,my_clause(H,_)),
+  logen(call,functor(H,F,N)),
+  logen(call,functor(Call,F,N)).
+  
+  
+logen(my_clause/2,my_clause(dapp(A,B,C,D),[app(B,C,E),app(A,E,D)])).
+logen(my_clause/2,my_clause(app([],A,A),[])).
+logen(my_clause/2,my_clause(app([A|B],C,[A|D]),[app(B,C,D)])).
+logen(my_clause/2,my_clause(not_abc(A),[not(app(_,[A|_],[a,b,c]))])).
+logen(my_clause/2,my_clause(square(X,R),[R is X*X])).
+logen(test/1,test(A)) :-
+        logen(unfold,solve_literal(not_abc(A))).
+%logen(l_solve2/1,l_solve2([])).
+%logen(l_solve2/1,l_solve2([A|B])) :-
+%        logen(memo,solve_literal2(A)),
+%        logen(unfold,l_solve2(B)).
+%logen(solve_literal2/1,solve_literal2(not(A))) :-
+%        resnot(logen(memo,solve_literal2(A))).
+%logen(solve_literal2/1,solve_literal2(A)) :-
+%        logen(call,A\=not(_)),
+%        logen(unfold,my_clause(A,B)),
+%        logen(unfold,l_solve2(B)).
+        
+:- type
+        literal--->(struct(not,[(type literal)]);nonvar).
+        
+:- filter
+        solve_literal((type literal)).
+:- filter
+        solve_atom(nonvar).
+:- filter
+        test(dynamic).

@@ -1,0 +1,27 @@
+<h1>LOGEN & LIX</h1>
+
+
+An offline partial evaluation system for Prolog.
+
+<i>(C) 1996-2003 Michael Leuschel, Jesper Joergensen, Stephen Craig</i>
+All rights reserved.
+Free for academic and non-commercial use and evaluation purposes.
+Contact us for commercial use.
+
+
+<h2>Development, Copyright and Intellectual Property Rights:</h2>
+<b>Original LOGEN:</b>
+	Michael Leuschel, Jesper Joergensen 
+<b>CLP & Module Extensions:</b>
+	Stephen Craig,Michael Leuschel
+<b>Emacs mode:</b>
+	Stephen Craig, Armin Rigo
+<b>Tcl/Tk Interface:</b>
+	Michael Leuschel, Laksono Adhianto
+<b>Binding-Time Analysis (to be included):</b>
+	Wim Vanhoof, Maurice Bruynooghe, Michael Leuschel, Kostis Sagonas
+
+<b>LIMITATIONS:</b>
+	An automatic binding-time analysis exists and will be incorporated at some point.
+	The system is only tested with SICStus Prolog 3.10.1.
+	The system is (almost) working in Ciao Prolog (but not the Tcl/Tk part).

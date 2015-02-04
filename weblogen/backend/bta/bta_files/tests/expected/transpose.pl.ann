@@ -1,0 +1,18 @@
+(:-module(transpose,[])).
+logen(transpose, transpose(A,[])) :-
+        logen(unfold, nullrows(A)).
+logen(transpose, transpose(A,[B|C])) :-
+        logen(unfold, makerow(A,B,D)),
+        logen(memo, transpose(D,C)).
+logen(makerow, makerow([],[],[])).
+logen(makerow, makerow([[A|B]|C],[A|D],[B|E])) :-
+        logen(unfold, makerow(C,D,E)).
+logen(nullrows, nullrows([])).
+logen(nullrows, nullrows([[]|A])) :-
+        logen(unfold, nullrows(A)).
+:- filter
+        makerow((type list(dynamic)), dynamic, dynamic).
+:- filter
+        nullrows((type list(dynamic))).
+:- filter
+        transpose((type list(dynamic)), dynamic).

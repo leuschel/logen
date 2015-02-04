@@ -1,0 +1,27 @@
+/*  --------------------  */
+/*  GENERATING EXTENSION  */
+/*  --------------------  */
+:-module(gx,_).
+:- use_module('memo').
+:- use_module('pp').
+:- use_module('cogen-tools').
+
+nont_m(B,C,D,E) :- 
+  ((
+    find_pattern(nont(B,C,D),E)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern_with_filter_types(nont(B,F,G),[static,dynamic,dynamic],H),
+    call_residue(findall(I,','(nont_u(B,F,G,J),I = (clause(H,J))),K),L),
+    pp(K),
+    lookup_pattern(nont(B,C,D),E)
+  )).
+nont_u(B,C,D,','(E,F)) :- 
+  t_u(a,C,G,E),
+  nont_m(B,G,D,F).
+nont_u(H,I,J,K) :- 
+  t_u(H,I,J,K).
+t_u(L,[L|M],M,true).
+
+/* GX file Generated in 20 ms */

@@ -1,0 +1,22 @@
+(:-module(vanilla_list,[])).
+logen(solve, solve([])).
+logen(solve, solve([A|B])) :-
+        logen(memo, solve_atom(A)),
+        logen(unfold, solve(B)).
+logen(solve_atom, solve_atom(A)) :-
+        logen(unfold, my_clause(A,B)),
+        logen(unfold, solve(B)).
+logen(my_clause, my_clause(app([],A,A),[])).
+logen(my_clause, my_clause(app([A|B],C,[A|D]),[app(B,C,D)])).
+logen(my_clause, my_clause(p,[p])).
+logen(my_clause, my_clause(solve2([]),[])).
+logen(my_clause, my_clause(solve2([A|B]),[solve_atom2(A),solve2(B)])).
+logen(my_clause, my_clause(solve_atom2(A),[my_clause2(A,B),solve2(B)])).
+logen(my_clause, my_clause(my_clause2(app([],A,A),[]),[])).
+logen(my_clause, my_clause(my_clause2(app([A|B],C,[A|D]),[app(B,C,D)]),[])).
+logen(test, test(A)) :-
+        logen(memo, solve_atom(solve_atom2(app([a,b,c],[d,e,f,g],A)))).
+:- filter
+        solve_atom(nonvar).
+:- filter
+        test(dynamic).

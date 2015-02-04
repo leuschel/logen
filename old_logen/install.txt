@@ -1,0 +1,94 @@
+ _                           
+| |    ___   __ _  ___ _ __  
+| |   / _ \ / _` |/ _ \ '_ \ 
+| |__| (_) | (_| |  __/ | | |
+|_____\___/ \__, |\___|_| |_|
+            |___/            
+
+An offline partial evaluation system for Prolog.
+
+(C) 1996-2004 Michael Leuschel, Jesper Joergensen, Stephen-John Craig
+All rights reserved.
+Free for academic and non-commercial use and evaluation purposes.
+Contact us for commercial use.
+
+-------------------------------------------------------------------------
+
+Logen installation guidelines (16th August 2004)
+
+
+Contents:
+1/ Installing python and tk:
+2/ Testing logen installation
+3/ Running Logen
+
+
+
+Section 1
+* Installing python and tk *
+
+Logens python interface requires python 2.3 with tk bindings:
+
+For osX:
+
+    Install python extensions for tk:
+    http://www.pythonmac.org/wiki/FAQ#head-8838d40da5d563166ca8b13cfb71cd2e856e81e3
+    * Download and install TclTkAqua
+    * Download and install the MacPythonPantherAddons if you are using the version of Python 2.3 included with OS X 10.3
+    * Open PackageManager, it is located in /Applications/MacPython-2.3
+    * Install _tkinter 
+
+    To run:
+    pythonw logen.py
+    (note the 'w' in pythonw)
+
+
+    Q: I get the error "SetFrontProcess -606 failed" how do I fix this?
+    A: pythonw not python.  note the "w"
+
+For Debian:
+    apt-get install python2.3-tk (if not already installed)
+
+For other Linux distributions:
+    most python distributions come with tk bindings, just install python (www.python.org)
+
+For Windows:
+    Should work with Python 2.3 (tk is installed by default)
+
+
+Section 2
+* Testing logen installation *
+
+(Note mac users should use pythonw instead of python when running the gui)
+
+[lennon:~/logen]% python logen.py --help
+usage: logen.py [options]
+
+options:
+  -h, --help         show this help message and exit
+  --no_gui           Do not run gui
+  --test_all         Run all test cases
+  --test_gui         Test gui
+  --test_simple_bta  Test simple bta
+  --test_auto_bta    Test auto bta
+  --test_logen       Test logen
+
+
+Testing the installation:
+	python logen.py --test_all
+
+Should run automated tests and return:       
+       Test Cases OK
+Gui will be automatically started and tested.
+A message box will be displayed when the tests are complete
+
+
+
+Section 3
+* Running Logen *
+
+(Note mac users should use pythonw instead of python when running the gui)
+python logen.py
+       
+
+

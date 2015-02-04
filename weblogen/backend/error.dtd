@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!ELEMENT error (message, type, problem, programpoint?, filter?, call, history?)>
+<!ELEMENT message (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT problem (#PCDATA)>
+<!ELEMENT call (#PCDATA)>
+<!ELEMENT programpoint (correctann?, annotation?, call, path, globalclause, predicate, localclause)>
+<!ELEMENT filter (correctfilt?, predicate)>
+<!ELEMENT annotation (#PCDATA)>
+<!ELEMENT globalclause (#PCDATA)>
+<!ELEMENT predicate (#PCDATA)>
+	<!ATTLIST predicate arity CDATA #REQUIRED>
+<!ELEMENT localclause (#PCDATA)>
+<!ELEMENT correctann (annotation|add_hide_nf)>
+<!ELEMENT correctfilt (make_dynamic*|replace_filt)>
+<!ELEMENT make_dynamic (#PCDATA)>
+<!ELEMENT replace_filt (#PCDATA)>
+<!ELEMENT path (point*)>
+<!ELEMENT point (#PCDATA)>
+	<!ATTLIST point arg CDATA #REQUIRED>
+<!ELEMENT history (call*)>
+<!ELEMENT add_hide_nf EMPTY>

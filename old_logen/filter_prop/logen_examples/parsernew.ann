@@ -1,0 +1,13 @@
+%:- include('../logen_source/logen').
+
+:- residual nont/3.
+:- filter nont(static,dynamic,dynamic):nont.
+
+logen(1,nont(X,T,R)) :- logen(unfold, t(a,T,V)), logen(memo, nont(X,V,R)).
+logen(2,nont(X,T,R)) :- logen(unfold,t(X,T,R)).
+logen(3,t(X,[X|Es],Es)) :- true.
+
+
+
+
+

@@ -1,0 +1,39 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen "inter_medium.pl" "test(R)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 47.63499999643163 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_)
+
+/* test(A) :- test__0(A). */
+test__0(A) :-
+        B is 3+4,
+        A is B-1.
+/* Specialisation time 0.3969999999538196 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen "inter_medium.pl" "test(R)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 70.7059999947034 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_)
+
+/* test(A) :- test__0(A). */
+test__0(A) :-
+        B is 3+4,
+        A is B-1.
+/* Specialisation time 12.53899999882964 ms (runtime) */
+
+[Mottisfont:logen/examples/experiments] leuschel% logen inter_medium_online.pl "test(X)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 70.87699999469063 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for test(_)
+
+/* test(A) :- test__0(A). */
+test__0(6).
+/* Specialisation time 0.3449999999598748 ms (runtime) */

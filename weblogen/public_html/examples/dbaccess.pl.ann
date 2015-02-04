@@ -1,0 +1,454 @@
+(:-module(cycle_q4,[])).
+(:-ensure_loaded(xsb_emu_for_sics)).
+(:-true).
+logen(tcp, tcp(A,B)) :-
+        logen(rescall, p(A,B)).
+logen(tcp, tcp(A,B)) :-
+        logen(rescall, p(A,C)),
+        logen(memo, tcp(C,B)).
+(:-true).
+logen(cycle, cycle(A,B)) :-
+        logen(rescall, p(A,B)).
+logen(cycle, cycle(A,B)) :-
+        logen(unfold, cycle(A,C)),
+        logen(rescall, p(C,B)).
+(:-true).
+logen(q, q(A)) :-
+        logen(rescall, p(A,B)),
+        resnot(logen(memo,q(B))).
+logen(ura, ura(steve,r1)).
+logen(active, active(steve,r1)).
+logen(pra, pra(r53,read,p(_,_))).
+logen(pra, pra(r53,read,cycle(_,_))).
+logen(pra, pra(r53,read,tcp(_,_))).
+logen(pra, pra(r53,read,q(_))).
+(:-true).
+logen(holds_read, holds_read(A,not(B))) :-
+        resnot(logen(unfold,holds_read(A,B))).
+logen(holds_read, holds_read(_,A)) :-
+        logen(unfold, built_in(A)).
+logen(holds_read, holds_read(A,B)) :-
+        logen(unfold, permitted(A,read,B)),
+        logen(unfold, fact(B)),
+        logen(rescall, call(B)).
+logen(holds_read, holds_read(A,B)) :-
+        logen(unfold, permitted(A,read,B)),
+        logen(unfold, derived(B)),
+        logen(memo, holds_read_rule(A,B)).
+logen(holds_read_rule, holds_read_rule(A,B)) :-
+        logen(unfold, rule(B,C)),
+        logen(unfold, l_holds_read(A,C)).
+logen(l_holds_read, l_holds_read(_,[])).
+logen(l_holds_read, l_holds_read(A,[B|C])) :-
+        logen(unfold, holds_read(A,B)),
+        logen(unfold, l_holds_read(A,C)).
+logen(built_in, built_in(A=A)).
+logen(built_in, built_in(A is B)) :-
+        logen(rescall, A is B).
+logen(holds, holds(A,B)) :-
+        logen(unfold, holds_read(A,B)).
+logen(permitted, permitted(A,B,C)) :-
+        logen(unfold, ura(A,D)),
+        logen(unfold, active(A,D)),
+        logen(unfold, seniorto(D,E)),  % unfold or rescall <-------------
+        logen(unfold, pra(E,B,C)).
+logen(fact, fact(p(_,_))).
+logen(derived, derived(cycle(_,_))).
+logen(derived, derived(tcp(_,_))).
+logen(derived, derived(q(_))).
+logen(rule, rule(cycle(A,B),[p(A,B)])).
+logen(rule, rule(cycle(A,B),[cycle(A,C),p(C,B)])).
+logen(rule, rule(tcp(A,B),[p(A,B)])).
+logen(rule, rule(tcp(A,B),[p(A,C),tcp(C,B)])).
+logen(rule, rule(q(A),[p(A,B),not(q(B))])).
+logen(b2, b2) :-
+        logen(unfold, holds_read(steve,cycle(_,_))),
+        logen(rescall, fail).
+logen(b2, b2).
+logen(bench, bench) :-
+        logen(rescall, ensure_loaded(database_cycle)),
+        logen(rescall, abolish_all_tables),
+        logen(rescall, cputime(A)),
+        logen(memo, b2),
+        logen(rescall, cputime(B)),
+        logen(rescall, C is B-A),
+        logen(rescall, print(C)),
+        logen(rescall, nl).
+logen(b4, b4) :-
+        logen(memo, holds_read(steve,q(_))),
+        logen(rescall, fail).
+logen(b4, b4).
+logen(bench4, bench4) :-
+        logen(rescall, ensure_loaded(database_cycle)),
+        logen(rescall, abolish_all_tables),
+        logen(rescall, cputime(A)),
+        logen(memo, b4),
+        logen(rescall, cputime(B)),
+        logen(rescall, C is B-A),
+        logen(rescall, print(C)),
+        logen(rescall, nl).
+logen(bench4_optimal, bench4_optimal) :-
+        logen(rescall, ensure_loaded(database_cycle)),
+        logen(rescall, abolish_all_tables),
+        logen(rescall, cputime(A)),
+        logen(rescall, b4_opt),
+        logen(rescall, cputime(B)),
+        logen(rescall, C is B-A),
+        logen(rescall, print(C)),
+        logen(rescall, nl).
+logen(b4_opt, b4_opt) :-
+        logen(rescall, q(_)),
+        logen(rescall, fail).
+logen(b4_opt, b4_opt).
+(:-ensure_loaded(database_cycle)).
+logen(seniorto, seniorto(r1,r1)).
+logen(seniorto, seniorto(r2,r2)).
+logen(seniorto, seniorto(r3,r3)).
+logen(seniorto, seniorto(r4,r4)).
+logen(seniorto, seniorto(r5,r5)).
+logen(seniorto, seniorto(r6,r6)).
+logen(seniorto, seniorto(r7,r7)).
+logen(seniorto, seniorto(r8,r8)).
+logen(seniorto, seniorto(r9,r9)).
+logen(seniorto, seniorto(r10,r10)).
+logen(seniorto, seniorto(r11,r11)).
+logen(seniorto, seniorto(r12,r12)).
+logen(seniorto, seniorto(r13,r13)).
+logen(seniorto, seniorto(r14,r14)).
+logen(seniorto, seniorto(r15,r15)).
+logen(seniorto, seniorto(r16,r16)).
+logen(seniorto, seniorto(r17,r17)).
+logen(seniorto, seniorto(r18,r18)).
+logen(seniorto, seniorto(r19,r19)).
+logen(seniorto, seniorto(r20,r20)).
+logen(seniorto, seniorto(r21,r21)).
+logen(seniorto, seniorto(r22,r22)).
+logen(seniorto, seniorto(r23,r23)).
+logen(seniorto, seniorto(r24,r24)).
+logen(seniorto, seniorto(r25,r25)).
+logen(seniorto, seniorto(r26,r26)).
+logen(seniorto, seniorto(r27,r27)).
+logen(seniorto, seniorto(r28,r28)).
+logen(seniorto, seniorto(r29,r29)).
+logen(seniorto, seniorto(r30,r30)).
+logen(seniorto, seniorto(r31,r31)).
+logen(seniorto, seniorto(r32,r32)).
+logen(seniorto, seniorto(r33,r33)).
+logen(seniorto, seniorto(r34,r34)).
+logen(seniorto, seniorto(r35,r35)).
+logen(seniorto, seniorto(r36,r36)).
+logen(seniorto, seniorto(r37,r37)).
+logen(seniorto, seniorto(r38,r38)).
+logen(seniorto, seniorto(r39,r39)).
+logen(seniorto, seniorto(r40,r40)).
+logen(seniorto, seniorto(r41,r41)).
+logen(seniorto, seniorto(r42,r42)).
+logen(seniorto, seniorto(r43,r43)).
+logen(seniorto, seniorto(r44,r44)).
+logen(seniorto, seniorto(r45,r45)).
+logen(seniorto, seniorto(r46,r46)).
+logen(seniorto, seniorto(r47,r47)).
+logen(seniorto, seniorto(r48,r48)).
+logen(seniorto, seniorto(r49,r49)).
+logen(seniorto, seniorto(r50,r50)).
+logen(seniorto, seniorto(r51,r51)).
+logen(seniorto, seniorto(r52,r52)).
+logen(seniorto, seniorto(r53,r53)).
+logen(seniorto, seniorto(r1,r2)).
+logen(seniorto, seniorto(r1,r3)).
+logen(seniorto, seniorto(r1,r4)).
+logen(seniorto, seniorto(r2,r5)).
+logen(seniorto, seniorto(r2,r6)).
+logen(seniorto, seniorto(r2,r7)).
+logen(seniorto, seniorto(r3,r8)).
+logen(seniorto, seniorto(r3,r9)).
+logen(seniorto, seniorto(r3,r10)).
+logen(seniorto, seniorto(r4,r11)).
+logen(seniorto, seniorto(r4,r12)).
+logen(seniorto, seniorto(r4,r13)).
+logen(seniorto, seniorto(r5,r14)).
+logen(seniorto, seniorto(r5,r15)).
+logen(seniorto, seniorto(r5,r16)).
+logen(seniorto, seniorto(r6,r17)).
+logen(seniorto, seniorto(r6,r18)).
+logen(seniorto, seniorto(r6,r19)).
+logen(seniorto, seniorto(r7,r20)).
+logen(seniorto, seniorto(r7,r21)).
+logen(seniorto, seniorto(r7,r22)).
+logen(seniorto, seniorto(r8,r23)).
+logen(seniorto, seniorto(r8,r24)).
+logen(seniorto, seniorto(r8,r25)).
+logen(seniorto, seniorto(r9,r26)).
+logen(seniorto, seniorto(r9,r27)).
+logen(seniorto, seniorto(r9,r28)).
+logen(seniorto, seniorto(r10,r29)).
+logen(seniorto, seniorto(r10,r30)).
+logen(seniorto, seniorto(r10,r31)).
+logen(seniorto, seniorto(r11,r32)).
+logen(seniorto, seniorto(r11,r33)).
+logen(seniorto, seniorto(r11,r34)).
+logen(seniorto, seniorto(r12,r35)).
+logen(seniorto, seniorto(r12,r36)).
+logen(seniorto, seniorto(r12,r37)).
+logen(seniorto, seniorto(r13,r38)).
+logen(seniorto, seniorto(r13,r39)).
+logen(seniorto, seniorto(r13,r40)).
+logen(seniorto, seniorto(r14,r41)).
+logen(seniorto, seniorto(r15,r41)).
+logen(seniorto, seniorto(r16,r41)).
+logen(seniorto, seniorto(r17,r42)).
+logen(seniorto, seniorto(r18,r42)).
+logen(seniorto, seniorto(r19,r42)).
+logen(seniorto, seniorto(r20,r43)).
+logen(seniorto, seniorto(r21,r43)).
+logen(seniorto, seniorto(r22,r43)).
+logen(seniorto, seniorto(r23,r44)).
+logen(seniorto, seniorto(r24,r44)).
+logen(seniorto, seniorto(r25,r44)).
+logen(seniorto, seniorto(r26,r45)).
+logen(seniorto, seniorto(r27,r45)).
+logen(seniorto, seniorto(r28,r45)).
+logen(seniorto, seniorto(r29,r46)).
+logen(seniorto, seniorto(r30,r46)).
+logen(seniorto, seniorto(r31,r46)).
+logen(seniorto, seniorto(r32,r47)).
+logen(seniorto, seniorto(r33,r47)).
+logen(seniorto, seniorto(r34,r47)).
+logen(seniorto, seniorto(r35,r48)).
+logen(seniorto, seniorto(r36,r48)).
+logen(seniorto, seniorto(r37,r48)).
+logen(seniorto, seniorto(r38,r49)).
+logen(seniorto, seniorto(r39,r49)).
+logen(seniorto, seniorto(r40,r49)).
+logen(seniorto, seniorto(r41,r50)).
+logen(seniorto, seniorto(r42,r50)).
+logen(seniorto, seniorto(r43,r50)).
+logen(seniorto, seniorto(r44,r51)).
+logen(seniorto, seniorto(r45,r51)).
+logen(seniorto, seniorto(r46,r51)).
+logen(seniorto, seniorto(r47,r52)).
+logen(seniorto, seniorto(r48,r52)).
+logen(seniorto, seniorto(r49,r52)).
+logen(seniorto, seniorto(r50,r53)).
+logen(seniorto, seniorto(r51,r53)).
+logen(seniorto, seniorto(r52,r53)).
+logen(seniorto, seniorto(r1,r5)).
+logen(seniorto, seniorto(r1,r6)).
+logen(seniorto, seniorto(r1,r7)).
+logen(seniorto, seniorto(r1,r14)).
+logen(seniorto, seniorto(r1,r15)).
+logen(seniorto, seniorto(r1,r16)).
+logen(seniorto, seniorto(r1,r41)).
+logen(seniorto, seniorto(r1,r50)).
+logen(seniorto, seniorto(r1,r53)).
+logen(seniorto, seniorto(r1,r17)).
+logen(seniorto, seniorto(r1,r18)).
+logen(seniorto, seniorto(r1,r19)).
+logen(seniorto, seniorto(r1,r42)).
+logen(seniorto, seniorto(r1,r20)).
+logen(seniorto, seniorto(r1,r21)).
+logen(seniorto, seniorto(r1,r22)).
+logen(seniorto, seniorto(r1,r43)).
+logen(seniorto, seniorto(r1,r8)).
+logen(seniorto, seniorto(r1,r9)).
+logen(seniorto, seniorto(r1,r10)).
+logen(seniorto, seniorto(r1,r23)).
+logen(seniorto, seniorto(r1,r24)).
+logen(seniorto, seniorto(r1,r25)).
+logen(seniorto, seniorto(r1,r44)).
+logen(seniorto, seniorto(r1,r51)).
+logen(seniorto, seniorto(r1,r26)).
+logen(seniorto, seniorto(r1,r27)).
+logen(seniorto, seniorto(r1,r28)).
+logen(seniorto, seniorto(r1,r45)).
+logen(seniorto, seniorto(r1,r29)).
+logen(seniorto, seniorto(r1,r30)).
+logen(seniorto, seniorto(r1,r31)).
+logen(seniorto, seniorto(r1,r46)).
+logen(seniorto, seniorto(r1,r11)).
+logen(seniorto, seniorto(r1,r12)).
+logen(seniorto, seniorto(r1,r13)).
+logen(seniorto, seniorto(r1,r32)).
+logen(seniorto, seniorto(r1,r33)).
+logen(seniorto, seniorto(r1,r34)).
+logen(seniorto, seniorto(r1,r47)).
+logen(seniorto, seniorto(r1,r52)).
+logen(seniorto, seniorto(r1,r35)).
+logen(seniorto, seniorto(r1,r36)).
+logen(seniorto, seniorto(r1,r37)).
+logen(seniorto, seniorto(r1,r48)).
+logen(seniorto, seniorto(r1,r38)).
+logen(seniorto, seniorto(r1,r39)).
+logen(seniorto, seniorto(r1,r40)).
+logen(seniorto, seniorto(r1,r49)).
+logen(seniorto, seniorto(r2,r14)).
+logen(seniorto, seniorto(r2,r15)).
+logen(seniorto, seniorto(r2,r16)).
+logen(seniorto, seniorto(r2,r41)).
+logen(seniorto, seniorto(r2,r50)).
+logen(seniorto, seniorto(r2,r53)).
+logen(seniorto, seniorto(r2,r17)).
+logen(seniorto, seniorto(r2,r18)).
+logen(seniorto, seniorto(r2,r19)).
+logen(seniorto, seniorto(r2,r42)).
+logen(seniorto, seniorto(r2,r20)).
+logen(seniorto, seniorto(r2,r21)).
+logen(seniorto, seniorto(r2,r22)).
+logen(seniorto, seniorto(r2,r43)).
+logen(seniorto, seniorto(r3,r23)).
+logen(seniorto, seniorto(r3,r24)).
+logen(seniorto, seniorto(r3,r25)).
+logen(seniorto, seniorto(r3,r44)).
+logen(seniorto, seniorto(r3,r51)).
+logen(seniorto, seniorto(r3,r53)).
+logen(seniorto, seniorto(r3,r26)).
+logen(seniorto, seniorto(r3,r27)).
+logen(seniorto, seniorto(r3,r28)).
+logen(seniorto, seniorto(r3,r45)).
+logen(seniorto, seniorto(r3,r29)).
+logen(seniorto, seniorto(r3,r30)).
+logen(seniorto, seniorto(r3,r31)).
+logen(seniorto, seniorto(r3,r46)).
+logen(seniorto, seniorto(r4,r32)).
+logen(seniorto, seniorto(r4,r33)).
+logen(seniorto, seniorto(r4,r34)).
+logen(seniorto, seniorto(r4,r47)).
+logen(seniorto, seniorto(r4,r52)).
+logen(seniorto, seniorto(r4,r53)).
+logen(seniorto, seniorto(r4,r35)).
+logen(seniorto, seniorto(r4,r36)).
+logen(seniorto, seniorto(r4,r37)).
+logen(seniorto, seniorto(r4,r48)).
+logen(seniorto, seniorto(r4,r38)).
+logen(seniorto, seniorto(r4,r39)).
+logen(seniorto, seniorto(r4,r40)).
+logen(seniorto, seniorto(r4,r49)).
+logen(seniorto, seniorto(r5,r41)).
+logen(seniorto, seniorto(r5,r50)).
+logen(seniorto, seniorto(r5,r53)).
+logen(seniorto, seniorto(r6,r42)).
+logen(seniorto, seniorto(r6,r50)).
+logen(seniorto, seniorto(r6,r53)).
+logen(seniorto, seniorto(r7,r43)).
+logen(seniorto, seniorto(r7,r50)).
+logen(seniorto, seniorto(r7,r53)).
+logen(seniorto, seniorto(r8,r44)).
+logen(seniorto, seniorto(r8,r51)).
+logen(seniorto, seniorto(r8,r53)).
+logen(seniorto, seniorto(r9,r45)).
+logen(seniorto, seniorto(r9,r51)).
+logen(seniorto, seniorto(r9,r53)).
+logen(seniorto, seniorto(r10,r46)).
+logen(seniorto, seniorto(r10,r51)).
+logen(seniorto, seniorto(r10,r53)).
+logen(seniorto, seniorto(r11,r47)).
+logen(seniorto, seniorto(r11,r52)).
+logen(seniorto, seniorto(r11,r53)).
+logen(seniorto, seniorto(r12,r48)).
+logen(seniorto, seniorto(r12,r52)).
+logen(seniorto, seniorto(r12,r53)).
+logen(seniorto, seniorto(r13,r49)).
+logen(seniorto, seniorto(r13,r52)).
+logen(seniorto, seniorto(r13,r53)).
+logen(seniorto, seniorto(r14,r50)).
+logen(seniorto, seniorto(r14,r53)).
+logen(seniorto, seniorto(r15,r50)).
+logen(seniorto, seniorto(r15,r53)).
+logen(seniorto, seniorto(r16,r50)).
+logen(seniorto, seniorto(r16,r53)).
+logen(seniorto, seniorto(r17,r50)).
+logen(seniorto, seniorto(r17,r53)).
+logen(seniorto, seniorto(r18,r50)).
+logen(seniorto, seniorto(r18,r53)).
+logen(seniorto, seniorto(r19,r50)).
+logen(seniorto, seniorto(r19,r53)).
+logen(seniorto, seniorto(r20,r50)).
+logen(seniorto, seniorto(r20,r53)).
+logen(seniorto, seniorto(r21,r50)).
+logen(seniorto, seniorto(r21,r53)).
+logen(seniorto, seniorto(r22,r50)).
+logen(seniorto, seniorto(r22,r53)).
+logen(seniorto, seniorto(r23,r51)).
+logen(seniorto, seniorto(r23,r53)).
+logen(seniorto, seniorto(r24,r51)).
+logen(seniorto, seniorto(r24,r53)).
+logen(seniorto, seniorto(r25,r51)).
+logen(seniorto, seniorto(r25,r53)).
+logen(seniorto, seniorto(r26,r51)).
+logen(seniorto, seniorto(r26,r53)).
+logen(seniorto, seniorto(r27,r51)).
+logen(seniorto, seniorto(r27,r53)).
+logen(seniorto, seniorto(r28,r51)).
+logen(seniorto, seniorto(r28,r53)).
+logen(seniorto, seniorto(r29,r51)).
+logen(seniorto, seniorto(r29,r53)).
+logen(seniorto, seniorto(r30,r51)).
+logen(seniorto, seniorto(r30,r53)).
+logen(seniorto, seniorto(r31,r51)).
+logen(seniorto, seniorto(r31,r53)).
+logen(seniorto, seniorto(r32,r52)).
+logen(seniorto, seniorto(r32,r53)).
+logen(seniorto, seniorto(r33,r52)).
+logen(seniorto, seniorto(r33,r53)).
+logen(seniorto, seniorto(r34,r52)).
+logen(seniorto, seniorto(r34,r53)).
+logen(seniorto, seniorto(r35,r52)).
+logen(seniorto, seniorto(r35,r53)).
+logen(seniorto, seniorto(r36,r52)).
+logen(seniorto, seniorto(r36,r53)).
+logen(seniorto, seniorto(r37,r52)).
+logen(seniorto, seniorto(r37,r53)).
+logen(seniorto, seniorto(r38,r52)).
+logen(seniorto, seniorto(r38,r53)).
+logen(seniorto, seniorto(r39,r52)).
+logen(seniorto, seniorto(r39,r53)).
+logen(seniorto, seniorto(r40,r52)).
+logen(seniorto, seniorto(r40,r53)).
+logen(seniorto, seniorto(r41,r53)).
+logen(seniorto, seniorto(r42,r53)).
+logen(seniorto, seniorto(r43,r53)).
+logen(seniorto, seniorto(r44,r53)).
+logen(seniorto, seniorto(r45,r53)).
+logen(seniorto, seniorto(r46,r53)).
+logen(seniorto, seniorto(r47,r53)).
+logen(seniorto, seniorto(r48,r53)).
+logen(seniorto, seniorto(r49,r53)).
+:- filter tcp(dynamic,dynamic).
+:- filter
+        ura(dynamic, dynamic).
+:- filter
+        active(dynamic, dynamic).
+:- filter
+        pra(dynamic, dynamic, dynamic).
+:- filter
+        holds_read_rule(static, (type mycall)).
+:- filter
+        holds_read(static, (type mycall)).
+:- filter
+        built_in(dynamic).
+:- filter
+        holds(static, (type mycall)).
+:- filter
+        permitted(dynamic, dynamic, dynamic).
+:- filter
+        fact(dynamic).
+:- filter
+        rule(dynamic, dynamic).
+:- filter
+        bench.
+:- filter
+        bench2.
+:- filter
+        b2.
+:- filter
+        bench4.
+:- filter
+        b4.
+:- filter
+        b4_opt.
+:- filter
+        q(dynamic).
+:- filter
+        bench4_optimal.
+:- type
+        mycall--->(struct(not,[nonvar]);nonvar).

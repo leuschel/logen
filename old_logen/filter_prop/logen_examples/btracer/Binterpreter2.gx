@@ -1,0 +1,1190 @@
+/* file: BTracer/Binterpreter2.gx */
+/*  --------------------  */
+/*  GENERATING EXTENSION  */
+/*  --------------------  */
+:- logen_reconsult('memo').
+:- logen_reconsult('pp').
+:- consult('~/CVS/BTracer/Machines/phonebook.xml.pl').
+
+q__u__e__r__y_m(B) :- 
+  ((
+    find_pattern(q__u__e__r__y,B)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(q__u__e__r__y,C),
+    findall(D, (
+      q__u__e__r__y_u(E),
+      D = (clause(C,E))),F),
+    pp(F),
+    find_pattern(q__u__e__r__y,B)
+  )).
+operation_m(G,H,I,J,K) :- 
+  ((
+    find_pattern(operation(G,H,I,J),K)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(operation(L,M,N,O),P),
+    findall(Q, (
+      operation_u(L,M,N,O,R),
+      Q = (clause(P,R))),S),
+    pp(S),
+    find_pattern(operation(G,H,I,J),K)
+  )).
+b_machine_name_m(T,U) :- 
+  ((
+    find_pattern(b_machine_name(T),U)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_machine_name(V),W),
+    findall(X, (
+      b_machine_name_u(V,Y),
+      X = (clause(W,Y))),Z),
+    pp(Z),
+    find_pattern(b_machine_name(T),U)
+  )).
+b_global_set_m(A1,B1) :- 
+  ((
+    find_pattern(b_global_set(A1),B1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_global_set(C1),D1),
+    findall(E1, (
+      b_global_set_u(C1,F1),
+      E1 = (clause(D1,F1))),G1),
+    pp(G1),
+    find_pattern(b_global_set(A1),B1)
+  )).
+b_check_machine_m(H1) :- 
+  ((
+    find_pattern(b_check_machine,H1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_check_machine,I1),
+    findall(J1, (
+      b_check_machine_u(K1),
+      J1 = (clause(I1,K1))),L1),
+    pp(L1),
+    find_pattern(b_check_machine,H1)
+  )).
+b_check_global_set_type_definitions_m(M1) :- 
+  ((
+    find_pattern(b_check_global_set_type_definitions,M1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_check_global_set_type_definitions,N1),
+    findall(O1, (
+      b_check_global_set_type_definitions_u(P1),
+      O1 = (clause(N1,P1))),Q1),
+    pp(Q1),
+    find_pattern(b_check_global_set_type_definitions,M1)
+  )).
+b_check_operations_m(R1) :- 
+  ((
+    find_pattern(b_check_operations,R1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_check_operations,S1),
+    findall(T1, (
+      b_check_operations_u(U1),
+      T1 = (clause(S1,U1))),V1),
+    pp(V1),
+    find_pattern(b_check_operations,R1)
+  )).
+b_initialise_machine_m(W1,X1) :- 
+  ((
+    find_pattern(b_initialise_machine(W1),X1)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_initialise_machine(Y1),Z1),
+    findall(A2, (
+      b_initialise_machine_u(Y1,B2),
+      A2 = (clause(Z1,B2))),C2),
+    pp(C2),
+    find_pattern(b_initialise_machine(W1),X1)
+  )).
+b_state_is_abort_m(D2,E2) :- 
+  ((
+    find_pattern(b_state_is_abort(D2),E2)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_state_is_abort(F2),G2),
+    findall(H2, (
+      b_state_is_abort_u(F2,I2),
+      H2 = (clause(G2,I2))),J2),
+    pp(J2),
+    find_pattern(b_state_is_abort(D2),E2)
+  )).
+b_operation_m(K2,L2,M2,N2,O2) :- 
+  ((
+    find_pattern(b_operation(K2,L2,M2,N2),O2)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_operation(P2,Q2,R2,S2),T2),
+    findall(U2, (
+      b_operation_u(P2,Q2,R2,S2,V2),
+      U2 = (clause(T2,V2))),W2),
+    pp(W2),
+    find_pattern(b_operation(K2,L2,M2,N2),O2)
+  )).
+extract_fd_range_from_machine_m(X2,Y2,Z2,A3) :- 
+  ((
+    find_pattern(extract_fd_range_from_machine(X2,Y2,Z2),A3)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(extract_fd_range_from_machine(B3,C3,D3),E3),
+    findall(F3, (
+      extract_fd_range_from_machine_u(B3,C3,D3,G3),
+      F3 = (clause(E3,G3))),H3),
+    pp(H3),
+    find_pattern(extract_fd_range_from_machine(X2,Y2,Z2),A3)
+  )).
+b_fd_type_m(I3,J3,K3,L3) :- 
+  ((
+    find_pattern(b_fd_type(I3,J3,K3),L3)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_fd_type(M3,N3,O3),P3),
+    findall(Q3, (
+      b_fd_type_u(M3,N3,O3,R3),
+      Q3 = (clause(P3,R3))),S3),
+    pp(S3),
+    find_pattern(b_fd_type(I3,J3,K3),L3)
+  )).
+global_type_m(T3,U3,V3) :- 
+  ((
+    find_pattern(global_type(T3,U3),V3)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(global_type(W3,X3),Y3),
+    findall(Z3, (
+      global_type_u(W3,X3,A4),
+      Z3 = (clause(Y3,A4))),B4),
+    pp(B4),
+    find_pattern(global_type(T3,U3),V3)
+  )).
+not_global_type_m(C4,D4,E4) :- 
+  ((
+    find_pattern(not_global_type(C4,D4),E4)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(not_global_type(F4,G4),H4),
+    findall(I4, (
+      not_global_type_u(F4,G4,J4),
+      I4 = (clause(H4,J4))),K4),
+    pp(K4),
+    find_pattern(not_global_type(C4,D4),E4)
+  )).
+b_execute_operation_m(L4,M4,N4,O4,P4) :- 
+  ((
+    find_pattern(b_execute_operation(L4,M4,N4,O4),P4)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_execute_operation(Q4,R4,S4,T4),U4),
+    findall(V4, (
+      b_execute_operation_u(Q4,R4,S4,T4,W4),
+      V4 = (clause(U4,W4))),X4),
+    pp(X4),
+    find_pattern(b_execute_operation(L4,M4,N4,O4),P4)
+  )).
+b_execute_operation_m(Y4,Z4,A5,B5,C5,D5) :- 
+  ((
+    find_pattern(b_execute_operation(Y4,Z4,A5,B5,C5),D5)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_execute_operation(E5,F5,G5,H5,I5),J5),
+    findall(K5, (
+      b_execute_operation_u(E5,F5,G5,H5,I5,L5),
+      K5 = (clause(J5,L5))),M5),
+    pp(M5),
+    find_pattern(b_execute_operation(Y4,Z4,A5,B5,C5),D5)
+  )).
+get_results_m(N5,O5,P5,Q5,R5) :- 
+  ((
+    find_pattern(get_results(N5,O5,P5,Q5),R5)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_results(S5,T5,U5,V5),W5),
+    findall(X5, (
+      get_results_u(S5,T5,U5,V5,Y5),
+      X5 = (clause(W5,Y5))),Z5),
+    pp(Z5),
+    find_pattern(get_results(N5,O5,P5,Q5),R5)
+  )).
+b_execute_statements_in_parallel_m(A6,B6,C6,D6,E6) :- 
+  ((
+    find_pattern(b_execute_statements_in_parallel(A6,B6,C6,D6),E6)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_execute_statements_in_parallel(F6,G6,H6,I6),J6),
+    findall(K6, (
+      b_execute_statements_in_parallel_u(F6,G6,H6,I6,L6),
+      K6 = (clause(J6,L6))),M6),
+    pp(M6),
+    find_pattern(b_execute_statements_in_parallel(A6,B6,C6,D6),E6)
+  )).
+b_compute_expressions_m(N6,O6,P6,Q6,R6) :- 
+  ((
+    find_pattern(b_compute_expressions(N6,O6,P6,Q6),R6)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_compute_expressions(S6,T6,U6,V6),W6),
+    findall(X6, (
+      b_compute_expressions_u(S6,T6,U6,V6,Y6),
+      X6 = (clause(W6,Y6))),Z6),
+    pp(Z6),
+    find_pattern(b_compute_expressions(N6,O6,P6,Q6),R6)
+  )).
+store_values_m(A7,B7,C7,D7) :- 
+  ((
+    find_pattern(store_values(A7,B7,C7),D7)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(store_values(E7,F7,G7),H7),
+    findall(I7, (
+      store_values_u(E7,F7,G7,J7),
+      I7 = (clause(H7,J7))),K7),
+    pp(K7),
+    find_pattern(store_values(A7,B7,C7),D7)
+  )).
+b_execute_top_level_statement_m(L7,M7,N7,O7,P7) :- 
+  ((
+    find_pattern(b_execute_top_level_statement(L7,M7,N7,O7),P7)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_execute_top_level_statement(Q7,R7,S7,T7),U7),
+    findall(V7, (
+      b_execute_top_level_statement_u(Q7,R7,S7,T7,W7),
+      V7 = (clause(U7,W7))),X7),
+    pp(X7),
+    find_pattern(b_execute_top_level_statement(L7,M7,N7,O7),P7)
+  )).
+b_execute_statement_m(Y7,Z7,A8,B8,C8) :- 
+  ((
+    find_pattern(b_execute_statement(Y7,Z7,A8,B8),C8)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_execute_statement(D8,E8,F8,G8),H8),
+    findall(I8, (
+      b_execute_statement_u(D8,E8,F8,G8,J8),
+      I8 = (clause(H8,J8))),K8),
+    pp(K8),
+    find_pattern(b_execute_statement(Y7,Z7,A8,B8),C8)
+  )).
+b_compute_expression_m(L8,M8,N8,O8,P8) :- 
+  ((
+    find_pattern(b_compute_expression(L8,M8,N8,O8),P8)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_compute_expression(Q8,R8,S8,T8),U8),
+    findall(V8, (
+      b_compute_expression_u(Q8,R8,S8,T8,W8),
+      V8 = (clause(U8,W8))),X8),
+    pp(X8),
+    find_pattern(b_compute_expression(L8,M8,N8,O8),P8)
+  )).
+expand_global_sets_m(Y8,Z8,A9) :- 
+  ((
+    find_pattern(expand_global_sets(Y8,Z8),A9)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(expand_global_sets(B9,C9),D9),
+    findall(E9, (
+      expand_global_sets_u(B9,C9,F9),
+      E9 = (clause(D9,F9))),G9),
+    pp(G9),
+    find_pattern(expand_global_sets(Y8,Z8),A9)
+  )).
+unary_function_m(H9,I9,J9) :- 
+  ((
+    find_pattern(unary_function(H9,I9),J9)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(unary_function(K9,L9),M9),
+    findall(N9, (
+      unary_function_u(K9,L9,O9),
+      N9 = (clause(M9,O9))),P9),
+    pp(P9),
+    find_pattern(unary_function(H9,I9),J9)
+  )).
+binary_function_m(Q9,R9,S9) :- 
+  ((
+    find_pattern(binary_function(Q9,R9),S9)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(binary_function(T9,U9),V9),
+    findall(W9, (
+      binary_function_u(T9,U9,X9),
+      W9 = (clause(V9,X9))),Y9),
+    pp(Y9),
+    find_pattern(binary_function(Q9,R9),S9)
+  )).
+b_test_boolean_expression_m(Z9,A10,B10,C10) :- 
+  ((
+    find_pattern(b_test_boolean_expression(Z9,A10,B10),C10)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_test_boolean_expression(D10,E10,F10),G10),
+    findall(H10, (
+      b_test_boolean_expression_u(D10,E10,F10,I10),
+      H10 = (clause(G10,I10))),J10),
+    pp(J10),
+    find_pattern(b_test_boolean_expression(Z9,A10,B10),C10)
+  )).
+binary_boolean_operator_m(K10,L10,M10) :- 
+  ((
+    find_pattern(binary_boolean_operator(K10,L10),M10)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(binary_boolean_operator(N10,O10),P10),
+    findall(Q10, (
+      binary_boolean_operator_u(N10,O10,R10),
+      Q10 = (clause(P10,R10))),S10),
+    pp(S10),
+    find_pattern(binary_boolean_operator(K10,L10),M10)
+  )).
+b_not_test_boolean_expression_m(T10,U10,V10,W10) :- 
+  ((
+    find_pattern(b_not_test_boolean_expression(T10,U10,V10),W10)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(b_not_test_boolean_expression(X10,Y10,Z10),A11),
+    findall(B11, (
+      b_not_test_boolean_expression_u(X10,Y10,Z10,C11),
+      B11 = (clause(A11,C11))),D11),
+    pp(D11),
+    find_pattern(b_not_test_boolean_expression(T10,U10,V10),W10)
+  )).
+get_arguments_m(E11,F11,G11,H11) :- 
+  ((
+    find_pattern(get_arguments(E11,F11,G11),H11)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_arguments(E11,F11,I11),J11),
+    findall(K11, (
+      get_arguments_u(E11,F11,I11,L11),
+      K11 = (clause(J11,L11))),M11),
+    pp(M11),
+    find_pattern(get_arguments(E11,F11,G11),H11)
+  )).
+get_name_m(N11,O11,P11) :- 
+  ((
+    find_pattern(get_name(N11,O11),P11)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_name(N11,Q11),R11),
+    findall(S11, (
+      get_name_u(N11,Q11,T11),
+      S11 = (clause(R11,T11))),U11),
+    pp(U11),
+    find_pattern(get_name(N11,O11),P11)
+  )).
+l_get_identifier_m(V11,W11,X11) :- 
+  ((
+    find_pattern(l_get_identifier(V11,W11),X11)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(l_get_identifier(V11,Y11),Z11),
+    findall(A12, (
+      l_get_identifier_u(V11,Y11,B12),
+      A12 = (clause(Z11,B12))),C12),
+    pp(C12),
+    find_pattern(l_get_identifier(V11,W11),X11)
+  )).
+get_identifier_from_single_arg_m(D12,E12,F12) :- 
+  ((
+    find_pattern(get_identifier_from_single_arg(D12,E12),F12)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_identifier_from_single_arg(G12,H12),I12),
+    findall(J12, (
+      get_identifier_from_single_arg_u(G12,H12,K12),
+      J12 = (clause(I12,K12))),L12),
+    pp(L12),
+    find_pattern(get_identifier_from_single_arg(D12,E12),F12)
+  )).
+get_identifiers_m(M12,N12,O12) :- 
+  ((
+    find_pattern(get_identifiers(M12,N12),O12)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_identifiers(P12,Q12),R12),
+    findall(S12, (
+      get_identifiers_u(P12,Q12,T12),
+      S12 = (clause(R12,T12))),U12),
+    pp(U12),
+    find_pattern(get_identifiers(M12,N12),O12)
+  )).
+get_identifiers1_m(V12,W12,X12) :- 
+  ((
+    find_pattern(get_identifiers1(V12,W12),X12)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_identifiers1(Y12,Z12),A13),
+    findall(B13, (
+      get_identifiers1_u(Y12,Z12,C13),
+      B13 = (clause(A13,C13))),D13),
+    pp(D13),
+    find_pattern(get_identifiers1(V12,W12),X12)
+  )).
+get_identifier_m(E13,F13,G13) :- 
+  ((
+    find_pattern(get_identifier(E13,F13),G13)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(get_identifier(E13,H13),I13),
+    findall(J13, (
+      get_identifier_u(E13,H13,K13),
+      J13 = (clause(I13,K13))),L13),
+    pp(L13),
+    find_pattern(get_identifier(E13,F13),G13)
+  )).
+lookup_value_in_store_and_global_sets_m(M13,N13,O13,P13) :- 
+  ((
+    find_pattern(lookup_value_in_store_and_global_sets(M13,N13,O13),P13)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(lookup_value_in_store_and_global_sets(Q13,R13,S13),T13),
+    findall(U13, (
+      lookup_value_in_store_and_global_sets_u(Q13,R13,S13,V13),
+      U13 = (clause(T13,V13))),W13),
+    pp(W13),
+    find_pattern(lookup_value_in_store_and_global_sets(M13,N13,O13),P13)
+  )).
+lookup_value_in_store_and_global_sets_m(X13,Y13,Z13,A14,B14) :- 
+  ((
+    find_pattern(lookup_value_in_store_and_global_sets(X13,Y13,Z13,A14),B14)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(lookup_value_in_store_and_global_sets(C14,D14,E14,F14),G14),
+    findall(H14, (
+      lookup_value_in_store_and_global_sets_u(C14,D14,E14,F14,I14),
+      H14 = (clause(G14,I14))),J14),
+    pp(J14),
+    find_pattern(lookup_value_in_store_and_global_sets(X13,Y13,Z13,A14),B14)
+  )).
+check_and_execute_m(K14,L14,M14,N14,O14,P14) :- 
+  ((
+    find_pattern(check_and_execute(K14,L14,M14,N14,O14),P14)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(check_and_execute(Q14,R14,S14,T14,U14),V14),
+    findall(W14, (
+      check_and_execute_u(Q14,R14,S14,T14,U14,X14),
+      W14 = (clause(V14,X14))),Y14),
+    pp(Y14),
+    find_pattern(check_and_execute(K14,L14,M14,N14,O14),P14)
+  )).
+make_abort_list_m(Z14,A15,B15) :- 
+  ((
+    find_pattern(make_abort_list(Z14,A15),B15)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(make_abort_list(C15,D15),E15),
+    findall(F15, (
+      make_abort_list_u(C15,D15,G15),
+      F15 = (clause(E15,G15))),H15),
+    pp(H15),
+    find_pattern(make_abort_list(Z14,A15),B15)
+  )).
+reduce_m(I15,J15,K15,L15,M15) :- 
+  ((
+    find_pattern(reduce(I15,J15,K15,L15),M15)
+   ) -> (
+    true
+   ) ; (
+    insert_pattern(reduce(N15,O15,P15,Q15),R15),
+    findall(S15, (
+      reduce_u(N15,O15,P15,Q15,T15),
+      S15 = (clause(R15,T15))),U15),
+    pp(U15),
+    find_pattern(reduce(I15,J15,K15,L15),M15)
+  )).
+map_m(V15,W15,X15,Y15) :- 
+  ((
+    find_pattern(map(V15,W15,X15),Y15)
+   ) -> (
+    true
+   ) ; (
+    generalise(map(V15,W15,X15),Z15),
+    ':'(cogen,add_extra_argument([95,117],Z15,A16,B16)),
+    insert_pattern(Z15,C16),
+    findall(D16, (
+      B16,
+      D16 = (clause(C16,A16))),E16),
+    pp(E16),
+    find_pattern(map(V15,W15,X15),Y15)
+  )).
+q__u__e__r__y_u(B) :- 
+  '._m'(['bsets_clp.pl'],[],B).
+q__u__e__r__y_u(C) :- 
+  '._m'(['bsets_clp_1.pl'],[],C).
+q__u__e__r__y_u(D) :- 
+  '._m'(['BTypes.pl'],[],D).
+q__u__e__r__y_u(E) :- 
+  '._m'(use_module(itracer),[],E).
+q__u__e__r__y_u(F) :- 
+  '._m'(use_module(xml_b_parser),[],F).
+q__u__e__r__y_u(G) :- 
+  '._m'(use_module(tools),[],G).
+q__u__e__r__y_u(H) :- 
+  '._m'(use_module(library(lists)),[],H).
+q__u__e__r__y_u(I) :- 
+  '._m'(use_module(store),[],I).
+q__u__e__r__y_u(J) :- 
+  '._m'(use_module(self_check),[],J).
+operation_u(initialise_machine,[],K,L,','(M,','(N,';'('->'(O,P),Q)))) :- 
+  b_check_machine_m(M),
+  b_initialise_machine_u(K,N),
+  b_state_is_abort_m(K,O),
+  varlist(call(L = init_aborts),R),
+  findall(','(true,R), (
+    L = init_aborts),S),
+  make_disjunction(S,R,P),
+  varlist(call(L = false),T),
+  findall(','(true,T), (
+    L = false),U),
+  make_disjunction(U,T,Q).
+b_machine_name_u(V,','(W,X)) :- 
+  ':'(user,machine(Y)),
+  get_arguments_u(['Header'],Y,Z,W),
+  get_name_u(Z,V,X).
+b_global_set_u(A1,','(B1,C1)) :- 
+  ':'(user,machine(D1)),
+  get_arguments_u(['Sets','Declaration'],D1,E1,B1),
+  get_identifier_u(E1,A1,C1).
+b_check_machine_u(','(F1,','(print('Machine: '),','(print(G1),','(nl,','(H1,','(I1,J1))))))) :- 
+  b_machine_name_u(G1,F1),
+  b_check_operations_u(H1),
+  b_check_global_set_type_definitions_u(I1),
+  b_check_var_type_definitions_u(J1).
+b_check_global_set_type_definitions_u(','(print(' checking existence of type definitions: '),','(K1,','(';'('->'(L1,M1),N1),','(print(' '),fail))))) :- 
+  b_global_set_u(O1,K1),
+  b_fd_type_m(O1,P1,Q1,L1),
+  varlist(','(rescall(print(O1)),','(rescall(print('==')),','(rescall(print(P1)),','(rescall(print('..')),rescall(print(Q1)))))),R1),
+  findall(','(','(print(O1),','(print('=='),','(print(P1),','(print('..'),print(Q1))))),R1), (
+    true),S1),
+  make_disjunction(S1,R1,M1),
+  varlist(','(rescall(nl),','(rescall(print('### no type/2 definition for global set: ')),','(rescall(print(O1)),','(rescall(nl),','(rescall(print('### add the following to the DEFINTIONS section: ')),','(rescall(print(scope_)),','(rescall(print(O1)),','(rescall(print(' == 1..3')),rescall(nl))))))))),T1),
+  findall(','(','(nl,','(print('### no type/2 definition for global set: '),','(print(O1),','(nl,','(print('### add the following to the DEFINTIONS section: '),','(print(scope_),','(print(O1),','(print(' == 1..3'),nl)))))))),T1), (
+    true),U1),
+  make_disjunction(U1,T1,N1).
+b_check_global_set_type_definitions_u(nl).
+b_check_operations_u(','(print(' checking operations: '),','(V1,','('=..'(W1,[X1|Y1]),','(';'('->'(Z1,true),A2),','(print(W1),','(print(' '),fail))))))) :- 
+  b_operation_u(X1,Y1,B2,C2,V1),
+  varlist(call(B2 = []),D2),
+  findall(','(true,D2), (
+    B2 = []),E2),
+  make_disjunction(E2,D2,Z1),
+  varlist(','(rescall(print(B2)),rescall(print(':='))),F2),
+  findall(','(','(print(B2),print(':=')),F2), (
+    true),G2),
+  make_disjunction(G2,F2,A2).
+b_check_operations_u(nl).
+b_initialise_machine_u(H2,','(I2,','(J2,','(K2,','(L2,M2))))) :- 
+  ':'(user,machine(N2)),
+  get_arguments_u(['Initialisation'],N2,O2,I2),
+  b_set_up_valid_state_m(P2,J2),
+  b_execute_statements_in_parallel_m(O2,[],P2,Q2,K2),
+  store_updates_m(Q2,P2,H2,L2),
+  b_check_valid_state_m(H2,M2).
+b_state_is_abort_u(R2,','(S2,T2 = false)) :- 
+  lookup_value_m(abort__flag__info,R2,T2,S2).
+b_operation_u(U2,V2,W2,X2,','(Y2,','(Z2,','(A3,','(B3,','(C3,';'('->'(D3,true),E3))))))) :- 
+  ':'(user,machine(F3)),
+  get_arguments_u(['Operations','Operation'],F3,G3,Y2),
+  get_arguments_u(['Header'],G3,H3,Z2),
+  get_name_u(H3,U2,A3),
+  ((
+    ':'(user,member('Parameters'(I3,J3),H3))
+   ) -> (
+    varlist(','(unfold(get_arguments(['Parameters','ListIdent'],H3,K3)),unfold(l_get_identifier(K3,V2))),L3),
+    findall(','(','(M3,N3),L3), (
+      get_arguments_u(['Parameters','ListIdent'],H3,K3,M3),
+      l_get_identifier_u(K3,V2,N3)),O3),
+    make_disjunction(O3,L3,P3),
+    B3 = P3
+   ) ; (
+    V2 = [],
+    B3 = true
+  )),
+  ((
+    ':'(user,member('Results'(Q3,R3),H3))
+   ) -> (
+    varlist(','(unfold(get_arguments(['Results','ListIdent'],H3,S3)),unfold(l_get_identifier(S3,W2))),T3),
+    findall(','(','(U3,V3),T3), (
+      get_arguments_u(['Results','ListIdent'],H3,S3,U3),
+      l_get_identifier_u(S3,W2,V3)),W3),
+    make_disjunction(W3,T3,X3),
+    C3 = X3
+   ) ; (
+    varlist(call(W2 = []),Y3),
+    findall(','(true,Y3), (
+      W2 = []),Z3),
+    make_disjunction(Z3,Y3,A4),
+    C3 = A4
+  )),
+  varlist(call(G3 = ([B4,X2])),C4),
+  findall(','(true,C4), (
+    G3 = ([B4,X2])),D4),
+  make_disjunction(D4,C4,D3),
+  varlist(','(rescall(print('### illegal operation argument list:')),','(rescall(print(G3)),','(rescall(nl),call(X2 = fail)))),E4),
+  findall(','(','(print('### illegal operation argument list:'),','(print(G3),nl)),E4), (
+    X2 = fail),F4),
+  make_disjunction(F4,E4,E3).
+extract_fd_range_from_machine_u(G4,H4,I4,','(J4,','(K4,','(L4,','(M4,','(N4,','(O4,','(P4,','(Q4,','(R4,S4)))))))))) :- 
+  ':'(user,machine(T4)),
+  member_m('Definitions'(U4,V4),T4,J4),
+  get_arguments_u(['Definitions','Definition'],T4,W4,K4),
+  get_arguments_u(['Header','Name'],W4,X4,L4),
+  get_identifier_m(X4,Y4,M4),
+  name_m(Y4,[115,99,111,112,101,95|Z4],N4),
+  name_m(G4,Z4,O4),
+  get_arguments_u(['NatRange'],W4,A5,P4),
+  debug_print_m('********************** FDRange = ',Q4),
+  debug_print_m(A5,R4),
+  debug_nl_m(S4),
+  A5 = (['Integer'(H4,B5),'Integer'(I4,C5)]).
+q__u__e__r__y_u(D5) :- 
+  '._m'(assert_pre(':'(user,b_fd_type(E5,F5,G5)),true),[],D5).
+q__u__e__r__y_u(H5) :- 
+  '._m'(assert_post(':'(user,b_fd_type(I5,J5,K5)),','(atomic(I5),','(integer(J5),integer(K5)))),[],H5).
+b_fd_type_u(L5,M5,N5,','(O5,';'('->'(P5,true),Q5))) :- 
+  b_global_set_m(L5,O5),
+  extract_fd_range_from_machine_m(L5,M5,N5,P5),
+  varlist(','(call(M5 = 1),call(N5 = 3)),R5),
+  findall(','(true,R5), (
+    M5 = 1,
+    N5 = 3),S5),
+  make_disjunction(S5,R5,Q5).
+global_type_u(fd(T5,U5),U5,','(V5,','(W5,X5))) :- 
+  b_global_set_m(U5,V5),
+  b_fd_type_m(U5,Y5,Z5,W5),
+  in_m(T5,'..'(Y5,Z5),X5).
+not_global_type_u(A6,B6,','(C6,D6)) :- 
+  b_global_set_m(B6,C6),
+((
+  when_m(nonvar(A6),\+(A6 = (fd(E6,F6))),G6),
+  D6 = G6) ;
+(
+  varlist(','(call(A6 = (fd(H6,I6))),memo(when(nonvar(I6),dif(I6,B6)))),J6),
+  findall(','(K6,J6), (
+    A6 = (fd(H6,I6)),
+    when_m(nonvar(I6),dif(I6,B6),K6)),L6),
+  make_disjunction(L6,J6,M6),
+  D6 = M6)).
+not_global_type_u(fd(N6,O6),O6,','(P6,','(Q6,R6))) :- 
+  b_global_set_m(O6,P6),
+  b_fd_type_m(O6,S6,T6,Q6),
+  '#/_m'('#>'(N6,T6),'#<'(N6,S6),R6).
+b_execute_operation_u(U6,V6,W6,X6,Y6) :- 
+  b_execute_operation_m(Z6,U6,V6,W6,X6,Y6).
+b_execute_operation_u(A7,B7,C7,D7,E7,','(F7,','(G7,','(H7,','('=..'(I7,[A7|J7]),','(K7,','(L7,','(M7,','(N7,','(O7,','(nl,','(P7,','(Q7,','(R7,','(S7,','(T7,','(U7,','(';'('->'(V7,W7),'=..'(B7,['-->',I7,X7])),','(Y7,','(Z7,A8)))))))))))))))))))) :- 
+  b_operation_m(A7,B8,C8,D8,F7),
+  same_length_m(B8,J7,G7),
+  set_up_localstate_m(B8,J7,[],E8,H7),
+  debug_nl_m(K7),
+  debug_print_m('Attempting Operation ------------> ',L7),
+  debug_print_m(I7,M7),
+  debug_nl_m(N7),
+  debug_print_m(call(b_execute_top_level_statement(D8,E8,C7,F8)),O7),
+  b_execute_top_level_statement_m(D8,E8,C7,F8,P7),
+  lookup_value_for_existing_id_m(abort__flag__info,F8,C7,E7,Q7),
+  debug_print_m('Operation Successful ------> ',R7),
+  get_results_m(C8,F8,X7,G8,S7),
+  debug_print_m(results(X7),T7),
+  debug_nl_m(U7),
+  varlist(call(X7 = []),H8),
+  findall(','(true,H8), (
+    X7 = []),I8),
+  make_disjunction(I8,H8,V7),
+  varlist(call(B7 = I7),J8),
+  findall(','(true,J8), (
+    B7 = I7),K8),
+  make_disjunction(K8,J8,W7),
+  debug_print_m(G8,Y7),
+  debug_nl_m(Z7),
+  store_updates_m(G8,C7,D7,A8).
+get_results_u([],L8,[],L8,true).
+get_results_u([M8|N8],O8,[P8|Q8],R8,','(S8,T8)) :- 
+  lookup_and_delete_value_m(M8,P8,O8,U8,S8),
+  get_results_m(N8,U8,Q8,R8,T8).
+b_execute_statements_in_parallel_u([],V8,W8,[],true).
+b_execute_statements_in_parallel_u([X8|Y8],Z8,A9,B9,','(C9,','(D9,','(E9,','(F9,','(G9,','(H9,I9))))))) :- 
+  b_execute_statement_m(X8,Z8,A9,J9,C9),
+  debug_print_m(par1(J9),D9),
+  debug_nl_m(E9),
+  b_execute_statements_in_parallel_m(Y8,Z8,A9,K9,F9),
+  debug_print_m(app(J9,K9),G9),
+  debug_nl_m(H9),
+  append_m(J9,K9,B9,I9).
+b_compute_expressions_u([],L9,M9,[],true).
+b_compute_expressions_u([N9|O9],P9,Q9,[R9|S9],','(T9,U9)) :- 
+  b_compute_expression_m(N9,P9,Q9,R9,T9),
+  b_compute_expressions_m(O9,P9,Q9,S9,U9).
+store_values_u([],[],[],true).
+store_values_u([V9|W9],[X9|Y9],Z9,','(';'('->'(A10,B10),C10),D10)) :- 
+  varlist(call(X9 = (abort(E10))),F10),
+  findall(','(true,F10), (
+    X9 = (abort(E10))),G10),
+  make_disjunction(G10,F10,A10),
+  varlist(','(memo(store_value(abort__flag__info,E10,[],[H10])),','(memo(store_value(V9,X9,[],[I10])),','(rescall(print(abort_multi_assign(E10))),','(rescall(nl),call(Z9 = ([H10,I10|J10])))))),K10),
+  findall(','(','(L10,','(M10,','(print(abort_multi_assign(E10)),nl))),K10), (
+    store_value_m(abort__flag__info,E10,[],[H10],L10),
+    store_value_m(V9,X9,[],[I10],M10),
+    Z9 = ([H10,I10|J10])),N10),
+  make_disjunction(N10,K10,B10),
+  varlist(','(memo(store_value(V9,X9,[],[I10])),call(Z9 = ([I10|J10]))),O10),
+  findall(','(P10,O10), (
+    store_value_m(V9,X9,[],[I10],P10),
+    Z9 = ([I10|J10])),Q10),
+  make_disjunction(Q10,O10,C10),
+  store_values_m(W9,Y9,J10,D10).
+b_execute_top_level_statement_u('SubstitutionPrecondition'(R10,[S10,T10]),U10,V10,W10,','(X10,','(Y10,','(Z10,','(A11,','(B11,','(C11,','(D11,','(E11,F11))))))))) :- 
+  '!_m'(X10),
+  debug_print_m(top_level_pre,Y10),
+  debug_nl_m(Z10),
+  b_test_boolean_expression_m(S10,U10,V10,A11),
+  debug_print_m(top_level_precondition_ok,B11),
+  debug_nl_m(C11),
+  b_execute_statement_m(T10,U10,V10,W10,D11),
+  debug_print_m(newstate(W10),E11),
+  debug_nl_m(F11).
+b_execute_top_level_statement_u(G11,H11,I11,J11,K11) :- 
+  b_execute_statement_m(G11,H11,I11,J11,K11).
+b_execute_statement_u('SubstitutionBecomeEqualVariables'(L11,[M11,'ListExpression'(N11,O11)]),P11,Q11,R11,','(S11,','(T11,','(U11,','(V11,W11))))) :- 
+  '!_m'(S11),
+  debug_print_m('assign: ',T11),
+  get_identifiers_m(M11,X11,U11),
+  b_compute_expressions_m(O11,P11,Q11,Y11,V11),
+  store_values_m(X11,Y11,R11,W11).
+b_execute_statement_u('SubstitutionBecomeEqualVariables'(Z11,[A12,B12]),C12,D12,E12,','(F12,','(G12,','(H12,','(I12,','(J12,','(K12,','(L12,','(M12,N12))))))))) :- 
+  '!_m'(F12),
+  debug_print_m('assign: ',G12),
+  get_identifier_from_single_arg_m(A12,O12,H12),
+  debug_print_m(id,I12),
+  debug_print_m(' := ',J12),
+  b_compute_expression_m(B12,C12,D12,P12,K12),
+  debug_print_m(val(P12),L12),
+  debug_nl_m(M12),
+((
+  varlist(','(call(P12 = (abort(Q12))),','(memo(store_value(abort__flag__info,Q12,[],R12)),','(rescall(print(abort_assign(Q12))),','(rescall(nl),memo(store_value(O12,P12,R12,E12)))))),S12),
+  findall(','(','(T12,','(print(abort_assign(Q12)),','(nl,U12))),S12), (
+    P12 = (abort(Q12)),
+    store_value_m(abort__flag__info,Q12,[],R12,T12),
+    store_value_m(O12,P12,R12,E12,U12)),V12),
+  make_disjunction(V12,S12,W12),
+  N12 = W12) ;
+(
+  varlist(','(memo(not_top_level_functor(P12,abort)),memo(store_value(O12,P12,[],E12))),X12),
+  findall(','(','(Y12,Z12),X12), (
+    not_top_level_functor_m(P12,abort,Y12),
+    store_value_m(O12,P12,[],E12,Z12)),A13),
+  make_disjunction(A13,X12,B13),
+  N12 = B13)).
+b_execute_statement_u('SubstitutionBecomeEqualFunction'(C13,['CallFunction'(D13,[E13,F13]),G13]),H13,I13,J13,','(K13,','(L13,','(M13,','(N13,','(O13,','(P13,','(Q13,','(R13,','(S13,','(T13,','(U13,','(V13,','(W13,X13)))))))))))))) :- 
+  '!_m'(K13),
+  debug_print_m(assignfun,L13),
+  debug_nl_m(M13),
+  get_identifier_from_single_arg_m(E13,Y13,N13),
+  debug_print_m(Y13,O13),
+  b_compute_expression_m(F13,H13,I13,Z13,P13),
+  debug_print_m(Z13,Q13),
+  debug_print_m(' := ',R13),
+  b_compute_expression_m(G13,H13,I13,A14,S13),
+  debug_print_m(rhsval(A14),T13),
+  debug_nl_m(U13),
+  lookup_value_for_existing_id_m(Y13,I13,B14,V13),
+  override_m(B14,Z13,A14,C14,W13),
+  store_value_m(Y13,C14,[],J13,X13).
+b_execute_statement_u('SubstitutionPrecondition'(D14,[E14,F14]),G14,H14,I14,','(J14,','(print('*** Non-outermost PRE construct'),','(nl,K14)))) :- 
+  '!_m'(J14),
+((
+  varlist(','(memo(b_test_boolean_expression(E14,G14,H14)),','(rescall(print('PRE ok')),','(rescall(nl),','(memo(b_execute_statement(F14,G14,H14,I14)),','(memo(debug_print(newstate(I14))),memo(debug_nl)))))),L14),
+  findall(','(','(M14,','(print('PRE ok'),','(nl,','(N14,','(O14,P14))))),L14), (
+    b_test_boolean_expression_m(E14,G14,H14,M14),
+    b_execute_statement_m(F14,G14,H14,I14,N14),
+    debug_print_m(newstate(I14),O14),
+    debug_nl_m(P14)),Q14),
+  make_disjunction(Q14,L14,R14),
+  K14 = R14) ;
+(
+  varlist(','(memo(b_not_test_boolean_expression(E14,G14,H14)),','(rescall(print('PRE false  => ABORT')),','(rescall(nl),memo(store_value(abort,pre_condition_violated(E14),H14,I14))))),S14),
+  findall(','(','(T14,','(print('PRE false  => ABORT'),','(nl,U14))),S14), (
+    b_not_test_boolean_expression_m(E14,G14,H14,T14),
+    store_value_m(abort,pre_condition_violated(E14),H14,I14,U14)),V14),
+  make_disjunction(V14,S14,W14),
+  K14 = W14)).
+b_execute_statement_u('SubstitutionSelect'(X14,[Y14,'Then'(Z14,[A15])|B15]),C15,D15,E15,','(F15,G15)) :- 
+  '!_m'(F15),
+((
+  varlist(','(memo(b_test_boolean_expression(Y14,C15,D15)),','(rescall(print('In PreCond')),','(rescall(nl),memo(b_execute_statement(A15,C15,D15,E15))))),H15),
+  findall(','(','(I15,','(print('In PreCond'),','(nl,J15))),H15), (
+    b_test_boolean_expression_m(Y14,C15,D15,I15),
+    b_execute_statement_m(A15,C15,D15,E15,J15)),K15),
+  make_disjunction(K15,H15,L15),
+  G15 = L15) ;
+(
+  varlist(';'(hide_nf(','(memo(member('When'(M15,[N15,O15]),B15)),','(memo(b_test_boolean_expression(N15,C15,D15)),','(rescall(print('In When')),','(rescall(nl),memo(b_execute_statement(O15,C15,D15,E15))))))),hide_nf(','(rescall(print('In Else')),','(rescall(nl),','(memo(member('Else'(P15,[Q15]),B15)),memo(b_execute_statement(Q15,C15,D15,E15))))))),R15),
+  findall(','(S15,R15), (
+((
+    varlist(','(memo(member('When'(M15,[N15,O15]),B15)),','(memo(b_test_boolean_expression(N15,C15,D15)),','(rescall(print('In When')),','(rescall(nl),memo(b_execute_statement(O15,C15,D15,E15)))))),T15),
+    findall(','(','(U15,','(V15,','(print('In When'),','(nl,W15)))),T15), (
+      member_m('When'(M15,[N15,O15]),B15,U15),
+      b_test_boolean_expression_m(N15,C15,D15,V15),
+      b_execute_statement_m(O15,C15,D15,E15,W15)),X15),
+    make_disjunction(X15,T15,Y15),
+    S15 = Y15) ;
+(
+    varlist(','(rescall(print('In Else')),','(rescall(nl),','(memo(member('Else'(P15,[Q15]),B15)),memo(b_execute_statement(Q15,C15,D15,E15))))),Z15),
+    findall(','(','(print('In Else'),','(nl,','(A16,B16))),Z15), (
+      member_m('Else'(P15,[Q15]),B15,A16),
+      b_execute_statement_m(Q15,C15,D15,E15,B16)),C16),
+    make_disjunction(C16,Z15,D16),
+    S15 = D16))),E16),
+  make_disjunction(E16,R15,F16),
+  G15 = F16)).
+b_execute_statement_u('SubstitutionAny'(G16,[H16,I16,J16]),K16,L16,M16,','(N16,','(O16,','(P16,','(Q16,','(R16,','(S16,','(T16,','(U16,','(V16,','(W16,','(X16,','(Y16,','(Z16,A17)))))))))))))) :- 
+  '!_m'(N16),
+  debug_print_m(any,O16),
+  H16 = ('ListIdent'(B17,C17)),
+  l_get_identifier_m(C17,D17,P16),
+  debug_print_m(par(D17),Q16),
+  same_length_m(D17,E17,R16),
+  set_up_localstate_m(D17,E17,K16,F17,S16),
+  debug_print_m(where,T16),
+  debug_nl_m(U16),
+  b_test_boolean_expression_m(I16,F17,L16,V16),
+  debug_print_m(where_precondition_ok,W16),
+  debug_nl_m(X16),
+  b_execute_statement_m(J16,F17,L16,M16,Y16),
+  debug_print_m(newstate(M16),Z16),
+  debug_nl_m(A17).
+b_execute_statement_u('Then'(G17,[H17]),I17,J17,K17,','(L17,','(M17,N17))) :- 
+  '!_m'(L17),
+  debug_print_m(then,M17),
+  b_execute_statement_m(H17,I17,J17,K17,N17).
+b_execute_statement_u('SubstitutionSkip'(O17,[]),P17,Q17,R17,','(S17,T17)) :- 
+  '!_m'(S17),
+  debug_print_m(skip,T17),
+  R17 = [].
+b_execute_statement_u('Parallel'(U17,V17),W17,X17,Y17,','(Z17,','(A18,','(B18,','(C18,D18))))) :- 
+  '!_m'(Z17),
+  debug_print_m(par,A18),
+  b_execute_statements_in_parallel_m(V17,W17,X17,Y17,B18),
+  debug_print_m(end_par,C18),
+  debug_nl_m(D18).
+b_execute_statement_u('SubstitutionIf'(E18,[F18,'Then'(G18,[H18]),'Else'(I18,[J18])]),K18,L18,M18,','(N18,','(O18,','(P18,','(Q18,','(R18,','(S18,','(T18,','(U18,V18))))))))) :- 
+  '!_m'(N18),
+  debug_print_m(if,O18),
+  debug_nl_m(P18),
+  b_test_boolean_expression_m(F18,K18,L18,Q18),
+  debug_print_m(if_test_ok,R18),
+  debug_nl_m(S18),
+  b_execute_statement_m(H18,K18,L18,M18,T18),
+  debug_print_m(newstate(M18),U18),
+  debug_nl_m(V18).
+b_execute_statement_u('SubstitutionIf'(W18,[X18,'Then'(Y18,[Z18]),'Else'(A19,[B19])]),C19,D19,E19,','(F19,','(G19,','(H19,','(I19,','(J19,','(K19,','(L19,','(M19,N19))))))))) :- 
+  '!_m'(F19),
+  debug_print_m(if,G19),
+  debug_nl_m(H19),
+  b_not_test_boolean_expression_m(X18,C19,D19,I19),
+  debug_print_m(if_test_ok,J19),
+  debug_nl_m(K19),
+  b_execute_statement_m(B19,C19,D19,E19,L19),
+  debug_print_m(newstate(E19),M19),
+  debug_nl_m(N19).
+b_execute_statement_u(O19,P19,Q19,R19,','(print(uncovered_statement(O19)),','(nl,fail))).
+b_compute_expression_u('EmptySet'(S19,T19),U19,V19,W19,','(X19,Y19)) :- 
+  '!_m'(X19),
+  empty_set_m(W19,Y19).
+b_compute_expression_u('EmptySequence'(Z19,A20),B20,C20,D20,','(E20,F20)) :- 
+  '!_m'(E20),
+  empty_sequence_m(D20,F20).
+b_compute_expression_u('Identifier'(G20,H20),I20,J20,K20,','(L20,','(M20,','(N20,','(O20,','(P20,Q20)))))) :- 
+  '!_m'(L20),
+  debug_print_m(call_lookup_value(G20,I20,J20,K20),M20),
+  debug_nl_m(N20),
+  lookup_value_in_store_and_global_sets_m(G20,I20,J20,K20,O20),
+  debug_print_m(b_comp_expr_id(G20,K20),P20),
+  debug_nl_m(Q20).
+b_compute_expression_u('IdentifierComposed'(R20,[S20]),T20,U20,V20,','(W20,X20)) :- 
+  '!_m'(W20),
+  b_compute_expression_m(S20,T20,U20,V20,X20).
+b_compute_expression_u('ListExpression'(Y20,[Z20]),A21,B21,C21,','(D21,E21)) :- 
+  '!_m'(D21),
+  b_compute_expression_m(Z20,A21,B21,C21,E21).
+b_compute_expression_u('ExtensionSet'(F21,[G21]),H21,I21,[J21],','(K21,L21)) :- 
+  '!_m'(K21),
+  b_compute_expression_m(G21,H21,I21,J21,L21).
+b_compute_expression_u('ExtensionSequence'(M21,[N21]),O21,P21,cons(Q21,nil_seq),','(R21,S21)) :- 
+  '!_m'(R21),
+  b_compute_expression_m(N21,O21,P21,Q21,S21).
+b_compute_expression_u('OrderedPair'(T21,[U21,V21]),W21,X21,','(Y21,Z21),','(A22,','(B22,','(C22,','(D22,E22))))) :- 
+  '!_m'(A22),
+  debug_print_m(pair,B22),
+  b_compute_expression_m(U21,W21,X21,Y21,C22),
+  b_compute_expression_m(V21,W21,X21,Z21,D22),
+  debug_print_m(pair(Y21,Z21),E22).
+b_compute_expression_u(F22,G22,H22,I22,','(nonvar(F22),','('=..'(F22,[J22,K22,[L22]]),','(M22,','(N22,','(O22,','(P22,','(Q22,','(R22,','('=..'(S22,[T22,U22,I22]),','(call(S22),','(V22,W22)))))))))))) :- 
+  unary_function_m(J22,T22,M22),
+  '!_m'(N22),
+  debug_print_m(unary_fun(J22),O22),
+  b_compute_expression_m(L22,G22,H22,X22,P22),
+  debug_print_m(arg1(J22,X22),Q22),
+  expand_global_sets_m(X22,U22,R22),
+  debug_print_m(kernel_res(S22),V22),
+  debug_nl_m(W22).
+b_compute_expression_u(Y22,Z22,A23,B23,','('=..'(Y22,[C23,D23,[E23,F23]]),','(G23,','(H23,','(I23,','(J23,','(K23,','(L23,','(M23,','(N23,','(O23,','('=..'(P23,[Q23,R23,S23,B23]),','(call(P23),','(T23,U23)))))))))))))) :- 
+  binary_function_m(C23,Q23,G23),
+  '!_m'(H23),
+  debug_print_m(binary_fun(C23),I23),
+  b_compute_expression_m(E23,Z22,A23,V23,J23),
+  debug_print_m(arg1(C23,V23),K23),
+  b_compute_expression_m(F23,Z22,A23,W23,L23),
+  debug_print_m(arg2(C23,W23),M23),
+  expand_global_sets_m(V23,R23,N23),
+  expand_global_sets_m(W23,S23,O23),
+  debug_print_m(kernel_res(P23),T23),
+  debug_nl_m(U23).
+b_compute_expression_u(X23,Y23,Z23,A24,','(print(uncovered_expression(X23)),','(nl,fail))).
+expand_global_sets_u(B24,C24,';'('->'(D24,E24),F24)) :- 
+  varlist(call(B24 = (global_set(G24))),H24),
+  findall(','(true,H24), (
+    B24 = (global_set(G24))),I24),
+  make_disjunction(I24,H24,D24),
+  varlist(','(memo(all_elements_of_type(G24,C24)),','(rescall(print('^')),','(rescall(print(G24)),rescall(print('^ '))))),J24),
+  findall(','(','(K24,','(print('^'),','(print(G24),print('^ ')))),J24), (
+    all_elements_of_type_m(G24,C24,K24)),L24),
+  make_disjunction(L24,J24,E24),
+  varlist(call(C24 = B24),M24),
+  findall(','(true,M24), (
+    C24 = B24),N24),
+  make_disjunction(N24,M24,F24).
+unary_function_u('First',first_sequence,true).
+unary_function_u('Front',front_sequence,true).
+unary_function_u('Tail',tail_sequence,true).
+unary_function_u('Rev',rev_sequence,true).
+unary_function_u('Last',last_sequence,true).
+unary_function_u('Domain',domain,true).
+unary_function_u('Range',range,true).
+binary_function_u('ConcatSequence',concat_sequence,true).
+binary_function_u('Union',union,true).
+binary_function_u('Intersection',intersection,true).
+binary_function_u('SetMinus',difference_set,true).
+binary_function_u('CallFunction',apply_to,true).
+b_test_boolean_expression_u([],O24,P24,true).
+b_test_boolean_expression_u('PredicateParenthesis'(Q24,[R24]),S24,T24,','(U24,V24)) :- 
+  '!_m'(U24),
+  b_test_boolean_expression_m(R24,S24,T24,V24).
+b_test_boolean_expression_u('Not'(W24,[X24]),Y24,Z24,','(A25,B25)) :- 
+  '!_m'(A25),
+  b_not_test_boolean_expression_m(X24,Y24,Z24,B25).
+b_test_boolean_expression_u('And'(C25,[D25,E25]),F25,G25,','(H25,','(I25,J25))) :- 
+  '!_m'(H25),
+  b_test_boolean_expression_m(D25,F25,G25,I25),
+  b_test_boolean_expression_m(E25,F25,G25,J25).
+b_test_boolean_expression_u('Or'(K25,[L25,M25]),N25,O25,','(P25,Q25)) :- 
+  '!_m'(P25),
+((
+  b_test_boolean_expression_m(L25,N25,O25,R25),
+  Q25 = R25) ;
+(
+  b_test_boolean_expression_m(M25,N25,O25,S25),
+  Q25 = S25)).
+b_test_boolean_expression_u('In'(T25,[U25,'PartialFunction'(V25,['Identifier'(W25,[]),'Identifier'(X25,[])])]),Y25,Z25,','(A26,','(B26,','(C26,','(print(pf(W25,X25)),','(nl,','(D26,E26))))))) :- 
+  b_global_set_m(W25,A26),
+  b_global_set_m(X25,B26),
+  '!_m'(C26),
+  b_compute_expression_m(U25,Y25,Z25,F26,D26),
+  partial_function_m(F26,E26).
+b_test_boolean_expression_u('In'(G26,[H26,I26]),J26,K26,','(L26,','(M26,','(N26,','(O26,';'('->'(P26,Q26),R26)))))) :- 
+  '!_m'(L26),
+  b_compute_expression_m(H26,J26,K26,S26,M26),
+  b_compute_expression_m(I26,J26,K26,T26,N26),
+  debug_nl_m(O26),
+  varlist(call(T26 = (global_set(U26))),V26),
+  findall(','(true,V26), (
+    T26 = (global_set(U26))),W26),
+  make_disjunction(W26,V26,P26),
+  varlist(','(memo(debug_print(in_type(S26,U26))),','(memo(debug_nl),memo(global_type(S26,U26)))),X26),
+  findall(','(','(Y26,','(Z26,A27)),X26), (
+    debug_print_m(in_type(S26,U26),Y26),
+    debug_nl_m(Z26),
+    global_type_m(S26,U26,A27)),B27),
+  make_disjunction(B27,X26,Q26),
+  varlist(','(memo(debug_print(check_element_of(S26,T26))),','(memo(debug_nl),memo(check_element_of(S26,T26)))),C27),
+  findall(','(','(D27,','(E27,F27)),C27), (
+    debug_print_m(check_element_of(S26,T26),D27),
+    debug_nl_m(E27),
+    check_element_of_m(S26,T26,F27)),G27),
+  make_disjunction(G27,C27,R26).
+b_test_boolean_expression_u(H27,I27,J27,','('=..'(H27,[K27,L27,[M27,N27]]),','(O27,','(P27,','(Q27,','(R27,','(S27,','(T27,','(U27,','(V27,','('=..'(W27,[X27,Y27,Z27]),','(A28,','(B28,call(W27)))))))))))))) :- 
+  binary_boolean_operator_m(K27,X27,O27),
+  debug_print_m(binary_bool(K27),P27),
+  debug_nl_m(Q27),
+  '!_m'(R27),
+  b_compute_expression_m(M27,I27,J27,Y27,S27),
+  debug_nl_m(T27),
+  b_compute_expression_m(N27,I27,J27,Z27,U27),
+  debug_nl_m(V27),
+  debug_print_m(kernel_call(W27),A28),
+  debug_nl_m(B28).
+b_test_boolean_expression_u(C28,D28,E28,','(print('### uncovered boolean expression'),','(print(C28),','(nl,fail)))).
+binary_boolean_operator_u('NotSetMemberShip',not_element_of,true).
+binary_boolean_operator_u('NotEqualSet',not_equal_object,true).
+binary_boolean_operator_u('EqualSet',equal_object,true).
+b_not_test_boolean_expression_u([],F28,G28,true).
+b_not_test_boolean_expression_u('PredicateParenthesis'(H28,[I28]),J28,K28,','(L28,M28)) :- 
+  '!_m'(L28),
+  b_not_test_boolean_expression_m(I28,J28,K28,M28).
+b_not_test_boolean_expression_u('Not'(N28,[O28]),P28,Q28,','(R28,S28)) :- 
+  '!_m'(R28),
+  b_test_boolean_expression_m(O28,P28,Q28,S28).
+b_not_test_boolean_expression_u('And'(T28,[U28,V28]),W28,X28,','(Y28,Z28)) :- 
+  '!_m'(Y28),
+((
+  b_not_test_boolean_expression_m(U28,W28,X28,A29),
+  Z28 = A29) ;
+(
+  b_not_test_boolean_expression_m(V28,W28,X28,B29),
+  Z28 = B29)).
+b_not_test_boolean_expression_u('Or'(C29,[D29,E29]),F29,G29,','(H29,','(I29,J29))) :- 
+  '!_m'(H29),
+  b_not_test_boolean_expression_m(D29,F29,G29,I29),
+  b_not_test_boolean_expression_m(E29,F29,G29,J29).
+b_not_test_boolean_expression_u('In'(K29,[L29,'PartialFunction'(M29,['Identifier'(N29,[]),'Identifier'(O29,[])])]),P29,Q29,','(R29,','(S29,','(T29,','(print(not_pf(N29,O29)),','(nl,','(U29,V29))))))) :- 
+  b_global_set_m(N29,R29),
+  b_global_set_m(O29,S29),
+  '!_m'(T29),
+  b_compute_expression_m(L29,P29,Q29,W29,U29),
+  not_partial_function_m(W29,V29).
+b_not_test_boolean_expression_u('In'(X29,[Y29,Z29]),A30,B30,','(C30,D30)) :- 
+  '!_m'(C30),
+  b_test_boolean_expression_m('NotSetMemberShip'(E30,[Y29,Z29]),A30,B30,D30).
+b_not_test_boolean_expression_u('NotSetMemberShip'(F30,[G30,H30]),I30,J30,','(K30,L30)) :- 
+  '!_m'(K30),
+  b_test_boolean_expression_m('In'(M30,[G30,H30]),I30,J30,L30).
+b_not_test_boolean_expression_u('EqualSet'(N30,[O30,P30]),Q30,R30,','(S30,','(T30,','(U30,V30)))) :- 
+  debug_print_m(not(eq_sets),S30),
+  debug_nl_m(T30),
+  '!_m'(U30),
+  b_test_boolean_expression_m('NotEqualSet'(W30,[O30,P30]),Q30,R30,V30).
+b_not_test_boolean_expression_u('NotEqualSet'(X30,[Y30,Z30]),A31,B31,','(C31,','(D31,','(E31,F31)))) :- 
+  debug_print_m(not(not_eq_sets),C31),
+  debug_nl_m(D31),
+  '!_m'(E31),
+  b_test_boolean_expression_m('EqualSet'(G31,[Y30,Z30]),A31,B31,F31).
+b_not_test_boolean_expression_u(H31,I31,J31,','(print('### uncovered boolean expression (not)'),','(print(H31),','(nl,fail)))).
+get_arguments_u([],K31,K31,true).
+get_arguments_u([L31|M31],N31,O31,','('=..'(P31,[L31,Q31,R31]),S31)) :- 
+  ':'(user,member(P31,N31)),
+  get_arguments_u(M31,R31,O31,S31).
+get_name_u(T31,U31,V31) :- 
+  ':'(user,member('Name'(W31,X31),T31)),
+  get_identifier_u(X31,U31,V31).
+l_get_identifier_u(Y31,Z31,A32) :- 
+  map_u(get_identifier_from_single_arg,Y31,Z31,A32).
+get_identifier_from_single_arg_u(B32,C32,D32) :- 
+  get_identifier_m([B32],C32,D32).
+get_identifiers_u('Identifiers'(E32,F32),G32,H32) :- 
+  get_identifiers1_m(F32,G32,H32).
+get_identifiers1_u([],[],true).
+get_identifiers1_u(['IdentifierComposed'(I32,['Identifier'(J32,K32)])|L32],[J32|M32],N32) :- 
+  get_identifiers1_m(L32,M32,N32).
+get_identifier_u(O32,P32,true) :- 
+  ':'(user,member('Identifier'(P32,Q32),O32)).
+get_identifier_u(R32,S32,T32) :- 
+  ':'(user,member('IdentifierComposed'(U32,V32),R32)),
+  get_identifier_u(V32,S32,T32).
+get_identifier_u(W32,X32,Y32) :- 
+  ':'(user,member('Identifiers'(Z32,A33),W32)),
+  get_identifier_u(A33,X32,Y32).
+lookup_value_in_store_and_global_sets_u(B33,C33,D33,';'('->'(E33,true),F33)) :- 
+  lookup_value_m(B33,C33,D33,E33),
+  varlist(resif(memo(b_global_set(B33)),hide_nf(call(D33 = (global_set(B33)))),hide_nf(','(rescall(print(lookup_failed(B33,C33))),','(rescall(nl),call(D33 = fail))))),G33),
+  findall(','(';'('->'(H33,I33),J33),G33), (
+    b_global_set_m(B33,H33),
+    varlist(call(D33 = (global_set(B33))),K33),
+    findall(','(true,K33), (
+      D33 = (global_set(B33))),L33),
+    make_disjunction(L33,K33,I33),
+    varlist(','(rescall(print(lookup_failed(B33,C33))),','(rescall(nl),call(D33 = fail))),M33),
+    findall(','(','(print(lookup_failed(B33,C33)),nl),M33), (
+      D33 = fail),N33),
+    make_disjunction(N33,M33,J33)),O33),
+  make_disjunction(O33,G33,F33).
+lookup_value_in_store_and_global_sets_u(P33,Q33,R33,S33,';'('->'(T33,true),U33)) :- 
+  lookup_value_m(P33,Q33,R33,S33,T33),
+  varlist(resif(memo(b_global_set(P33)),hide_nf(call(S33 = (global_set(P33)))),hide_nf(','(rescall(print(lookup_failed(P33,R33))),','(rescall(nl),call(S33 = fail))))),V33),
+  findall(','(';'('->'(W33,X33),Y33),V33), (
+    b_global_set_m(P33,W33),
+    varlist(call(S33 = (global_set(P33))),Z33),
+    findall(','(true,Z33), (
+      S33 = (global_set(P33))),A34),
+    make_disjunction(A34,Z33,X33),
+    varlist(','(rescall(print(lookup_failed(P33,R33))),','(rescall(nl),call(S33 = fail))),B34),
+    findall(','(','(print(lookup_failed(P33,R33)),nl),B34), (
+      S33 = fail),C34),
+    make_disjunction(C34,B34,Y33)),D34),
+  make_disjunction(D34,V33,U33).
+check_and_execute_u(E34,F34,G34,H34,I34,','(J34,','(K34,','(L34,','(M34,','(N34,','(O34,','(P34,Q34)))))))) :- 
+  debug_print_m(pre,J34),
+  debug_nl_m(K34),
+  b_test_boolean_expression_m(E34,G34,H34,L34),
+  debug_print_m(precondition_ok,M34),
+  debug_nl_m(N34),
+  b_execute_statement_m(F34,G34,H34,I34,O34),
+  debug_print_m(newstate(I34),P34),
+  debug_nl_m(Q34).
+make_abort_list_u([],[],true).
+make_abort_list_u([R34|S34],['Abort'|T34],U34) :- 
+  make_abort_list_m(S34,T34,U34).
+map_u(V34,[],[],true).
+map_u(W34,[X34|Y34],[Z34|A35],','(B35,C35)) :- 
+  '=..'(D35,[W34,X34,Z34]),
+  ':'(cogen,add_extra_argument([95,117],D35,B35,E35)),
+  call(E35),
+  map_u(W34,Y34,A35,C35).
+reduce_u(F35,G35,[],G35,true).
+reduce_u(H35,I35,[J35|K35],L35,','(M35,','('=..'(N35,[H35,J35,O35,L35]),call(N35)))) :- 
+  reduce_m(H35,I35,K35,O35,M35).

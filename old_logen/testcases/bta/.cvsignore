@@ -1,0 +1,5 @@
+*.memo
+*.spec
+*.gx
+*.ann
+*.ann_backup

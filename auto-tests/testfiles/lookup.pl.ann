@@ -1,0 +1,19 @@
+(:-module(lookup,[])).
+logen(lookup, lookup(A,[B/C|_],D)) :-
+        logen(call, A==B),
+        logen(call, D=C).
+logen(lookup, lookup(A,[B/_|C],D)) :-
+        logen(call, A\==B),
+        logen(unfold, lookup(A,C,D)).
+logen(lookup2, lookup2(A,[B/C|D],E)) :-
+        if(logen(call,A==B), logen(call,E=C), logen(unfold,lookup2(A,D,E))).
+logen(test, test(A)) :-
+        logen(memo, lookup(xx,[yy/2,zz/3,xx/5,xx/2,vv/11],A)).
+logen(test, test(A)) :-
+        logen(memo, lookup2(vv,[yy/2,zz/3,xx/5,xx/2,vv/11],A)).
+:- filter
+        lookup(static, static, dynamic).
+:- filter
+        lookup2(static, static, dynamic).
+:- filter
+        test(dynamic).

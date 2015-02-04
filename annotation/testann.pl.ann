@@ -1,0 +1,4 @@
+
+
+logen(foo, foo(A) ) :- logen(unfold, blah(A)).
+logen(foo, foo(A,B) ) :- if(logen(call,bar(A)),logen(rescall,bar(A)),logen(memo,bar(B))), logen(unfold,bar(A)).

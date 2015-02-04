@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Exit cleaning up everything.
+
+# List which is to be deleted
+
+find . \( -name '*~' \) -print -exec rm -f {} \;
+find . \( -name '*.itf' -o -name '*.asr' -o -name '*.po' -o -name '*.mpp' -o -name '*.err' -o -name '*_co.pl' -o -name '*_opt.pl' \) -print -exec rm -f {} \;
+find . -name '*.dvi' -print -exec rm  {} \;
+find . \( -name a.out -o -name core -o -name clpr_in -o  -name clpr_out -o -name '.nfs[0-9A-F]*' \) -print -exec rm -f {} \;
+

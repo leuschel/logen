@@ -1,0 +1,101 @@
+%% Logen Annotation File
+(:-module(missionaries,[])).
+logen(0, go(A)) :-
+        logen(unfold, search(s(s(s(0))),s(s(s(0))),west,[state(s(s(s(0))),s(s(s(0))),west)],A)).
+logen(1, search(0,0,_,A,A)).
+logen(2, search(A,B,east,C,D)) :-
+        logen(unfold, move_boat_west(A,B,E,F)),
+        logen(unfold, safe(E,F)),
+        logen(unfold, not_loop(E,F,west,C)),
+        logen(memo, search(E,F,west,[state(E,F,west)|C],D)).
+logen(3, search(A,B,west,C,D)) :-
+        logen(unfold, move_boat_east(A,B,E,F)),
+        logen(unfold, safe(E,F)),
+        logen(unfold, not_loop(E,F,east,C)),
+        logen(memo, search(E,F,east,[state(E,F,east)|C],D)).
+logen(4, safe(s(s(s(0))),A)) :-
+        logen(unfold, le(A,s(s(s(0))))).
+logen(5, safe(0,A)) :-
+        logen(unfold, le(A,s(s(s(0))))).
+logen(6, safe(A,A)) :-
+        logen(unfold, lt(0,A)),
+        logen(unfold, lt(A,s(s(s(0))))).
+logen(7, not_loop(A,B,C,D)) :-
+        resnot(logen(memo,loop(A,B,C,D))).
+logen(8, not_loop(A,B,C,D)) :-
+        logen(call, fail),
+        logen(unfold, loop(A,B,C,D)).
+logen(9, loop(A,B,C,D)) :-
+        logen(unfold, mem(state(A,B,C),D)).
+logen(10, move_boat_east(A,B,C,D)) :-
+        logen(unfold, plus2(C,A)),
+        logen(call, D=B).
+logen(11, move_boat_east(A,B,C,D)) :-
+        logen(unfold, plus1(C,A)),
+        logen(call, D=B).
+logen(12, move_boat_east(A,B,C,D)) :-
+        logen(unfold, plus1(C,A)),
+        logen(unfold, plus1(D,B)).
+logen(13, move_boat_east(A,B,C,D)) :-
+        logen(call, C=A),
+        logen(unfold, plus1(D,B)).
+logen(14, move_boat_east(A,B,C,D)) :-
+        logen(rescall, C=A),
+        logen(memo, plus2(D,B)).
+logen(15, move_boat_west(A,B,C,D)) :-
+        logen(memo, plus2(A,C)),
+        logen(rescall, D=B).
+logen(16, move_boat_west(A,B,C,D)) :-
+        logen(memo, plus1(A,C)),
+        logen(rescall, D=B).
+logen(17, move_boat_west(A,B,C,D)) :-
+        logen(memo, plus1(A,C)),
+        logen(memo, plus1(B,D)).
+logen(18, move_boat_west(A,B,C,D)) :-
+        logen(rescall, C=A),
+        logen(memo, plus1(B,D)).
+logen(19, move_boat_west(A,B,C,D)) :-
+        logen(rescall, C=A),
+        logen(unfold, plus2(B,D)).
+logen(20, mem(A,[A|_])).
+logen(21, mem(A,[_|B])) :-
+        logen(memo, mem(A,B)).
+logen(22, le(0,_)).
+logen(23, le(s(A),s(B))) :-
+        logen(memo, le(A,B)).
+logen(24, lt(0,s(_))).
+logen(25, lt(s(A),s(B))) :-
+        logen(memo, lt(A,B)).
+logen(26, gt(s(_),0)).
+logen(27, gt(s(A),s(B))) :-
+        logen(unfold, gt(A,B)).
+logen(28, ge(0,0)).
+logen(29, ge(s(_),0)).
+logen(30, ge(s(A),s(B))) :-
+        logen(memo, ge(A,B)).
+logen(31, plus1(A,s(A))).
+logen(32, plus2(A,s(s(A)))).
+:- filter
+        go(dynamic).
+:- filter
+        le(dynamic, static).
+:- filter
+        loop(dynamic, nonvar, static, dynamic).
+:- filter
+        lt(dynamic, dynamic).
+:- filter
+        mem(nonvar, dynamic).
+:- filter
+        move_boat_east(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        move_boat_west(dynamic, dynamic, dynamic, dynamic).
+:- filter
+        not_loop(nonvar, nonvar, static, dynamic).
+:- filter
+        plus1(dynamic, dynamic).
+:- filter
+        plus2(dynamic, dynamic).
+:- filter
+        safe(dynamic, dynamic).
+:- filter
+        search(dynamic, dynamic, static, dynamic, dynamic).

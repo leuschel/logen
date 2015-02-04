@@ -1,0 +1,40 @@
+To analyze a program load analyse.pl and run go(program). For example, the
+directory already have mergesort.pl and you can analyse as follows:
+
+| ?- [analyse].
+yes
+| ?- go('mergesort.pl').
+mergesort(A,B):-[B>=-0.0,A=B]
+merge(A,B,C):-[B>=-0.0,A= -(B)+C,B-C=<0.0]
+split(A,B,C):-[B>=-0.0,C>=0.0,A=B+C]
+yes
+
+
+THE MODULES:
+
+- input.pl:
+
+   is used to load and normalize the program, no abstract compilation is done
+   at this stage. You can type listing(input:my_clause/2) in order to see how
+   the normalized program looks like.
+
+- db.pl:
+
+   is used for the store, i.e. assert and retract facts, etc.
+
+- polyhedra.pl and constraints.pl:
+
+   this is the polyhedra library, it's the old one written by Andy and
+   Cohavit, you can replace it by any other library that have the same   
+   interface.
+
+- symbolic_norm.pl: 
+
+   used to compute the symbolic_norm of a term, in the interpreter we use
+   term_size.
+
+- analyse.pl:
+
+   the TP engine, to analyze a program run go(FileName).
+
+

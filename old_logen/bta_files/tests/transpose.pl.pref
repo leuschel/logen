@@ -1,0 +1,5 @@
+entry=:- filter transpose(type(list(dynamic)), dynamic).
+goal=transpose([X, Y,Z], R)
+norm=list
+iter=100000
+benchmark=transpose([[a,b,c,d,e],[a,b,c,d,e],[a,b,c,d,e]],R)

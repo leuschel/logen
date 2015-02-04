@@ -1,0 +1,10 @@
+
+logen(test/1, test(X,R)) :- logen(unfold,append([a,b|X],[c],R)).
+
+logen(append/3,append([],A,A)).
+logen(append/3,append([B|C],A,[B|D])) :-
+        logen(online,append(C,A,D)).
+:- filter
+        append(dynamic,dynamic,dynamic).
+:- filter
+        test(dynamic,dynamic).

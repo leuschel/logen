@@ -1,0 +1,100 @@
+(:-module(cache_solve,[])).
+(:-use_module(prolog_reader)).
+logen(clever_solve, clever_solve(A,B,C)) :-
+        if(logen(call,prolog_reader:is_built_in(A)), (logen(rescall,call(A)),logen(call,C=B)), logen(unfold,clever_solve2(A,B,C))).
+logen(clever_solve2, clever_solve2(A,B,C)) :-
+     %  logen(rescall,print(begin_clever_solve2(A,B,C))),
+        logen(unfold, same_skeleton(B,C)),
+      % logen(rescall,print(begin_if(A,B))),
+        if(logen(unfold,cache(A,B)),
+           logen(unfold,cache_solve(A,B,C)), 
+           logen(memo,solve_atom(A,B,C))).
+logen(cache_solve, cache_solve(A,[table(B,C,D,E)|F],[table(B,C,G,H)|I])) :-
+        if(logen(call,functor(A,B,C)), (logen(call,A=..[B|J]),logen(call,I=F),resif(logen(unfold,check_same_arguments(J,D)),(logen(unfold,debug_print(used_cache(E))),logen(rescall,A=E),logen(rescall,G=D),logen(rescall,H=E)),(logen(unfold,debug_print(recomputing(A))),logen(memo,solve_atom(A,[],[])),logen(rescall,G=J),logen(rescall,H=A)))), (logen(call,G=D),logen(call,E=H),logen(unfold,cache_solve(A,F,I)))).
+logen(solve, solve(true,A,A)).
+logen(solve, solve(A,B,C)) :-
+        logen(call, A\=(_,_)),
+        logen(call, A\=(_->_;_)),
+        logen(call, A\=true),
+        logen(unfold, clever_solve(A,B,C)).
+logen(solve, solve((A,B),C,D)) :-
+        logen(unfold, solve(A,C,E)),
+        logen(unfold, same_skeleton(C,E)),
+        logen(unfold, solve(B,E,D)).
+logen(solve, solve((A->B;C),CL,NCL)) :-
+     resif(logen(unfold,solve(A,CL,ICL)),
+         (logen(unfold,same_skeleton(CL,ICL)), /* BTI */
+          logen(unfold,solve(B,ICL,NCL))),
+         (logen(unfold,same_skeleton(CL,ICL)), /* BTI */
+          logen(unfold,solve(C,ICL,NCL)))
+     ).
+logen(solve_atom, solve_atom(A,B,C)) :-
+        logen(call, prolog_reader:get_clause(A,D)),
+        logen(unfold, solve(D,B,C)).
+logen(cache, cache(A,B)) :- %logen(rescall,print(begin_unfold(cache(A,B)))),
+        logen(call, functor(A,C,D)),
+        logen(unfold, cache2(C,D,B)).
+       % logen(rescall,print(end_unfold(cache(A,B)))).
+logen(cache2, cache2(A,B,[table(A,B,_,_)|_])).
+logen(cache2, cache2(A,B,[_|C])) :-
+        logen(unfold, cache2(A,B,C)).
+logen(check_same_arguments, check_same_arguments([_],_)).
+logen(check_same_arguments, check_same_arguments([A|B],[C|D])) :-
+        logen(rescall, A==C),
+        logen(unfold, check_same_arguments(B,D)).
+logen(debug_print, debug_print(A)).
+%:-        logen(rescall, print(A)),     logen(rescall, nl).
+logen(same_skeleton, same_skeleton([],[])).
+logen(same_skeleton, same_skeleton([table(A,B,_,_)|C],[table(A,B,_,_)|D])) :-
+        logen(unfold, same_skeleton(C,D)).
+logen(set_up_table, set_up_table(A)) :-
+        findall(table(B,C,[invalid|_],invalid), 
+        logen(call,prolog_reader:get_clause(table_function(B/C),true)), A).
+logen(run_file, run_file(A,B,C)) :-
+        logen(call, prolog_reader:load_file(A)),
+        logen(unfold, clever_solve(B,C,_)).
+logen(run_file_all, run_file_all(A,B)) :-
+        logen(call, prolog_reader:load_file(A)),
+        logen(unfold, set_up_table(C)),
+        logen(unfold, same_skeleton(C,D)),
+        logen(call, prolog_reader:is_user_pred(B)),
+        logen(memo, solve_atom(B,C,D)).
+        
+logen(run_loop,run_loop(Call)) :- 
+        logen(memo,run_file_all('loop.pl',Call)).
+
+logen(test,test(X)) :- logen(unfold,run_loop(loop(X,R))),
+  logen(rescall,print(res(X,R))),
+  logen(rescall,nl).
+
+
+logen(run_stream,run_stream(X)) :- 
+   logen(memo,run_file_all('spatial_stream.pl',main(X))).
+logen(run_auto,run_auto(X)) :- 
+   logen(memo,run_file_all('autoplay_nocirc.pl',main(X))).
+
+:- filter
+        loop(dynamic, dynamic).
+:- filter
+        func(dynamic, dynamic).
+:- filter
+        cache_solve(nonvar, (type list((type table_entry))), (type list((type table_entry)))).
+:- filter
+        solve_atom(nonvar, (type list((type table_entry))), (type list((type table_entry)))).
+:- filter
+        loop_nocache(dynamic, dynamic).
+:- filter
+        loop_cache(dynamic, dynamic).
+:- filter
+        run_file_all(static, nonvar).
+:- filter
+        run_loop(dynamic).
+:- filter
+        test(dynamic).
+:- filter
+        run_stream(dynamic).
+:- filter
+        run_auto(dynamic).
+:- type
+ %       table_entry--->struct(table,[static,static,nonvar,dynamic]).
+        table_entry--->struct(table,[static,static,dynamic,dynamic]).

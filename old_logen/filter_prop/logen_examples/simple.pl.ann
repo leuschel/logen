@@ -1,0 +1,10 @@
+(:-module(simple,[])).
+logen(p, p(A,B)) :-
+        logen(memo, q(A,B)).
+logen(q, q(A,A)).
+logen(q, q(A,B)) :-
+        logen(memo, e(A,C)),
+        logen(memo, q(C,B)).
+logen(e, e(A,A)).
+:- filter
+        p(static, dynamic).

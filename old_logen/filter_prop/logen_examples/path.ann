@@ -1,0 +1,18 @@
+/* file: path.ann */
+
+:- multifile residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+static_consult([]).
+
+
+residual(path(A,B)).
+filter(path(A,B),[static,dynamic]).
+ann_clause(1,path(A,B),unfold(edge(A,B))).
+ann_clause(2,path(A,B),','(unfold(edge(A,C)),memo(path(C,B)))).
+
+residual(edge(A,B)).
+filter(edge(A,B),[static,dynamic]).
+ann_clause(3,edge(a,b),true).
+ann_clause(4,edge(a,c),true).
+ann_clause(5,edge(c,b),true).

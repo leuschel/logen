@@ -1,0 +1,29 @@
+
+/* bench :- bench__0. */
+bench__0 :-
+        ensure_loaded(database_cycle),
+        abolish_all_tables,
+        cputime(A),
+        b2__1,
+        cputime(B),
+        C is B-A,
+        print(C),
+        nl.
+
+/* b2 :- b2__1. */
+b2__1 :-
+        holds_read__2(_,_),
+        fail.
+b2__1.
+
+/* holds_read(steve,cycle(A,B)) :- holds_read__2(B,A). */
+holds_read__2(B,A) :-
+        holds_read_rule__3(B,A).
+
+/* holds_read_rule(steve,cycle(A,B)) :- holds_read_rule__3(B,A). */
+holds_read_rule__3(B,A) :-
+        p(A,B).
+holds_read_rule__3(B,A) :-
+        holds_read_rule__3(C,A),
+        p(C,B).
+/* Specialisation time 0.9369999998910372 ms (runtime) */

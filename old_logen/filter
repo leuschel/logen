@@ -1,0 +1,1 @@
+sicstus -r bta.sav --goal "run_filter_prop_int('$1','$2','$3'),halt."

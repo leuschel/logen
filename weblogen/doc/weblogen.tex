@@ -1,0 +1,105 @@
+\documentclass{report}
+\title{Weblogen Documentation}
+\author{Dan Elphick}
+\date{\today}
+
+\begin{document}
+\maketitle
+\pagenumbering{roman}
+\setcounter{page}{2}
+\tableofcontents
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+Weblogen is a web interface to Logen. Logen is a partial evaluator for the
+Prolog programming language. The purpose of the system is to illustrate the
+power of partial evaluation without requiring users to download and install
+Logen.
+
+Logen can be used in several ways:
+
+\begin{itemize}
+\item Directly in Prolog.
+\item Using the Python/Tk interface pylogen.
+\item Using the web interface.
+\end{itemize}
+
+The first approach is the most powerful since all annotation features are
+available by directly editing annotation files. The drawback is that
+annotation is slow and cumbersome and requires the user to fully understand
+the syntax of Prolog in order to make changes. Using the BTA mitigates this
+problem, but this is only effective up to a point.
+
+Using pylogen allows a user to perform partial evaluation without ever
+looking at an annotation file. Instead annotations are manipulated using
+menus triggered by clicking on predicates in a program. As long as pylogen is
+updated to utilise all of Logen then it is by far the most convenient
+interface for users with local access to Sicstus Prolog. However since
+Sicstus is not free and Logen has not (yet) been ported to Ciao, a web
+interface can make Logen more widely available.
+
+\chapter{Usage}
+
+The opening page gives the user two options:
+\begin{itemize}
+\item Upload and specialise their own file.
+\item Specialise a stock file provided on the server.
+\end{itemize}
+
+Once a source file has been specified, annotations must be supplied. Weblogen
+provides several ways to do this:
+
+\begin{itemize}
+\item Upload an annotation file to the server.
+\item Apply a Binding-Time Analysis (BTA) to the source file.
+\item Use a stock annotation file. (Only available if the source file was
+provided by the server).
+\end{itemize}
+
+The annotated program will then be displayed with each of the annotations
+indicated by colouring predicates appropriately.
+
+The program can now be partially evaluated by giving a specialisation goal.
+A generating extension is then produced and run using the specialisation
+goal. The resulting program is then shown to user with the option to save it.
+
+The annotations in a program can be modified by clicking on them. This will
+toggle them between \emph{call} and \emph{rescall} for built-in predicates
+and \emph{unfold} and \emph{memo} for others. The result can be saved by
+clicking Upload annotations. Clicking ``Edit the filters'' loads a new page
+where the filters are displayed in an editable box.
+
+\chapter{Design}
+
+\section{Sessions}
+
+Weblogen is necessarily stateful and so must use cookies to identify
+connections. Currently all state is preserved using the session facilities of
+PHP. This may prove not to be scalable for large files and/or with large
+numbers of users, but has proven workable.
+
+The session stores the following information (excluding information required
+to check for session existence):
+\begin{itemize}
+\item plfile - The current prolog program.
+\item filename - The current program file.
+\item annfile - The annotation file for the current program.
+\item goal - The current specialisation goal.
+\item specfile - The result of specialising the program.
+\item filter - The initial filter used by the BTA.
+\item norm - The norm used by the BTA.
+\item filter\_prop - Flag indicating whether to just propagate filters or to
+do a full BTA.
+\item filters - The filter part of the annotation file.
+\item stock - Flag indicating whether the file was a stock file.
+\item stock\_annfile - Flag indicating whether the annotation file was a stock
+file.
+\end{itemize}
+
+The session is automatically created once a stock prolog file is chosen or a
+file is uploaded. This file is stored in \emph{plfile} and \emph{stock} is
+set appropriately. 
+
+
+\end{document}

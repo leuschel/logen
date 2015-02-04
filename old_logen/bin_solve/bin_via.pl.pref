@@ -1,0 +1,3 @@
+goal=solve_file('/home/sjc02r/cvs_root/cogen2/examples/Bta/test.pl.ann')
+goal=solve_file('/home/sjc02r/cvs_root/cogen2/examples/bta_benchmarks/regexp_derived_simple.pl.ann')
+goal=solve_file('/home/sjc02r/cvs_root/cogen2/examples/bta_benchmarks/regexp.pl.ann')

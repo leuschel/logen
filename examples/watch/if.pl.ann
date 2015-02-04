@@ -1,0 +1,8 @@
+logen(p/2,p(A,B)) :-
+        resif(logen(call,A=a),logen(call,B=b),logen(rescall,B=c)).
+logen(q/3,q(A,B,C)) :-
+        if(logen(call,A=B),logen(call,C=eq),logen(call,C=neq)).
+:- filter
+        p(static,dynamic).
+:- filter
+        q(dynamic,static,static).

@@ -1,0 +1,22 @@
+(:-module(regexp,[])).
+logen(match, match(A,B)) :-
+        logen(unfold, regexp(A,B,[])).
+logen(regexp, regexp(eps,A,A)).
+logen(regexp, regexp(A,[A|B],B)) :-
+        logen(rescall, atomic(A)).
+logen(regexp, regexp(A+_,B,C)) :-
+        logen(unfold, regexp(A,B,C)).
+logen(regexp, regexp(_+A,B,C)) :-
+        logen(unfold, regexp(A,B,C)).
+logen(regexp, regexp([A|B],C,D)) :-
+        logen(unfold, regexp(A,C,E)),
+        logen(unfold, regexp(B,E,D)).
+logen(regexp, regexp(*(A),B,C)) :-
+        logen(memo, regexp([A|*(A)],B,C)).
+logen(regexp, regexp(*(_),A,A)).
+:- filter
+        atomic(static).
+:- filter
+        match(static, dynamic).
+:- filter
+        regexp(static, dynamic, dynamic).

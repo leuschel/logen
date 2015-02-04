@@ -1,0 +1,8 @@
+/* file: craig/int.pe.lookupa_[] */
+/* benchmark info: 0 ms */
+
+/* atom specialised: lookup(a,A,[]) */
+
+lookup(a,A,[]) :- lookup__0(A).
+
+lookup__0(false).

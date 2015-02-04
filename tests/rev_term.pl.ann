@@ -1,0 +1,16 @@
+(:-module(rev_term,[])).
+logen(rev, rev(A,B)) :-
+        logen(unfold, revacc(A,[],B)).
+logen(revacc, revacc([],A,A)).
+logen(revacc, revacc([A|B],C,D)) :-
+        logen(unfold, revacc(B,[A|C],D)).
+logen(test, test(A)) :-
+        logen(unfold, length(B,10000)),
+        logen(unfold, rev(B,A)).
+logen(length, length([],0)).
+logen(length, length([_|A],B)) :-
+        logen(call, B>0),
+        logen(call, C is B-1),
+        logen(unfold, length(A,C)).
+:- filter
+        test(dynamic).

@@ -1,0 +1,7 @@
+entry=:- filter test(dynamic,dynamic,dynamic).
+goal=test(Res,R,A)
+goal=test(Res)
+goal=test(Res,100,200)
+norm=term
+iter=100000
+benchmark=test(Res,100,200)

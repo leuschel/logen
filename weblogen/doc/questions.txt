@@ -1,0 +1,310 @@
+
+QUESTIONS
+=========
+
+Dan,
+We have come up with a series of questions.
+Could you please answer them.
+
+1) How are annotated files converted into HTML?
+
+I ported the original XML generation code that was used by pylogen to generate
+HTML files to sicstus. The XML generated is very simple: 
+
+<source>
+<head>append</head>([], Y, Y).
+<head>append</head>([X|Xs], Y, [X|Zs]) :- <memo>append</memo>(Xs, Y, Zs).
+</source>
+<filters>
+:- filter
+	<filter>append</filter>(<dynamic>dynamic</dynamic>,<dynamic>dynamic</dynamic>,<dynamic>dynamic</dynamic>).
+</filters>
+
+(The above is simplified. In reality every '[' and ']' is wrapped in
+<list></list>). This XML is converted by an XSLT style sheet into the HTML we
+see in weblogen. One style sheet produces the source code element and the other
+produces the filters. The reason for splitting this into two stylesheets is that
+the surrounding html can be modified in the php which I found to be more
+convenient. This for instance was very useful when I added the option to either
+display the code and filters one under theother or side by side.
+
+2) How can I add new annotations to the system (e.g. mcall, semiwhen)?
+
+Firstly you have to get Steve to implement these in logen. Currently simple
+annotations (i.e. ones that appear like logen(unfold, _) in the code are
+automatically extracted and the menu is automatically updated. This happens
+when you run make in the backend directory (this is run during the install
+process). You will still have to add colour information to the stylesheet as
+in (3).
+
+Also filter menus are generating by extracting the values from
+basic_binding_types in gximports/generalise_and_filter.pl. This is done when
+make is run as above.
+
+3) How can I change the colour of an annotation/filter type?
+
+prolog.css contains all the styles for annotated prolog source code.
+
+4) How can I change the layout of the webpages?
+
+My modifying the php files.
+
+5) Where and how is the BTA called?
+
+Code is in externals.php.
+
+The BTA is called by the command 'sicstus -r bta.sav --goal bta'. This receives
+its input on STDIN. The first line is the name of the .pl file. The second line
+is the norm (term/list/both). The initial filter(s) must be put in a file called
+<file.pl>.filters.
+
+No real reason why these couldn't be command line parameters, but I think
+originally it took the filters on the command line as well.
+
+The filter propagation uses the command 'sicstus -r bta.sav --goal filt_prop'.
+This is the same as the full bta, but doesn't require a norm.
+
+6) Where and how is the Simple BTA called?
+
+(steve wrote all the simple BTA code)
+
+Code is in externals.php. run_simple_bta takes two parameters: filename and
+bta type. The type is either unfold, memo or safecall. Memo marks everything
+memo or recall, while unfold marks everything unfold and call. Safecall is
+identical to unfold except that a predicate which would normally be marked
+call is marked rescall if it is not in the whitelist.
+
+This runs "cogen --simple_bta $type $filename $annfile".
+
+7) Where and how is Logen called? How can I change the command-line options
+used to call Logen?
+
+Code is in externals.php (function is called specialise).
+
+Currently it runs:
+"cogen $filename $goal --logen_dir $logen_dir --spec_file $specfile \
+	 --ciao_path $ciao_dir --safe --single_process"
+
+To modify this you would need to change the specialise function in
+externals.php.
+It should be possible to put some of these parameters in a configuration file.
+Selecting watchdog mode appends -W. Selecting logging mode 'verbose' appends 
+-d -v, while 'very verbose' appends -d2 -vvv.
+
+8) How is the specialized file retrieved from Logen? How could I edit the way
+it is displayed/handled?
+
+Logen writes a file.spec file. This file is just read in by weblogen.
+It's displayed by running the 'highlight' program on it to get XML and
+processed in the same way as annotated programs, except that highlight doesn't
+produce XML containing annotations just head, list and comment.
+
+To change this you could produce a different XSLT style sheet/modify the css
+file to change colours and formatting.
+
+9) How are the temporary files managed?
+
+Generally weblogen creates a uniquely named temporary directory and copies all
+the files needed to do the current job into it. At the end of the process the
+new files (annotation/specialsation result) will be in this. They are read and
+the temporary directory is deleted. If all is working no temporary files should
+be left on the system.
+
+To debug, it is often desirable to comment out the various delDir($tempdir)
+function calls in the code.
+
+10) How can I add a new stock file, goal and annotation?
+
+Add files to public_html/examples. Pl files are automatically detected.
+Annotation files have the same name with .ann appended. (You can have more than
+one ann file by appending something after that, e.g. match.pl.ann.1)
+To add a stock goal create a .goals file (e.g. match.pl.goals) with one goal
+per line.
+
+11) How can I update stups ?
+
+Run weblogen/upload.sh. Steve wrote this so can assist better than me. You need
+to have certificates set up so that you don't need to enter passwords. Can't
+remember which ones you need or where. Ask Steve.
+
+12) How can I install Weblogen on localhost?
+
+Check out the logen directory. Run make in the logen directory. Change to
+logen/weblogen and run install.sh. Easiest to use symbolic links and accept
+the default answers.
+
+You also need cogen2/logen_source for the BTA. It can't guess the location of
+this so well at the moment as it's not in svn. We should change this.
+
+You make want to look at (19) and (20) to change permissions if you consider
+your machine to be safe enough.
+
+13) How can I update the system on localhost?
+
+Run "svn update" and then re-run install.sh if there were any changes to prolog
+files. You may need to change to weblogen/backend and run "make clean" if there
+were changes in logen that won't get picked up otherwise.
+
+14) How can I modify the timeout?
+or 14a) My programs are really big and specialisation doesn't complete before
+the timeout kills it. Can I extend the timeout? (look at question 14)
+
+Apache/php will kill the php scripts after a certain period. This is likely to
+be about 30 seconds. Look at their configuration files...
+
+Weblogen also imposes a timeout on processes it runs. If the process takes too
+long it will kill it and report to the user. You should make sure that this time
+out is definitely less than apache's as otherwise apache will kill the weblogen
+php scripts before weblogen kills the rogue process, which means you may have
+infinitely running processes on your machine.
+
+Well firstly you should check that your program really will terminate given the
+data you specify and the annotations. If your program really needs more than 10
+seconds to specialise, than add a line the following line to config.php (must
+be between <? and ?>):
+
+$maxtime = 20;
+
+This will extend the timeout to 20 seconds, but you can specify any time you
+like. Note that doing this on a publicly available server could make your
+server very susceptible to a denial of service attack.
+
+15) How is error reporting handled?
+
+Not very well. The return code for logen is checked and if it's non-zero, stderr
+is displayed.
+
+It's better for the bta, which writes an xml error message to a file (can't do
+return codes as sicstus is rubbish) which is processed by an XSLT stylesheet.
+The intention here was that the error message could be reformatted as required,
+but this is probably overkill.
+
+16) How does the help system work? How can I edit it?
+
+Look for calls to a function helpPoint in various php files and change the
+appropriate text.
+
+17) Does the system collect statistics about usage (number of users,
+number of specialization requests)? If no, how could we add it?
+If yes, how can I access the informatin.
+
+No it doesn't.
+It could. Probably would require a database on the server as this kind of stuff
+needs to cope with concurrent access.
+
+Number of spec requests is easy. Users is harder to quantify. Could track unique
+IP addresses I guess.
+
+
+18) How is security managed, especially how are the Php backquoting problems
+solved and how is the data transmitted by the client checked/validated?
+
+All prolog processes are executed via the run_process and run_process_with_input
+functions.
+
+function run_process($executable, $arg1, $arg2, ...)
+function run_process_with_input($executable, $input, $arg1, $arg2, ...)
+
+Each of $arg1, $arg2, ... is quoted using escapeshellarg which puts single
+quotes around the argument and escapes any single quotes in the argument. This
+means no arguments should ever be modified by the shell due to variable
+expansion or backquotes. Since single quotes are escaped, it is impossible to
+use a goal like below:
+
+'; echo hi > /tmp/hacked; #
+
+to bypass this. Since it would be converted to:
+
+'\'; echo hi > /tmp/hacked; #'
+
+This function is provided as part of PHP and I can't see any way it could be
+subverted.
+
+It may be possible to construct a program/goal that would crash/subvert logen
+itself, but logen is executed with the privileges of www-data so should not be
+able to do much. You could launch a denial of service attack against the web
+server itself by continuously submitting jobs which specialise infinitely.
+While these would all time out, they could just be resubmitted by reloading
+the specialise page.
+
+19) Is it possible to run weblogen in "unsafe" mode, e.g. on a local machine?
+
+Firstly, bear in mind that disabling safe mode enables anybody who can connect
+to the webserver (assuming you haven't instituted other access controls) to
+execute arbitrary commands on your machine. For instance they could read
+/etc/passwd and embed the result in a specialised program. While normally they 
+would only have the privileges the webserver runs with, if your machine is
+vulnerable to a local root exploit, they may be able to gain root access.
+
+If you are really sure that you want to do this, for instance if you are running
+a web server that is only accessible from the local machine or if only very
+trusted friends are behind a firewall (blocking http) with you, then:
+
+Add the following line to config.php (must be between <? and ?>):
+
+$safe = false;
+
+This file should be in a directory called weblogen in the frontend directory,
+you specified during installation.
+
+21) How do you file a bug? How do you change where the bug notification emails
+are sent?
+
+The simplest way to file a bug is to go to:
+http://www.stups.uni-duesseldorf.de/~pe/weblogen/bug_report.php
+
+You can then enter a description of the bug and an email address if you want
+to be notified of a resolution.
+
+Additionally automatic bug reports can be generated when Weblogen detects that
+an error occurs. Below is a description of that process:
+
+1. You can trigger a bug report by doing one of the following. Please not that
+most of these are not actual bugs, but Weblogen cannot determine this. Parse
+errors are detected and a specific message is shown for these, but you can
+still file a bug if you think that Weblogen is at fault in some way.
+  a) uploading a source file that doesn't parse.
+  b) uploading an invalid annotation file. (try any non prolog file)
+  c) clicking edit on the annotation page and changing the filters so
+   that they're invalid. then save changes. (seems to be slight bug here,
+   but will fix today).
+  d) cause an error in specialisation. for instance
+	i) take append.pl and use the simple bta to memo all. then change
+	 the append annotation to unfold. Choose any reasonable goal. It will
+     specialise until time out. (or possibly cause ciao to run out of memory)
+	ii) load a program with a built in call that isn't safe.
+	 e.g. a:-see('/etc/password').
+	 and annotate it as call.
+  e) triggering a genuine bug in weblogen. (this will only happen if the bug
+   occurs in a prolog executable invoked by weblogen and not if there is a bug
+   in one of the web pages itself. In that case you will need to file a bug by
+   going directly to:
+	http://www.stups.uni-duesseldorf.de/~pe/weblogen/bug_report.php
+
+2. In these cases an error will occur in the prolog executable that gets
+  invoked. This will return a non-zero value and cause a "Submit Bug
+  Report" button to appear in the window. Clicking this will take you to
+  http://www.stups.uni-duesseldorf.de/~pe/weblogen/bug_report.php
+  Now this page will display information specific to that bug report.
+  (Currently this also has a stupid link seemingly back to the same page,
+  but because it is a normal link and not a post, it will load the useless
+  page you talk about. This will be fixed, but also the bug_report.php
+  page will be fixed so that it can submit bugs that are general in nature
+  and not the result of a detectable bug). Now click submit.
+
+3. You will now go to bug_report_submit.php, (which has no link to
+  bug_report.php although it does have a stupid link to
+  bug_report_submit.php for no sensible reason). This displays a link to the
+  bug report you have just filed and it also sends an email to the bug admins.
+
+You can see a list of all bug reports filed by going to 
+http://www.stups.uni-duesseldorf.de/~pe/weblogen/bugs.php
+
+The bug admin email address is set in config.php by setting $bug_email.
+I think $bug_email will accept a comma separated list of addresses.
+
+NB currently there is no way via the interface to change the status of bug
+reports. You can delete bugs directly using mysql on the server. Since we
+don't want just anyone closing bugs, we would need access controls of some sort
+and this sort of thing has been done many times before in other BTS'. Really
+this needs integrating with such a system.

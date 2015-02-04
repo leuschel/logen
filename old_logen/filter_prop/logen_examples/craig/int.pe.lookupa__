@@ -1,0 +1,11 @@
+/* file: craig/int.pe.lookupa__ */
+/* benchmark info: 0 ms */
+
+/* atom specialised: lookup(a,A,[b(b,A),b(a,B)]) */
+
+lookup(a,A,[b(b,A),b(a,B)]) :- lookup__0(A,A,B).
+
+lookup__0(true,B,true).
+lookup__0(false,C,false).
+lookup__0(D,E,F) :- 
+  fail.

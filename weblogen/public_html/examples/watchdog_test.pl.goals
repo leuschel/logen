@@ -1,0 +1,13 @@
+rev(X,Y)
+rev2(X,Y)
+rev3(X,Y)
+loop
+loop2(X)
+builtinerror(X,Y)
+builtinerror2(X,Y)
+inf_nr(1)
+inf_nr2(1)
+filter_err(a)
+filter_err2(2,a,b)
+if_err1(a,Y)
+backprop_err(X)

@@ -1,0 +1,6 @@
+
+logen(append/3,append([],A,A)).
+logen(append/3,append([B|C],A,[B|D])) :-
+        logen(online,append(C,A,D)).
+:- filter
+        append(online,online,online).

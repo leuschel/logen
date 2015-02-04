@@ -1,0 +1,852 @@
+logen(specialize_this/0,specialize_this) :-
+        logen(unfold,asm(pic,A)),
+        logen(memo,environment(pic,B)),
+        logen(unfold,simulate(A,[],B)).
+logen(simulate/3,simulate(A,_,_)) :-
+        logen(unfold,picwrite(A)),
+        logen(unfold,picnl),
+        logen(unfold,initpic(B,_,C,D)),
+        logen(memo,execute(A,B,C,D)).
+logen(execute/4,execute(A,B,C,D)) :-
+        logen(unfold,fetchinst(A,C,E,F,G)),
+        logen(unfold,projectLive(C,B,H)),
+        logen(unfold,reachableInstr(instr(C,_))),
+        logen(unfold,execinst(E,F,G,_,_,H,I,_,_,C,J,D,K,L)),
+        logen(rescall,M is _+L),
+        logen(unfold,simulatehw(C,I,N,M,L,_,_)),
+        logen(unfold,projectLive(J,O,N)),
+        logen(memo,execute(A,O,J,K)).
+logen(maxReg/1,maxReg(19)) :-
+        logen(call,true).
+logen(projectLive/3,projectLive(A,B,C)) :-
+        logen(unfold,genLiveState(A,0,B,C)).
+logen(genLiveState/4,genLiveState(A,B,C,[B-_|D])) :-
+        logen(unfold,maxReg(E)),
+        logen(call,B<E),
+        logen(unfold,dead(A,B)),
+        logen(call,F is B+1),
+        logen(unfold,genLiveState(A,F,C,D)).
+logen(genLiveState/4,genLiveState(A,B,[B-C|D],[B-E|F])) :-
+        logen(unfold,maxReg(G)),
+        logen(call,B<G),
+        logen(unfold,live(A,B)),
+        logen(call,E=C),
+        logen(call,H is B+1),
+        logen(unfold,genLiveState(A,H,D,F)).
+logen(genLiveState/4,genLiveState(_,A,[],[])) :-
+        logen(unfold,maxReg(A)).
+logen(fetchinst/5,fetchinst([pic(A,B,C,D)|_],A,B,C,D)) :-
+        logen(call,true).
+logen(fetchinst/5,fetchinst([pic(_,_,_,_)|A],B,C,D,E)) :-
+        logen(unfold,fetchinst(A,B,C,D,E)).
+logen(reachableInstr/1,reachableInstr(_)) :-
+        logen(call,true).
+logen(reduceBits/2,reduceBits(A,A)) :-
+        logen(call,true).
+logen(execinst/14,execinst(addlw,A,_,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(rescall,J is H+A),
+        logen(unfold,reduceBits(J,I)),
+        logen(rescall,K is J>>8),
+        logen(unfold,updatez(F,C,L,I)),
+        logen(unfold,updatec(F,L,D,K)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(rvec,A,_,B,B,C,C,D,D,E,A,F,F,2)) :-
+        logen(call,E is 0).
+logen(execinst/14,execinst(addwf,A,0,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec addwf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,J,A,K)),
+        logen(rescall,L is K+H),
+        logen(unfold,reduceBits(L,I)),
+        logen(rescall,M is L>>8),
+        logen(unfold,updatez(F,J,N,I)),
+        logen(unfold,updatec(F,N,D,M)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(addwf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec addwf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J+H),
+        logen(unfold,reduceBits(K,L)),
+        logen(rescall,M is K>>8),
+        logen(unfold,updatedata(F,I,N,A,L)),
+        logen(unfold,updatez(F,N,O,L)),
+        logen(unfold,updatec(F,O,D,M)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(andlw,A,_,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(rescall,I is H/\A),
+        logen(unfold,updatez(F,C,D,I)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(andwf,A,0,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec andwf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,J,A,K)),
+        logen(rescall,I is K/\H),
+        logen(unfold,updatez(F,J,D,I)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(andwf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec andwf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J/\H),
+        logen(unfold,updatedata(F,I,L,A,K)),
+        logen(unfold,updatez(F,L,D,K)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(bcf,A,B,C,C,D,E,F,F,G,H,I,I,1)) :-
+        logen(unfold,picwrite('exec bcf')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(G,D,J,A,K)),
+        logen(rescall,L is K/\(255-1<<B)),
+        logen(unfold,updatedata(G,J,E,A,L)),
+        logen(call,H is G+1).
+logen(execinst/14,execinst(bsf,A,B,C,C,D,E,F,F,G,H,I,I,1)) :-
+        logen(unfold,picwrite('exec bsf')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(G,D,J,A,K)),
+        logen(rescall,L is K\/1<<B),
+        logen(unfold,updatedata(G,J,E,A,L)),
+        logen(call,H is G+1).
+logen(execinst/14,execinst(btfss,A,B,C,C,D,E,F,F,G,H,I,I,2)) :-
+        logen(unfold,picwrite('exec btfss')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(G,D,E,A,J)),
+        logen(rescall,K is J/\1<<B),
+        logen(rescall,K>=1),
+        logen(call,H is G+2).
+logen(execinst/14,execinst(btfss,A,B,C,C,D,E,F,F,G,H,I,I,1)) :-
+        logen(unfold,picwrite('exec btfss')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(G,D,E,A,J)),
+        logen(rescall,K is J/\1<<B),
+        logen(rescall,K is 0),
+        logen(call,H is G+1),
+        logen(unfold,picwrite('Bit not set')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(btfsc,A,B,C,C,D,E,F,F,G,H,I,I,1)) :-
+        logen(unfold,picwrite('exec btfsc')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(G,D,E,A,J)),
+        logen(rescall,K is J/\1<<B),
+        logen(rescall,K>=1),
+        logen(call,H is G+1),
+        logen(unfold,picwrite('Bit set')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(btfsc,A,B,C,C,D,E,F,F,G,H,I,I,2)) :-
+        logen(unfold,picwrite('exec btfsc')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(G,D,E,A,J)),
+        logen(rescall,K is J/\1<<B),
+        logen(rescall,K is 0),
+        logen(rescall,H is G+2),
+        logen(unfold,picwrite('Bit not set')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(call,A,_,B,B,C,C,D,E,F,A,G,G,2)) :-
+        logen(unfold,picwrite('exec call')),
+        logen(unfold,picnl),
+        logen(call,H is F+1),
+        logen(unfold,pushstack(D,E,H)),
+        logen(unfold,picwrite('Stack ')),
+        logen(unfold,picwrite(E)),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(clrf,A,_,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec clrf')),
+        logen(unfold,picnl),
+        logen(unfold,updatedata(F,C,I,A,0)),
+        logen(unfold,updatez(F,I,D,0)),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('Regs. ')),
+        logen(unfold,picwrite(D)),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(clrw,_,_,A,A,B,C,D,D,E,F,_,0,1)) :-
+        logen(unfold,picwrite('exec clrw')),
+        logen(unfold,picnl),
+        logen(unfold,updatez(E,B,C,0)),
+        logen(call,F is E+1),
+        logen(unfold,picwrite('Wout 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(comf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,picwrite('exec comf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is\J),
+        logen(unfold,reduceBits(K,H)),
+        logen(unfold,updatez(F,I,D,H)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(comf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec comf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is\J),
+        logen(unfold,reduceBits(K,L)),
+        logen(unfold,updatedata(F,I,M,A,L)),
+        logen(unfold,updatez(F,M,D,L)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(decf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,picwrite('exec decf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J-1),
+        logen(unfold,reduceBits(K,H)),
+        logen(unfold,updatez(F,I,D,H)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(decf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec decf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J-1),
+        logen(unfold,reduceBits(K,L)),
+        logen(unfold,updatedata(F,I,M,A,L)),
+        logen(unfold,updatez(F,M,D,L)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(decfsz,A,0,B,B,C,D,E,E,F,G,_,H,2)) :-
+        logen(unfold,retrievedata(F,C,D,A,I)),
+        logen(rescall,I==1),
+        logen(call,G is F+2),
+        logen(unfold,picwrite('exec decfsz _,0 result 0')),
+        logen(unfold,picnl),
+        logen(rescall,H is 0).
+logen(execinst/14,execinst(decfsz,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,retrievedata(F,C,D,A,I)),
+        logen(rescall,I\==1),
+        logen(unfold,picwrite('exec decfsz _,0 not 0')),
+        logen(unfold,picnl),
+        logen(rescall,J is I-1),
+        logen(unfold,reduceBits(J,H)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(decfsz,A,1,B,B,C,D,E,E,F,G,H,H,2)) :-
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,J is 1),
+        logen(rescall,K is J-1),
+        logen(unfold,updatedata(F,I,D,A,K)),
+        logen(call,G is F+2),
+        logen(unfold,picwrite('exec decfsz _,1 result 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(decfsz,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,J\==1),
+        logen(rescall,K is J-1),
+        logen(unfold,reduceBits(K,L)),
+        logen(unfold,updatedata(F,I,D,A,L)),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('exec decfsz _,1 not 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(goto,A,_,B,B,C,C,D,D,_,A,E,E,2)) :-
+        logen(unfold,picwrite('exec goto')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(incfsz,A,0,B,B,C,D,E,E,F,G,_,H,2)) :-
+        logen(unfold,retrievedata(F,C,D,A,I)),
+        logen(rescall,J is I+1),
+        logen(unfold,reduceBits(J,H)),
+        logen(rescall,H==0),
+        logen(call,G is F+2),
+        logen(unfold,picwrite('exec incfsz _,0 result 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(incfsz,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,retrievedata(F,C,D,A,I)),
+        logen(rescall,J is I+1),
+        logen(unfold,reduceBits(J,H)),
+        logen(rescall,H>0),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('exec incfsz _,0 not 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(incfsz,A,1,B,B,C,D,E,E,F,G,H,H,2)) :-
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J+1),
+        logen(unfold,reduceBits(K,L)),
+        logen(rescall,L==0),
+        logen(unfold,updatedata(F,I,D,A,L)),
+        logen(call,G is F+2),
+        logen(unfold,picwrite('exec incfsz _,1 result 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(incfsz,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J+1),
+        logen(unfold,reduceBits(K,L)),
+        logen(rescall,L>0),
+        logen(unfold,updatedata(F,I,D,A,L)),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('exec incfsz _,1 not 0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(incf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J+1),
+        logen(unfold,reduceBits(K,H)),
+        logen(unfold,updatez(F,I,D,H)),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('exec incf _,0')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(incf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is J+1),
+        logen(unfold,reduceBits(K,_)),
+        logen(unfold,updatedata(F,I,L,A,M)),
+        logen(unfold,updatez(F,L,D,M)),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('exec incf _,1')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(iorlw,A,_,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec iorlw')),
+        logen(unfold,picnl),
+        logen(rescall,I is H\/A),
+        logen(unfold,updatez(F,C,D,I)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(iorwf,A,0,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec iorwf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,J,A,K)),
+        logen(rescall,I is H\/K),
+        logen(unfold,updatez(F,J,D,I)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(iorwf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec iorwf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is H\/J),
+        logen(unfold,updatedata(F,I,L,A,K)),
+        logen(unfold,updatez(F,L,D,K)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(movf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,picwrite('exec movf ')),
+        logen(unfold,picwrite(A)),
+        logen(unfold,picwrite(',0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,H)),
+        logen(unfold,updatez(F,I,D,H)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(movf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec movf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(unfold,updatez(F,I,D,J)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(movlw,A,_,B,B,C,C,D,D,E,F,_,A,1)) :-
+        logen(call,F is E+1),
+        logen(unfold,picwrite('exec movlw')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(movwf,A,_,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,updatedata(F,C,D,A,H)),
+        logen(call,G is F+1),
+        logen(unfold,picwrite('exec movwf')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(nop,_,_,A,A,B,B,C,C,D,E,F,F,1)) :-
+        logen(call,E is D+1),
+        logen(unfold,picwrite('exec nop')),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(retlw,A,_,B,B,C,C,D,E,_,F,_,A,2)) :-
+        logen(unfold,picwrite('exec retlw')),
+        logen(unfold,picnl),
+        logen(unfold,popstack(D,E,F)),
+        logen(unfold,picwrite('Stack ')),
+        logen(unfold,picwrite(E)),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(return,_,_,A,A,B,B,C,D,_,E,F,F,2)) :-
+        logen(unfold,picwrite('exec return')),
+        logen(unfold,picnl),
+        logen(unfold,popstack(C,D,E)),
+        logen(unfold,picwrite('Stack ')),
+        logen(unfold,picwrite(D)),
+        logen(unfold,picnl).
+logen(execinst/14,execinst(rlf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,picwrite('exec rlf')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(unfold,retrievec(F,I,K,L)),
+        logen(rescall,M is J<<1+L),
+        logen(unfold,reduceBits(M,H)),
+        logen(rescall,N is M>>8),
+        logen(unfold,updatec(F,K,D,N)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(rlf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec rlf')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(unfold,retrievec(F,I,K,L)),
+        logen(rescall,M is J<<1+L),
+        logen(unfold,reduceBits(M,N)),
+        logen(rescall,O is M>>8),
+        logen(unfold,updatedata(F,K,P,A,N)),
+        logen(unfold,updatec(F,P,D,O)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(rrf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,picwrite('exec rlf')),
+        logen(unfold,picnl),
+        logen(unfold,retrievec(F,C,I,J)),
+        logen(unfold,retrievedata(F,I,K,A,L)),
+        logen(rescall,M is L/\1),
+        logen(rescall,H is L>>1+J<<7),
+        logen(unfold,updatec(F,K,D,M)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(rrf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec rlf')),
+        logen(unfold,picnl),
+        logen(unfold,retrievec(F,C,I,J)),
+        logen(unfold,retrievedata(F,I,K,A,L)),
+        logen(rescall,M is L/\1),
+        logen(rescall,N is L>>1+J<<7),
+        logen(unfold,updatedata(F,K,O,A,N)),
+        logen(unfold,updatec(F,O,D,M)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(sublw,A,_,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec sublw ')),
+        logen(unfold,picnl),
+        logen(rescall,J is\H+1),
+        logen(rescall,K is A+J),
+        logen(unfold,reduceBits(K,I)),
+        logen(rescall,L is K>>8),
+        logen(unfold,updatez(F,C,M,I)),
+        logen(unfold,updatec(F,M,D,L)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(subwf,A,0,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec subwf _,0 ')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,J,A,K)),
+        logen(rescall,L is\H+1),
+        logen(rescall,M is K+L),
+        logen(unfold,reduceBits(M,I)),
+        logen(rescall,N is M>>8),
+        logen(unfold,updatez(F,J,O,I)),
+        logen(unfold,updatec(F,O,D,N)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(subwf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec subwf _,1')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is\H+1),
+        logen(rescall,L is J+K),
+        logen(unfold,reduceBits(L,M)),
+        logen(rescall,N is L>>8),
+        logen(unfold,updatedata(F,I,O,A,M)),
+        logen(unfold,updatez(F,O,P,M)),
+        logen(unfold,updatec(F,P,D,N)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(swapf,A,0,B,B,C,D,E,E,F,G,_,H,1)) :-
+        logen(unfold,picwrite('exec swapf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,D,A,I)),
+        logen(rescall,H is(I/\240)>>4\/(I/\15)<<4),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(swapf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec swapf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is(J/\240)>>4\/(J/\15)<<4),
+        logen(unfold,updatedata(F,I,D,A,K)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(xorlw,A,_,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec xorlw ')),
+        logen(unfold,picnl),
+        logen(rescall,I is H#A),
+        logen(unfold,updatez(F,C,D,I)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(xorwf,A,0,B,B,C,D,E,E,F,G,H,I,1)) :-
+        logen(unfold,picwrite('exec xorwf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,J,A,K)),
+        logen(rescall,I is H#K),
+        logen(unfold,updatez(F,J,D,I)),
+        logen(call,G is F+1).
+logen(execinst/14,execinst(xorwf,A,1,B,B,C,D,E,E,F,G,H,H,1)) :-
+        logen(unfold,picwrite('exec xorwf _,0')),
+        logen(unfold,picnl),
+        logen(unfold,retrievedata(F,C,I,A,J)),
+        logen(rescall,K is H#J),
+        logen(unfold,updatedata(F,I,L,A,K)),
+        logen(unfold,updatez(F,L,D,K)),
+        logen(call,G is F+1).
+logen(updatec/4,updatec(A,B,C,0)) :-
+        logen(unfold,retrievedata(A,B,D,3,E)),
+        logen(call,F is E/\254),
+        logen(unfold,updatedata(A,D,C,3,F)).
+logen(updatec/4,updatec(A,B,C,D)) :-
+        logen(call,D\==0),
+        logen(unfold,retrievedata(A,B,E,3,F)),
+        logen(call,G is F\/1),
+        logen(unfold,updatedata(A,E,C,3,G)).
+logen(updatez/4,updatez(A,B,C,0)) :-
+        logen(unfold,retrievedata(A,B,D,3,E)),
+        logen(call,F is E\/4),
+        logen(unfold,updatedata(A,D,C,3,F)).
+logen(updatez/4,updatez(A,B,C,D)) :-
+        logen(call,D\==0),
+        logen(unfold,retrievedata(A,B,E,3,F)),
+        logen(call,G is F/\251),
+        logen(unfold,updatedata(A,E,C,3,G)).
+logen(retrievec/4,retrievec(A,B,C,D)) :-
+        logen(unfold,retrievedata(A,B,C,3,E)),
+        logen(call,D is E/\1).
+logen(retrievedata/5,retrievedata(_,A,A,B,C)) :-
+        logen(unfold,retrievedatareg(0,A,B,C)).
+logen(retrievedatareg/4,retrievedatareg(A,[A-_|B],C,D)) :-
+        logen(unfold,maxReg(E)),
+        logen(call,C<E),
+        logen(call,C\==A),
+        logen(call,F is A+1),
+        logen(unfold,retrievedatareg(F,B,C,D)).
+logen(retrievedatareg/4,retrievedatareg(A,[A-B|_],A,B)) :-
+        logen(unfold,maxReg(C)),
+        logen(call,A<C),
+        logen(call,A>15).
+logen(retrievedatareg/4,retrievedatareg(A,_,_,0)) :-
+        logen(unfold,maxReg(B)),
+        logen(call,A is B).
+logen(retrievedatareg/4,retrievedatareg(0,A,0,B)) :-
+        logen(unfold,retrievedata(C,A,_,4,D)),
+        logen(unfold,retrievedata(C,A,_,D,B)).
+logen(retrievedatareg/4,retrievedatareg(1,_,1,0)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(2,[2-A|_],2,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(3,[3-_|_],3,24)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(4,[4-A|_],4,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(5,[5-A|_],5,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(6,[6-A|_],6,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(7,[7-_|_],7,0)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(8,[8-_|_],8,0)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(9,[9-_|_],9,0)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(10,[10-A|_],10,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(11,[11-_|_],11,0)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(12,[12-A|_],12,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(13,[13-A|_],13,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(14,[15-A|_],14,A)) :-
+        logen(call,true).
+logen(retrievedatareg/4,retrievedatareg(15,[15-A|_],15,A)) :-
+        logen(call,true).
+logen(updatedata/5,updatedata(_,A,B,C,D)) :-
+        logen(unfold,updatedatareg(0,A,B,C,D)).
+logen(updatedatareg/5,updatedatareg(A,[A-B|C],[A-B|D],E,F)) :-
+        logen(unfold,maxReg(G)),
+        logen(call,E<G),
+        logen(call,E\==A),
+        logen(call,H is A+1),
+        logen(unfold,updatedatareg(H,C,D,E,F)).
+logen(updatedatareg/5,updatedatareg(A,[A-_|B],[A-C|B],A,C)) :-
+        logen(unfold,maxReg(D)),
+        logen(call,A<D),
+        logen(call,A>15).
+logen(updatedatareg/5,updatedatareg(0,A,B,0,C)) :-
+        logen(unfold,retrievedata(D,A,E,4,F)),
+        logen(unfold,updatedata(D,E,B,F,C)).
+logen(updatedatareg/5,updatedatareg(1,[1-_|A],[1-B|A],1,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(2,[2-_|A],[2-B|A],2,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(3,[3-_|A],[3-B|A],3,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(4,[4-_|A],[4-B|A],4,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(5,[5-_|A],[5-B|A],5,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(6,[6-_|A],[6-B|A],6,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(7,[7-_|A],[7-0|A],7,_)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(8,[8-_|A],[8-0|A],8,_)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(9,[9-_|A],[9-0|A],9,_)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(10,[10-_|A],[10-B|A],10,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(11,[11-_|A],[11-0|A],11,_)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(12,[12-_|A],[12-B|A],12,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(13,[13-_|A],[13-B|A],13,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(14,[14-_|A],[14-B|A],14,B)) :-
+        logen(call,true).
+logen(updatedatareg/5,updatedatareg(15,[15-_|A],[15-B|A],15,B)) :-
+        logen(call,true).
+logen(pushstack/3,pushstack(A,[B|A],B)) :-
+        logen(call,true).
+logen(popstack/3,popstack([],[],0)) :-
+        logen(call,true).
+logen(popstack/3,popstack([A|B],B,A)) :-
+        logen(call,true).
+logen(memberReturnPoints/2,memberReturnPoints(A,[A|_])) :-
+        logen(call,true).
+logen(memberReturnPoints/2,memberReturnPoints(A,[_|B])) :-
+        logen(unfold,memberReturnPoints(A,B)).
+logen(initpic/4,initpic(A,B,C,D)) :-
+        logen(call,D=0),
+        logen(call,C=0),
+        logen(call,B=[]),
+        logen(unfold,usedRegs(A)),
+        logen(unfold,picnl).
+logen(usedRegs/1,usedRegs(A)) :-
+        logen(unfold,genInit(0,A)).
+logen(genInit/2,genInit(A,[A-0|B])) :-
+        logen(unfold,maxReg(C)),
+        logen(call,A<C),
+        logen(unfold,live(0,A)),
+        logen(call,D is A+1),
+        logen(unfold,genInit(D,B)).
+logen(genInit/2,genInit(A,B)) :-
+        logen(unfold,maxReg(C)),
+        logen(call,A<C),
+        logen(unfold,dead(0,A)),
+        logen(call,D is A+1),
+        logen(unfold,genInit(D,B)).
+logen(genInit/2,genInit(A,[])) :-
+        logen(unfold,maxReg(A)).
+logen(simulatehw/7,simulatehw(_,A,A,_,_,B,B)) :-
+        logen(call,true).
+logen(simulateinput/6,simulateinput(A,B,C,D,E,F)) :-
+        logen(unfold,retrievedata(A,B,G,6,H)),
+        logen(unfold,checkInputStream(E,D,H,I,F)),
+        logen(unfold,updatedata(A,G,C,6,I)).
+logen(checkInputStream/5,checkInputStream([(A,B)|C],D,E,E,[(A,B)|C])) :-
+        logen(call,A=<D).
+logen(checkInputStream/5,checkInputStream([(A,B)|C],D,_,B,C)) :-
+        logen(call,A>D).
+logen(headEnvInput/3,headEnvInput([(A,B)|C],(A,B),C)) :-
+        logen(call,true).
+logen(removeHeadEnvInput/2,removeHeadEnvInput([],[])) :-
+        logen(call,true).
+logen(removeHeadEnvInput/2,removeHeadEnvInput([_|A],A)) :-
+        logen(call,true).
+logen(simulatetimer/4,simulatetimer(A,B,C,D)) :-
+        logen(unfold,retrievedata(A,B,E,1,F)),
+        logen(call,G is(F+D)mod 256),
+        logen(unfold,updatedata(A,E,C,1,G)).
+logen(genreturnpoints/1,genreturnpoints(A)) :-
+        logen(unfold,asm(A,B)),
+        logen(unfold,genretpoints(B,C)),
+        logen(call,write(C)).
+logen(genretpoints/2,genretpoints([],[])) :-
+        logen(call,true).
+logen(genretpoints/2,genretpoints([pic(A,call,_,_)|B],[C|D])) :-
+        logen(call,!),
+        logen(call,C is A+1),
+        logen(unfold,genretpoints(B,D)).
+logen(genretpoints/2,genretpoints([pic(_,_,_,_)|A],B)) :-
+        logen(unfold,genretpoints(A,B)).
+logen(genpclist/1,genpclist(A)) :-
+        logen(unfold,asm(A,B)),
+        logen(unfold,genpclist2(B,C)),
+        logen(call,write(C)),
+        logen(call,nl).
+logen(genpclist2/2,genpclist2([],[])) :-
+        logen(call,true).
+logen(genpclist2/2,genpclist2([pic(A,_,_,_)|B],[A|C])) :-
+        logen(unfold,genpclist2(B,C)).
+logen(picwrite/1,picwrite(_)) :-
+        logen(call,true).
+logen(picnl/0,picnl) :-
+        logen(call,true).
+logen(test/0,test) :-
+        logen(unfold,specialize_this).
+logen(environment/2,environment(pic,_)) :-
+        logen(call,true).
+logen(live/2,live(2,16)) :-
+        logen(call,true).
+logen(live/2,live(3,16)) :-
+        logen(call,true).
+logen(live/2,live(3,17)) :-
+        logen(call,true).
+logen(live/2,live(4,16)) :-
+        logen(call,true).
+logen(live/2,live(5,16)) :-
+        logen(call,true).
+logen(live/2,live(5,17)) :-
+        logen(call,true).
+logen(live/2,live(6,16)) :-
+        logen(call,true).
+logen(live/2,live(7,16)) :-
+        logen(call,true).
+logen(live/2,live(6,17)) :-
+        logen(call,true).
+logen(live/2,live(8,16)) :-
+        logen(call,true).
+logen(live/2,live(9,16)) :-
+        logen(call,true).
+logen(live/2,live(10,16)) :-
+        logen(call,true).
+logen(live/2,live(11,16)) :-
+        logen(call,true).
+logen(live/2,live(8,18)) :-
+        logen(call,true).
+logen(live/2,live(9,18)) :-
+        logen(call,true).
+logen(live/2,live(10,18)) :-
+        logen(call,true).
+logen(live/2,live(11,18)) :-
+        logen(call,true).
+logen(dead/2,dead(0,16)) :-
+        logen(call,true).
+logen(dead/2,dead(1,16)) :-
+        logen(call,true).
+logen(dead/2,dead(0,17)) :-
+        logen(call,true).
+logen(dead/2,dead(1,17)) :-
+        logen(call,true).
+logen(dead/2,dead(2,17)) :-
+        logen(call,true).
+logen(dead/2,dead(0,18)) :-
+        logen(call,true).
+logen(dead/2,dead(1,18)) :-
+        logen(call,true).
+logen(dead/2,dead(2,18)) :-
+        logen(call,true).
+logen(dead/2,dead(3,18)) :-
+        logen(call,true).
+logen(dead/2,dead(4,17)) :-
+        logen(call,true).
+logen(dead/2,dead(7,17)) :-
+        logen(call,true).
+logen(dead/2,dead(4,18)) :-
+        logen(call,true).
+logen(dead/2,dead(5,18)) :-
+        logen(call,true).
+logen(dead/2,dead(6,18)) :-
+        logen(call,true).
+logen(dead/2,dead(7,18)) :-
+        logen(call,true).
+logen(dead/2,dead(8,17)) :-
+        logen(call,true).
+logen(dead/2,dead(9,17)) :-
+        logen(call,true).
+logen(dead/2,dead(10,17)) :-
+        logen(call,true).
+logen(dead/2,dead(11,17)) :-
+        logen(call,true).
+logen(dead/2,dead(12,16)) :-
+        logen(call,true).
+logen(dead/2,dead(12,17)) :-
+        logen(call,true).
+logen(dead/2,dead(12,18)) :-
+        logen(call,true).
+logen(dead/2,dead(_,0)) :-
+        logen(call,true).
+logen(dead/2,dead(_,1)) :-
+        logen(call,true).
+logen(dead/2,dead(_,2)) :-
+        logen(call,true).
+logen(live/2,live(_,3)) :-
+        logen(call,true).
+logen(dead/2,dead(_,4)) :-
+        logen(call,true).
+logen(dead/2,dead(_,5)) :-
+        logen(call,true).
+logen(dead/2,dead(_,6)) :-
+        logen(call,true).
+logen(dead/2,dead(_,7)) :-
+        logen(call,true).
+logen(dead/2,dead(_,8)) :-
+        logen(call,true).
+logen(dead/2,dead(_,9)) :-
+        logen(call,true).
+logen(dead/2,dead(_,10)) :-
+        logen(call,true).
+logen(dead/2,dead(_,11)) :-
+        logen(call,true).
+logen(dead/2,dead(_,12)) :-
+        logen(call,true).
+logen(dead/2,dead(_,13)) :-
+        logen(call,true).
+logen(dead/2,dead(_,14)) :-
+        logen(call,true).
+logen(dead/2,dead(_,15)) :-
+        logen(call,true).
+logen(asm/2,asm(pic,A)) :-
+        logen(call,A=[pic(0,nop,0,0),pic(1,movlw,64,0),pic(2,movwf,16,0),pic(3,movwf,17,0),pic(4,addwf,16,0),pic(5,movwf,17,0),pic(6,addwf,17,0),pic(7,movlw,4,0),pic(8,movwf,18,0),pic(9,addwf,16,1),pic(10,decfsz,18,1),pic(11,goto,9,0),pic(12,nop,0,0)]).
+logen(returnpoint/2,returnpoint(_,[])) :-
+        logen(call,true).
+logen(execute/8,execute(A,B,_,_,C,D,_,_)) :-
+        logen(unfold,execute(A,B,C,D)).
+:- filter
+        specialize_this.
+:- filter
+        simulate(static,static,static).
+:- filter
+        execute(static,dynamic,static,dynamic).
+:- filter
+        maxReg(static).
+:- filter
+        projectLive(static,static,static).
+:- filter
+        genLiveState(static,static,static,static).
+:- filter
+        fetchinst(static,static,static,static,static).
+:- filter
+        reachableInstr(static).
+:- filter
+        reduceBits(static,static).
+:- filter
+        execinst(static,static,static,static,static,static,static,static,static,static,static,static,static,static).
+:- filter
+        updatec(static,static,static,static).
+:- filter
+        updatez(static,static,static,static).
+:- filter
+        retrievec(static,static,static,static).
+:- filter
+        retrievedata(static,static,static,static,static).
+:- filter
+        retrievedatareg(static,static,static,static).
+:- filter
+        updatedata(static,static,static,static,static).
+:- filter
+        updatedatareg(static,static,static,static,static).
+:- filter
+        pushstack(static,static,static).
+:- filter
+        popstack(static,static,static).
+:- filter
+        memberReturnPoints(static,static).
+:- filter
+        initpic(static,static,static,static).
+:- filter
+        usedRegs(static).
+:- filter
+        genInit(static,static).
+:- filter
+        simulatehw(static,static,static,static,static,static,static).
+:- filter
+        simulateinput(static,static,static,static,static,static).
+:- filter
+        checkInputStream(static,static,static,static,static).
+:- filter
+        headEnvInput(static,static,static).
+:- filter
+        removeHeadEnvInput(static,static).
+:- filter
+        simulatetimer(static,static,static,static).
+:- filter
+        genreturnpoints(static).
+:- filter
+        genretpoints(static,static).
+:- filter
+        genpclist(static).
+:- filter
+        genpclist2(static,static).
+:- filter
+        picwrite(static).
+:- filter
+        picnl.
+:- filter
+        test.
+:- filter
+        environment(static,dynamic).
+:- filter
+        live(static,static).
+:- filter
+        dead(static,static).
+:- filter
+        asm(static,static).
+:- filter
+        returnpoint(static,static).
+:- filter
+        execute(static,static,static,static,static,static,static,static).
+
+

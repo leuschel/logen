@@ -1,0 +1,25 @@
+(:-module(multiple_filters,[])).
+logen(p, p(A,B)) :-
+        logen(unfold, q(A,B)),
+        logen(memo, r(B,A)).
+logen(q, q(a,b)).
+logen(q, q(b,c)).
+logen(q, q(d,e)).
+logen(r, r(b,a)).
+logen(r, r(e,d)).
+logen(r, r(f,e)).
+logen(r, r(c,b)).
+logen(test, test(A)) :-
+        logen(memo, p(b,A)).
+logen(test, test(A)) :-
+        logen(memo, p(A,b)).
+:- filter
+        p(static, dynamic).
+:- filter
+        p(dynamic, static).
+:- filter
+        q(dynamic, dynamic).
+:- filter
+        r(dynamic, dynamic).
+:- filter
+        test(dynamic).

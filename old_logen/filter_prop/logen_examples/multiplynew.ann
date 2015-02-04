@@ -1,0 +1,18 @@
+:- include('../logen_source/logen').
+
+:- use_module(library(clpq)).
+
+:- residual multiply/3.
+:- filter multiply(clp,clp,clp):name.
+
+logen(1,multiply(_,Y,R)) :-
+	logen(call, {Y=rat(0,1),R=rat(0,1)}).
+logen(2,multiply(X,Y,R)) :-
+	logen(call, {Y>rat(0,1),Y1 = Y -rat(1,1), R = X + R1}),
+	logen(unfold, multiply(X,Y1,R1)).
+
+
+
+
+
+

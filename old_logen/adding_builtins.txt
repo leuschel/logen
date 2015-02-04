@@ -1,0 +1,32 @@
+
+A few notes on how to handle new builtins for the BTA:
+
+1/ They need to be added to the convex hull for norm analysis:
+builtin_norms.pl:
+add builtin_convex/2:
+
+builtin_convex(A==B, [A=B]). % if succeeds then norm must be the same?
+builtin_convex(A\==B, []). % no relation between norms...
+
+can also be based on norm:
+builtin_convex(length(X,Y), [Y = rat(0,1)]) :-	convex_norm(term).
+builtin_convex(length(X,Y), []) :- convex_norm(list).
+
+
+2/ They must be added to the filter propagation:
+filter_prop/abstractCallSucc.pl:
+% conditions under which call can be evaluated
+abstractCall(dynamic is static).
+abstractCall(static \== static).
+abstractCall(functor(nonvar,dynamic,dynamic)).
+abstractCall(functor(dynamic,static,static)).
+abstractCall(atomic(static)).
+
+% defines success and call patterns over the types
+% dynamic, static, nonvar, var
+abstractSuccess(static is static).
+abstractSuccess(dynamic \== dynamic).
+abstractSuccess(functor(nonvar,static,static)).
+abstractSuccess(atomic(static)).
+
+

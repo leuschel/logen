@@ -1,0 +1,2 @@
+sicstus -r bta.sav --goal "set_convex_norm($3),run_bin('$1','$2'),halt."
+

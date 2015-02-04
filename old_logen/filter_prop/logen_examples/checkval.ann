@@ -1,0 +1,26 @@
+
+:- multifile ann_clause/3, filter/2, residual/1, clp_residual/1, static_consult/1.
+:- dynamic ann_clause/3, filter/2, residual/1, clp_residual/1, static_consult/1.
+
+
+
+static_consult([]).
+
+ann_clause(1, p(X,Y), (constraint([X>2]), clpmemo(checkval(X,Y)))).
+%ann_clause(6, checkval(X,aboveThree), constraint([X>3])).
+ann_clause(2, checkval(X,above), constraint([X>0])).
+ann_clause(6, checkval(X,above1), constraint([X>0])).
+ann_clause(3, checkval(X,zero), constraint([X=0])).
+ann_clause(4, checkval(X, below), constraint([X<0])).
+ann_clause(5, test(X,Y), clpmemo(p(X,Y))).
+filter(p(_,_), [semi, dynamic]).
+filter(checkval(_,_), [semi, dynamic]).
+filter(test(_,_), [semi, dynamic]).
+residual(p(_,_)).
+residual(checkval(_,_)).
+residual(test(_,_)).
+
+clp_residual(p(_,_)).
+clp_residual(checkval(_,_)).
+
+

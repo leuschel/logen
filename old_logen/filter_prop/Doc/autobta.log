@@ -1,0 +1,163 @@
+This is pdfTeX, Version 3.14159-1.00b-pretest-20020211 (Web2C 7.3.7x) (format=pdflatex 2003.10.31)  15 JAN 2004 16:59
+**autobta.tex
+(./autobta.tex{/usr/local/teTeX/share/texmf.local/pdftex/config/pdftex.cfg}
+LaTeX2e <2001/06/01>
+Babel <v3.7h> and hyphenation patterns for american, french, german, ngerman, d
+utch, nohyphenation, loaded.
+(/usr/local/teTeX/share/texmf/tex/latex/base/article.cls
+Document Class: article 2001/04/21 v1.4e Standard LaTeX document class
+(/usr/local/teTeX/share/texmf/tex/latex/base/size11.clo
+File: size11.clo 2001/04/21 v1.4e Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/teTeX/share/texmf/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/teTeX/share/texmf/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/local/teTeX/share/texmf/tex/latex/graphics/graphics.sty
+Package: graphics 2001/07/07 v1.0n Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/teTeX/share/texmf/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/teTeX/share/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2001/08/31 v1.1 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 80.
+
+(/usr/local/teTeX/share/texmf/tex/latex/graphics/pdftex.def
+File: pdftex.def 2001/11/29 v0.03i graphics/color for pdftex
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/local/teTeX/share/texmf/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2002/01/22 v2.2d
+
+(/usr/local/teTeX/share/texmf/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2001/10/25 v2.2f
+\@emptytoks=\toks15
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 132.
+))
+\c@theorem=\count88
+\c@definition=\count89
+ (./autobta.aux)
+\openout1 = `autobta.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+(/usr/local/teTeX/share/texmf/tex/context/base/supp-pdf.tex
+(/usr/local/teTeX/share/texmf/tex/context/base/supp-mis.tex
+loading : Context Support Macros / Missing
+\protectiondepth=\count90
+\scratchcounter=\count91
+\scratchtoks=\toks16
+\scratchdimen=\dimen105
+\scratchskip=\skip43
+\scratchmuskip=\muskip10
+\scratchbox=\box26
+\scratchread=\read1
+\scratchwrite=\write3
+\zeropoint=\dimen106
+\minusone=\count92
+\thousandpoint=\dimen107
+\emptytoks=\toks17
+\nextbox=\box27
+\nextdepth=\dimen108
+\everyline=\toks18
+\!!counta=\count93
+\!!countb=\count94
+\recursecounter=\count95
+)
+loading : Context Support Macros / PDF
+\nofMPsegments=\count96
+\nofMParguments=\count97
+\everyMPtoPDFconversion=\toks19
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 22.
+ (/usr/local/teTeX/share/texmf/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 22.
+
+(/usr/local/teTeX/share/texmf/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 32.
+
+(/usr/local/teTeX/share/texmf/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 32.
+
+
+LaTeX Warning: Citation `Gallagher-Boulanger-Saglam-ILPS95' on page 1 undefined
+ on input line 64.
+
+
+LaTeX Warning: Citation `Codish-Demoen' on page 1 undefined on input line 65.
+
+[1
+
+{/usr/local/teTeX/share/texmf/dvips/config/pdftex.map}{/usr/local/teTeX/share/t
+exmf.os/dvips/config/Ttbbold.map}{/usr/local/teTeX/share/texmf.os/dvips/config/
+wolfram.map}]
+
+LaTeX Warning: Citation `Gallagher-Boulanger-Saglam-ILPS95' on page 2 undefined
+ on input line 121.
+
+[2] [3] (./autobta.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 1225 strings out of 60917
+ 14745 string characters out of 1188882
+ 4056395 words of memory out of 6511752
+ 4242 multiletter control sequences out of 10000+50000
+ 11568 words of font info for 44 fonts, out of 500000 for 1000
+ 54 hyphenation exceptions out of 1000
+ 25i,6n,24p,204b,302s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 43 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 0 words of extra memory for PDF output out of 65536
+</usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmtt10.pfb></usr/local/t
+eTeX/share/texmf/fonts/type1/bluesky/cm/cmmi8.pfb></usr/local/teTeX/share/texmf
+/fonts/type1/bluesky/cm/cmr8.pfb></usr/local/teTeX/share/texmf/fonts/type1/blue
+sky/cm/cmmi10.pfb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmbx10.p
+fb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmti10.pfb></usr/local/
+teTeX/share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/local/teTeX/share/tex
+mf/fonts/type1/bluesky/cm/cmr10.pfb></usr/local/teTeX/share/texmf/fonts/type1/b
+luesky/cm/cmbx12.pfb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmr12
+.pfb></usr/local/teTeX/share/texmf/fonts/type1/bluesky/cm/cmr17.pfb>
+Output written on autobta.pdf (3 pages, 70867 bytes).

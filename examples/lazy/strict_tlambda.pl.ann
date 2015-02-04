@@ -1,0 +1,135 @@
+logen(co/0,co) :-
+        logen(rescall,reconsult('tlambda.pl')).
+logen(eval/3,eval(app(A,B),C,D)) :-
+        logen(unfold,eval(app_strict(A,B),C,D)).
+logen(eval/3,eval(var(A),B,C)) :-
+        logen(unfold,lookup(A,B,C)).
+logen(eval/3,eval(cst(A),_,num(A))).
+logen(eval/3,eval(plus(A,B),C,num(D))) :-
+        logen(unfold,eval(A,C,num(E))),
+        logen(unfold,eval(B,C,num(F))),
+        logen(rescall,D is E+F).
+logen(eval/3,eval(minus(A,B),C,num(D))) :-
+        logen(unfold,eval(A,C,num(E))),
+        logen(unfold,eval(B,C,num(F))),
+        logen(rescall,D is E-F).
+logen(eval/3,eval(mul(A,B),C,num(D))) :-
+        logen(unfold,eval(A,C,num(E))),
+        logen(unfold,eval(B,C,num(F))),
+        logen(rescall,D is E*F).
+logen(eval/3,eval(if(A,B,C),D,E)) :-
+        logen(memo,eval_if(A,B,C,D,E)).
+logen(eval/3,eval(lam(A,B),C,fun(A,B,C))).
+logen(eval/3,eval(app_strict(A,B),C,D)) :-
+        logen(unfold,eval(A,C,E)),
+        logen(unfold,eval(B,C,F)),
+        logen(unfold,app_strict(E,F,D)).
+logen(eval/3,eval(app_lazy(A,B),C,D)) :-
+        reswhen(nonvar(D),(logen(unfold,eval(A,C,E)),logen(unfold,eval(B,C,F)),logen(unfold,app_strict(E,F,D)))).
+logen(eval/3,eval(print(A),_,true)) :-
+        logen(rescall,print(A)),
+        logen(rescall,nl).
+logen(eval_if/5,eval_if(A,B,_,C,D)) :-
+        logen(unfold,test_eq(A,C)),
+        logen(rescall,!),
+        logen(unfold,eval(B,C,D)).
+logen(eval_if/5,eval_if(_,_,A,B,C)) :-
+        logen(unfold,eval(A,B,C)).
+logen(test_eq/2,test_eq(eq(A,B),C)) :-
+        logen(unfold,eval(A,C,D)),
+        logen(unfold,eval(B,C,D)).
+logen(app_strict/3,app_strict(fun(A,B,C),D,E)) :-
+        logen(call,!),
+        logen(unfold,eval(B,[A/D|C],E)).
+logen(app_strict/3,app_strict(_,_,typeerror)).
+logen(lookup/3,lookup(_,[],badvar)) :-
+        logen(rescall,print('unbound var')),
+        logen(rescall,nl),
+        logen(rescall,!),
+        logen(rescall,fail).
+logen(lookup/3,lookup(A,[A/B|_],B)).
+logen(lookup/3,lookup(A,[B/_|C],D)) :-
+        logen(call,A\==B),
+        logen(unfold,lookup(A,C,D)).
+logen(term/2,term(tst_sum,plus(cst(1),cst(3)))).
+logen(term/2,term(fkt_square,lam(x,mul(var(x),var(x))))).
+logen(term/2,term(test_square,app(A,cst(3)))) :-
+        logen(unfold,term(fkt_square,A)).
+logen(term/2,term(fkt_twice,lam(f,lam(x,app(var(f),app(var(f),var(x))))))).
+logen(term/2,term(fkt_power4,app(A,B))) :-
+        logen(unfold,term(fkt_twice,A)),
+        logen(unfold,term(fkt_square,B)).
+logen(term/2,term(test_power4,app(A,cst(7)))) :-
+        logen(unfold,term(fkt_power4,A)).
+logen(term/2,term(id,lam(i,var(i)))).
+logen(term/2,term(ycomb,lam(f,app(A,A)))) :-
+        logen(unfold,term(help_exp,A)).
+logen(term/2,term(help_exp,lam(x,app(var(f),app(var(x),var(x)))))).
+logen(term/2,term(fkt_u,lam(f,app(var(f),var(f))))).
+logen(term/2,term(fib_r2,lam(r,lam(x,if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(app(var(r),minus(var(x),cst(1))),app(var(r),minus(var(x),cst(2)))))))))).
+logen(term/2,term(fib_r,lam(r,lam(x,if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(app(app(var(r),var(r)),minus(var(x),cst(1))),app(app(var(r),var(r)),minus(var(x),cst(2)))))))))).
+logen(term/2,term(fib,app(A,B))) :-
+        logen(unfold,term(fkt_u,A)),
+        logen(unfold,term(fib_r,B)).
+logen(term/2,term(fib_x(A),app(B,cst(A)))) :-
+        logen(unfold,term(fib,B)).
+logen(term/2,term(fak_r,lam(r,lam(x,if(eq(var(x),cst(1)),cst(1),mul(var(x),app(var(r),minus(var(x),cst(1))))))))).
+logen(term/2,term(fak,app(A,B))) :-
+        logen(unfold,term(ycomb,A)),
+        logen(unfold,term(fak_r,B)).
+logen(term/2,term(fak_x(A),app(B,cst(A)))) :-
+        logen(unfold,term(fak,B)).
+logen(test/2,test(A,B)) :-
+        logen(unfold,term(A,C)),
+        logen(unfold,eval(C,[],B)).
+logen(test_e/2,test_e(A,B)) :-
+        logen(unfold,test(A,num(B))),
+        logen(rescall,!).
+logen(t1/1,t1(A)) :-
+        logen(unfold,test(test_square,A)).
+logen(te1/1,te1(A)) :-
+        logen(unfold,test_e(test_square,A)).
+logen(t2/1,t2(A)) :-
+        logen(unfold,test(test_power4,A)).
+logen(te2/1,te2(A)) :-
+        logen(unfold,test_e(test_power4,A)).
+logen(t3/1,t3(A)) :-
+        logen(unfold,test(fib_x(4),A)).
+logen(te3/1,te3(A)) :-
+        logen(unfold,test_e(fib_x(4),A)).
+logen(bench/2,bench(A,B)) :-
+        logen(rescall,A>B),
+        logen(rescall,print('Done')),
+        logen(rescall,nl).
+logen(bench/2,bench(A,B)) :-
+        logen(rescall,A=<B),
+        logen(unfold,test_e(fib_x(A),C)),
+        logen(rescall,!),
+        logen(rescall,print(fib(A))),
+        logen(rescall,print(' == ')),
+        logen(rescall,print(C)),
+        logen(rescall,nl),
+        logen(rescall,D is A+1),
+        logen(memo,bench(D,B)).
+:- type
+        binding--->struct(/,[static,(type value)]).
+:- type
+        value--->(struct(lam,[static,static]);dynamic).
+:- filter
+        eval(static,(type list((type binding))),dynamic).
+:- filter
+        eval_if(static,static,static,(type list((type binding))),dynamic).
+:- filter
+        lookup(static,dynamic,dynamic).
+:- filter
+        bench(dynamic,dynamic).
+:- filter
+        app_strict(struct(fun,[static,static,(type list((type binding)))]),(type value),dynamic).
+:- filter
+        t1(dynamic).
+:- filter
+        t2(dynamic).
+:- filter
+        te2(dynamic).
+:- filter
+        te3(dynamic).

@@ -1,0 +1,57 @@
+XSLT
+~~~~
+
+XSLT is used throughout weblogen primarily to highlight simple Prolog or
+annotated programs. There are several XSL templates in the backend directory:
+
+simpleprologtohtml.xsl
+
+This is used on the output of the highlight program. It is designed for an XML
+file with a structure:
+<article>
+<source>
+</source>
+</article>
+
+It generates fairly simple HTML, highlighting comments, lists, strings and
+the names of predicates in declarations.
+
+prologtohtml.xsl
+
+This generates HTML for the source of annotated Prolog programs.  This is
+generated automatically from prologtohtml.xsl.template by the build process
+of weblogen using annotations extracted from the logen source tree. The HTML
+contains calls to functions to create menus when clicking on annotations as well
+as creating new filters when clicking on predicate names.
+
+filterstohtml.xsl
+
+This generates HTML for the filters of annotated Prolog programs.  This is
+generated automatically from filterstohtml.xsl.template by the build process
+of weblogen using the filter types extracted from the logen source tree. The
+HTML contains calls to functions to create menus when clicking on filters
+as well as code to delete filters.
+
+get_heads.xsl
+
+This generates a list of all the predicates (including arity) declared in a
+source file. This is used by the automatic BTA to generate suggestions for the
+initial filter.
+
+get_fixes.xsl
+
+This generates Javascript to go in the onclick handler for the "Automatically
+Fix" button for when the watchdog mode detects an error in the specialisation
+process.
+
+xmlverbatim.xsl
+
+This is a useful stylesheet that pretty-prints XML using HTML. It's very nice,
+but we should check that our license is compatible with it (LGPL). It's not
+actually important to our code but is useful as a debugging aid for when
+the watchdog mode generates invalid XML.
+
+error.xsl
+
+Used to parse the error output of the automatic BTA. Not very nice. Auto BTA
+is very much a second class citizen.

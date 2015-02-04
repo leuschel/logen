@@ -1,0 +1,4 @@
+*.pyc
+prologlog
+prologport
+prologstdout

@@ -1,0 +1,17 @@
+(:-module(vanilla_list,[])).
+logen(solve, solve([])).
+logen(solve, solve([A|B])) :-
+        logen(memo, solve_atom(A)),
+        logen(unfold, solve(B)).
+logen(solve_atom, solve_atom(A)) :-
+        logen(unfold, my_clause(A,B)),
+        logen(unfold, solve(B)).
+logen(my_clause, my_clause(app([],A,A),[])).
+logen(my_clause, my_clause(app([A|B],C,[A|D]),[app(B,C,D)])).
+logen(my_clause, my_clause(p,[p])).
+:- filter
+        my_clause(dynamic, dynamic).
+:- filter
+        solve_atom(dynamic).
+:- filter
+        solve((type list(dynamic))).

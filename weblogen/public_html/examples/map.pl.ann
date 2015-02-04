@@ -1,0 +1,40 @@
+(:-module(map,[])).
+logen(map, map(_,[],[])).
+logen(map, map(A,[B|C],[D|E])) :-
+        logen(call, F=..[A,B,D]),
+        logen(rescall, print(F)),
+        logen(mcall, call(F)),
+        logen(memo, map(A,C,E)).
+logen(reduce, reduce(_,A,[],A)).
+logen(reduce, reduce(A,B,[C|D],E)) :-
+        logen(memo, reduce(A,B,D,F)),
+        logen(call, G=..[A,C,F,E]),
+        logen(memo, call(G)).
+
+logen(q, q(a,b)).
+logen(q, q(b,c)).
+logen(q, q(c,d)).
+logen(q, q(d,e)).
+logen(reduce_add, reduce_add(A,B)) :-
+        logen(unfold, reduce(add,0,A,B)).
+logen(add, add(A,B,C)) :-
+        logen(rescall, C is A+B).
+logen(rev, rev(A,B)) :-
+        logen(memo, rev(A,[],B)).
+logen(rev, rev([],A,A)).
+logen(rev, rev([A|B],C,D)) :-
+        logen(memo, rev(B,[A|C],D)).
+:- filter
+        map(static, dynamic, dynamic).
+:- filter
+        reduce(static, dynamic, dynamic, dynamic).
+:- filter
+        q(dynamic, dynamic).
+:- filter
+        reduce_add(dynamic, dynamic).
+:- filter
+        add(dynamic, dynamic, dynamic).
+:- filter
+        rev(dynamic, dynamic, dynamic).
+:- filter
+        rev(dynamic, dynamic).

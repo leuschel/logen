@@ -1,0 +1,21 @@
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+residual(generate(_,_,_)).
+
+filter(generate(_,_,_),[static,dynamic,dynamic]).
+
+ann_clause(generate(empty,A,A),true).
+ann_clause(generate(char(A),[A|B],B),true).
+ann_clause(generate(or(A,B),C,D),
+ unfold(generate(A,C,D))).
+ann_clause(generate(or(A,B),C,D),
+ unfold(generate(B,C,D))).
+ann_clause(generate(cat(A,B),C,D),
+ (unfold(generate(A,C,E)),unfold(generate(B,E,D)))).
+ann_clause(generate(star(A),B,B),true).
+ann_clause(generate(star(A),B,C),
+ (unfold(generate(A,B,D)),memo(generate(star(A),D,C)))).

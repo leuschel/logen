@@ -1,0 +1,13 @@
+(:-module(match,[])).
+logen(match, match(A,B)) :-
+        logen(memo, match1(A,B,A,B)).
+logen(match1, match1([],_,_,_)).
+logen(match1, match1([A|_],[B|_],C,[_|D])) :-
+        logen(semicall, A\==B),
+        logen(online, match1(C,D,C,D)).
+logen(match1, match1([A|B],[A|C],D,E)) :-
+        logen(online, match1(B,C,D,E)).
+:- filter
+        match1(static, online, static, online).
+:- filter
+        match(static, dynamic).

@@ -1,0 +1,21 @@
+%% Logen Annotation File
+(:-module(regexp,[])).
+logen(0, match(A,B)) :-
+        logen(unfold, regexp(A,B,[])).
+logen(1, regexp(eps,A,A)).
+logen(2, regexp(A,[A|B],B)) :-
+        logen(call, atomic(A)).
+logen(3, regexp(A+_,B,C)) :-
+        logen(unfold, regexp(A,B,C)).
+logen(4, regexp(_+A,B,C)) :-
+        logen(unfold, regexp(A,B,C)).
+logen(5, regexp([A|B],C,D)) :-
+        logen(unfold, regexp(A,C,E)),
+        logen(unfold, regexp(B,E,D)).
+logen(6, regexp(*(A),B,C)) :-
+        logen(memo, regexp([A|*(A)],B,C)).
+logen(7, regexp(*(_),A,A)).
+:- filter
+        match(static, dynamic).
+:- filter
+        regexp(static, dynamic, dynamic).

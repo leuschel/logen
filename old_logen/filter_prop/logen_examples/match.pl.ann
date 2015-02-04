@@ -1,0 +1,17 @@
+/* file: /Users/mal/CVS/cogen/logen_examples/match.ann */
+
+
+
+logen(match1, match1([],_,_,_)) :-  true.
+logen(match1, match1([A|_],[B|_],C,[_|D])) :-
+	logen(rescall, A\==B),
+	logen(memo,match1(C,D,C,D)).
+logen(match1, match1([A|B],[A|C],D,E)) :-
+	logen(memo,match1(B,C,D,E)).
+logen(match, match(A,B)) :-
+	logen(unfold,match1(A,B,A,B)).
+
+
+%:- filter match(static,dynamic).
+:- filter match(list,dynamic).
+

@@ -1,0 +1,12 @@
+:- module(test,[]).
+
+logen(id(1), my_head(A,B)) :-
+	logen(call, foo(A)),
+	logen(rescall, bar(B)).
+
+logen(id(2), my_head(A,B)) :-
+	logen(call, before(A)),
+	resif(logen(rescall,cond(A)),logen(rescall, if(A)),logen(rescall,else(B))),
+	logen(call, next(A)).
+
+:- filter my_head(static,dynamic).

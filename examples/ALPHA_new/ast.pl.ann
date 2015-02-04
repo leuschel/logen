@@ -1,0 +1,47 @@
+(:-module(ast,[])).
+logen(ast, ast(A)) :-
+        logen(call, A=[class(c,[meth(foo,seq(mcall(tok1,this,bar),mcall(tok2,this,foo))),meth(bar,mcall(tok3,this,bar))])]).
+logen(subExpr, subExpr(A,A)).
+logen(subExpr, subExpr(A,B)) :-
+        logen(call, B=..[_|C]),
+        logen(unfold, mem(D,C)),
+        logen(unfold, subExpr(A,D)).
+logen(within, within(A,B,C,D)) :-
+        logen(unfold, mem(class(C,E),D)),
+        logen(unfold, mem(meth(B,F),E)),
+        logen(unfold, subExpr(mcall(A,_,_),F)).
+logen_module(gx, (:-use_module(library(lists)))).
+logen(pc1, pc1(A,B)) :-
+        logen(call, A=[calls(C,_,bar)|_]),
+        logen(unfold, within(C,foo,c,B)).
+logen(pc2, pc2(A,B)) :-
+        logen(call, A=[calls(C,_,bar)|_]),
+        logen(unfold, within(C,foo,c,B)),
+        logen(rescall, member(calls(_,_,foo),A)).
+logen(mem, mem(A,[A|_])).
+logen(mem, mem(A,[_|B])) :-
+        logen(unfold, mem(A,B)).
+logen(test1, test1(A)) :-
+        logen(unfold, ast(B)),
+        logen(call, A=[calls(tok1,_,bar)|_]),
+        logen(unfold, pc1(A,B)).
+logen(test2, test2(A)) :-
+        logen(unfold, ast(B)),
+        logen(call, A=[calls(tok1,_,bar)|_]),
+        logen(unfold, pc2(A,B)).
+:- filter
+        ast(dynamic).
+:- filter
+        pc1(nonvar, (type list(static))).
+:- filter
+        pc2(nonvar, (type list(static))).
+:- filter
+        subExpr(nonvar, static).
+:- filter
+        test1(dynamic).
+:- filter
+        test2(dynamic).
+:- filter
+        within(dynamic, static, static, (type list(static))).
+:- filter
+        member(dynamic, dynamic).

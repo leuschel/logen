@@ -1,0 +1,19 @@
+(:-module(rev_nonterm,[])).
+logen(rev, rev(A,B)) :-
+        logen(memo, revacc(A,[],B)).
+logen(revacc, revacc([],A,A)).
+logen(revacc, revacc([A|B],C,D)) :-
+        logen(memo, revacc(B,[A|C],D)).
+logen(rev2, rev2(A,B)) :-
+        logen(unfold, revacc2(A,[],B)).
+logen(revacc2, revacc2([],A,A)).
+logen(revacc2, revacc2([A|B],C,D)) :-
+        logen(unfold, revacc2(B,[A|C],D)).
+:- filter
+        rev(dynamic, dynamic).
+:- filter
+        revacc(dynamic, type(list(dynamic)), dynamic).
+:- filter
+        rev2(dynamic, dynamic).
+:- filter
+        revacc2(dynamic, dynamic, dynamic).

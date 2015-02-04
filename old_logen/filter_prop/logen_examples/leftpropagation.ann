@@ -1,0 +1,29 @@
+/* file: leftpropagation.ann */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+
+residual(q(A,B,C)).
+filter(q(A,B,C),[static,dynamic,dynamic]).
+ann_clause(1,q(A,B,C),(memo(r(A,B)),unfold(p(A,C)))).
+
+residual(r(A,B)).
+filter(r(A,B),[static,dynamic]).
+ann_clause(2,r(a,b),true).
+ann_clause(3,r(b,c),true).
+ann_clause(4,r(c,a),true).
+
+filter(p(A,B),[static,dynamic]).
+ann_clause(5,p(a,a),true).
+ann_clause(6,p(a,b),true).
+ann_clause(7,p(a,c),true).
+ann_clause(8,p(b,b),true).
+ann_clause(9,p(b,c),true).
+ann_clause(10,p(c,c),true).
+
+residual(q2(A,B,C)).
+filter(q2(A,B,C),[static,dynamic,dynamic]).
+ann_clause(11,q2(A,B,C),(memo(r(A,B)),hide_nf(unfold(p(A,C))))).

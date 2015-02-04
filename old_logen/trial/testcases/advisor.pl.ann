@@ -1,0 +1,41 @@
+%% Logen Annotation File
+(:-module(advisor,[])).
+logen(0, what_to_do_today(A,B,C)) :-
+        logen(unfold, kind_of_day(A,D)),
+        logen(unfold, kind_of_weather(B,E)),
+        logen(unfold, proposal(D,E,C)).
+logen(1, kind_of_day(monday,workday)).
+logen(2, kind_of_day(thuesday,workday)).
+logen(3, kind_of_day(wednesday,workday)).
+logen(4, kind_of_day(thursday,workday)).
+logen(5, kind_of_day(friday,workday)).
+logen(6, kind_of_day(saturday,weekend)).
+logen(7, kind_of_day(sunday,weekend)).
+logen(8, kind_of_day(eastern,feastday)).
+logen(9, kind_of_day(first_of_may,feastday)).
+logen(10, kind_of_day(christmas,feastday)).
+logen(11, kind_of_day(new_years_day,badday)).
+logen(12, kind_of_day(friday_the_13th,badday)).
+logen(13, kind_of_weather(sunny,nice)).
+logen(14, kind_of_weather(rainy,nasty)).
+logen(15, kind_of_weather(foggy,nasty)).
+logen(16, kind_of_weather(windy,nasty)).
+logen(17, proposal(workday,_,go_to_work)).
+logen(18, proposal(weekend,nice,go_out_to_the_nature)).
+logen(19, proposal(weekend,nice,visit_the_golf_club)).
+logen(20, proposal(weekend,nice,wash_your_car)).
+logen(21, proposal(weekend,nasty,go_out_to_the_town)).
+logen(22, proposal(weekend,nasty,visit_the_bridge_club)).
+logen(23, proposal(weekend,nasty,enjoy_yourself_at_home)).
+logen(24, proposal(weekend,_,it_is_fun_to_learn_Japanese)).
+logen(25, proposal(badday,_,you_had_better_stay_in_bed)).
+logen(26, proposal(feastday,A,B)) :-
+        logen(unfold, proposal(weekend,A,B)).
+:- filter
+        kind_of_day(dynamic, dynamic).
+:- filter
+        kind_of_weather(dynamic, dynamic).
+:- filter
+        proposal(static, static, dynamic).
+:- filter
+        what_to_do_today(dynamic, dynamic, dynamic).

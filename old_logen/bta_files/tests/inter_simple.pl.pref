@@ -1,0 +1,8 @@
+entry=:- filter int(static, dynamic).
+goal=int(fun(power4(cst(10))),X)
+goal=int(fun(cube(cst(10))),X)
+goal=int(fun(square(cst(10))),X)
+goal=int(-(cst(10),-(+(cst(3),cst(4)),+(cst(3),cst(5)))),X)
+norm=term
+iter=1000000
+benchmark=int(-(cst(10),-(+(cst(3),cst(4)),+(cst(3),cst(5)))),X)

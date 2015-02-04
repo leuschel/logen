@@ -1,0 +1,25 @@
+/* file: bench/match.ann */
+:- multifile ann_clause/3, filter/2, residual/1.
+:- dynamic ann_clause/3, filter/2, residual/1.
+:- dynamic static_consult/1.
+
+static_consult([]).
+
+
+residual(match(A,B)).
+filter(match(A,B),[static,dynamic]).
+ann_clause(match(A,B),memo(match1(A,B,A,B))).
+
+residual(match1(A,B,C,D)).
+filter(match1(A,B,C,D),[static,semi,static,semi]).
+ann_clause(match1([],A,B,C),true).
+ann_clause(match1([A|B],[C|D],E,[F|G]),
+ (semicall(A\==C),
+  if(call(nonvar(G)),
+    unfold(match1(E,G,E,G)),
+    memo(match1(E,G,E,G))
+  )) ).
+ann_clause(match1([A|B],[A|C],D,E),
+ if(call(nonvar(C)),
+    unfold(match1(B,C,D,E)),
+    memo(match1(B,C,D,E))) ).

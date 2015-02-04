@@ -1,0 +1,6 @@
+goal=match([a,a,c],X)
+goal=match([a],X)
+entry=:- filter match(static,dynamic).
+benchmark=match([a,a,c],[a,b,c,d,e,f,a,a,d,a,a,c,e,f])
+iter=50000
+norm=list

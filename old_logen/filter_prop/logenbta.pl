@@ -1,0 +1,43 @@
+:- module(logenbta, [
+      'denotes_[]'/1,
+      denotes_eps/1,
+      'denotes_.'/3,
+      'denotes_+'/3,
+      'denotes_$CONST'/1,
+      'denotes_$VAR'/1,
+      denotes_symbol/1]).
+
+denotes_symbol([]).
+denotes_symbol(eps).
+denotes_symbol('.'(_,_)).
+denotes_symbol(+(_,_)).
+denotes_symbol('$CONST').
+denotes_symbol('$VAR').
+
+'denotes_$VAR'([dynamic,var]).
+'denotes_$CONST'([dynamic,static]).
+'denotes_+'([dynamic],A,[dynamic]).
+'denotes_+'([dynamic,list],A,[dynamic]).
+'denotes_+'([dynamic,var],A,[dynamic]).
+'denotes_+'(A,[dynamic],[dynamic]).
+'denotes_+'(A,[dynamic,list],[dynamic]).
+'denotes_+'(A,[dynamic,var],[dynamic]).
+'denotes_+'([dynamic,static],[dynamic,static],[dynamic,static]).
+'denotes_+'([dynamic,static],[dynamic,list,static],[dynamic,static]).
+'denotes_+'([dynamic,list,static],[dynamic,static],[dynamic,static]).
+'denotes_+'([dynamic,list,static],[dynamic,list,static],[dynamic,static]).
+'denotes_.'(A,[dynamic],[dynamic]).
+'denotes_.'(A,[dynamic,var],[dynamic]).
+'denotes_.'(A,[dynamic,list],[dynamic,list]).
+'denotes_.'([dynamic,static],[dynamic,list,static],[dynamic,list,static]).
+'denotes_.'([dynamic,list,static],[dynamic,list,static],[dynamic,list,static]).
+'denotes_.'([dynamic,static],[dynamic,static],[dynamic,static]).
+'denotes_.'([dynamic,list,static],[dynamic,static],[dynamic,static]).
+'denotes_.'([dynamic],[dynamic,list,static],[dynamic,list]).
+'denotes_.'([dynamic,list],[dynamic,list,static],[dynamic,list]).
+'denotes_.'([dynamic,var],[dynamic,list,static],[dynamic,list]).
+'denotes_.'([dynamic],[dynamic,static],[dynamic]).
+'denotes_.'([dynamic,list],[dynamic,static],[dynamic]).
+'denotes_.'([dynamic,var],[dynamic,static],[dynamic]).
+denotes_eps([dynamic,static]).
+'denotes_[]'([dynamic,list,static]).

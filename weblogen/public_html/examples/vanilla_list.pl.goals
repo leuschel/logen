@@ -1,0 +1,6 @@
+test(R)
+solve_atom(app(X,Y,Z))
+solve_atom(app([a,b,c],[d,e,f,g],R))
+solve_atom(solve_atom2(app(X,Y,Z)))
+solve_atom(solve_atom2(app([a,b,c],[d,e,f,g],R)))
+   

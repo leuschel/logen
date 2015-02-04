@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#move to correct dir
+Dir=`which $0`
+Dir=`dirname $Dir`
+cd $Dir
+
+cd pylogen/
+python logen.py --dev

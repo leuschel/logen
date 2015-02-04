@@ -1,0 +1,16 @@
+:- filter
+        generate(static, dynamic, static).
+(:-module(user,[])).
+logen(generate, generate(empty,A,A)).
+logen(generate, generate(char(A),[A|B],B)).
+logen(generate, generate(or(A,_),B,C)) :-
+        logen(unfold, generate(A,B,C)).
+logen(generate, generate(or(_,A),B,C)) :-
+        logen(unfold, generate(A,B,C)).
+logen(generate, generate(cat(A,B),C,D)) :-
+        logen(unfold, generate(A,C,E)),
+        logen(unfold, generate(B,E,D)).
+logen(generate, generate(star(_),A,A)).
+logen(generate, generate(star(A),B,C)) :-
+        logen(unfold, generate(A,B,D)),
+        logen(unfold, generate(star(A),D,C)).

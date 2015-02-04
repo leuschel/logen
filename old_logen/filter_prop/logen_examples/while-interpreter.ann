@@ -1,0 +1,64 @@
+/* file: while-interpreter.ann */
+
+:- multifile residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic residual/1, filter/2, ann_clause/3, table/1.
+:- dynamic static_consult/1.
+static_consult([]).
+
+
+residual(main2(A,B,C)).
+filter(main2(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(1,main2(A,B,C),(unfold(wt(D)),unfold(prog_eval(D,A,B,C)))).
+
+residual(main(A,B,C)).
+filter(main(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(2,main(A,B,C),(memo(p1(D)),memo(program(E,D,[])),memo(prog_eval(E,A,B,C)))).
+
+
+residual(prog_eval(A,B,C,D)).
+filter(prog_eval(A,B,C,D),[static,dynamic,dynamic,dynamic]).
+ann_clause(3,prog_eval(p(A),B,C,D),
+   (rescall(initialize_store(E)),rescall(update(x,B,E,F)),rescall(update(y,C,F,G)),
+    unfold(command2(A,G,H)),rescall(access(z,H,D)))).
+ 
+
+residual(command(A,B,C)).
+filter(command(A,B,C),[static,dynamic,dynamic]).
+ann_clause(4,command(comb(A,B),C,D),(unfold(command2(A,C,E)),unfold(command2(B,E,D)))).
+ann_clause(5,command(while(A,B),C,D),
+   resif(unfold(boolean(A,C)),(unfold(command2(B,C,E)),memo(command(while(A,B),E,D))),rescall(D=C))).
+ann_clause(6,command(ce(A,B,C),D,E),resif(unfold(boolean(A,D)),unfold(command2(B,D,E)),memo(command(C,D,E)))).
+ann_clause(7,command(assign(A,B),C,D),(unfold(expression(B,C,E)),rescall(update(A,E,C,D)))). 
+
+residual(expression(A,B,C)).
+filter(expression(A,B,C),[dynamic,dynamic,dynamic]).
+ann_clause(8,expression(add(A,B),C,D),(unfold(expression(A,C,E)),unfold(expression(B,C,F)),rescall(D is E+F))).
+ann_clause(9,expression(sub(A,B),C,D),(unfold(expression(A,C,E)),unfold(expression(B,C,F)),rescall(D is E-F))).
+ann_clause(10,expression(multi(A,B),C,D),(unfold(expression(A,C,E)),unfold(expression(B,C,F)),rescall(D is E*F))).
+ann_clause(11,expression(id(A),B,C),rescall(access(A,B,C))).
+ann_clause(12,expression(num(A),B,A),true).
+ 
+residual(boolean(A,B)).
+filter(boolean(A,B),[static,dynamic]).
+ann_clause(13,boolean(greater(A,B),C),(unfold(expression(A,C,D)),unfold(expression(B,C,E)),rescall(D>E))).
+ann_clause(14,boolean(less(A,B),C),(unfold(expression(A,C,D)),unfold(expression(B,C,E)),rescall(D<E))).
+ann_clause(15,boolean(equal(A,B),C),(unfold(expression(A,C,D)),rescall('!'),unfold(expression(B,C,D)))).
+ 
+residual(p1(A)).
+filter(p1(A),[dynamic]).
+ann_clause(16,p1([z,:=,1,;,while,x,>,0,do,z,:=,z,*,y,;,x,:=,x,-,1,od]),true).
+ 
+residual(wt(A)).
+filter(wt(A),[dynamic]).
+ann_clause(17,wt(p(comb(assign(z,num(1)),
+  while(greater(id(x),num(0)),comb(assign(z,multi(id(z),id(y))),assign(x,sub(id(x),num(1)))))))),true).
+ 
+residual(t2(A)).
+filter(t2(A),[dynamic]).
+ann_clause(18,t2(p(comb(assign(z,num(1)),comb(assign(w,id(x)),
+while(greater(id(w),num(0)),comb(assign(z,multi(id(z),id(y))),assign(w,sub(id(w),num(1))))))))),true).
+
+
+residual(command(A,B,C)).
+filter(command2(A,B,C),[static,dynamic,dynamic]).
+ann_clause(99,command2(A,B,C),if(call((A=while(_,_);(A=ce(_,_,_)))),memo(command(A,B,C)),unfold(command(A,B,C)))).

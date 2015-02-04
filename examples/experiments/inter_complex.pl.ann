@@ -1,0 +1,54 @@
+logen(store/4,store([],A,B,[A/B])).
+logen(store/4,store([A/_|B],A,C,[A/C|B])).
+logen(store/4,store([A/B|C],D,E,[A/B|F])) :-
+        logen(call,D\==A),
+        logen(unfold,store(C,D,E,F)).
+logen(lookup/3,lookup(A,[],_)) :-
+        logen(rescall,format(user,[67,111,117,108,100,32,110,111,116,32,102,105,110,100,32,126,119,46,126,110],[A])),
+        logen(call,fail).
+logen(lookup/3,lookup(A,[B/C|D],E)) :-
+        if(logen(call,A=B),logen(call,E=C),logen(unfold,lookup(A,D,E))).
+logen(eval/3,eval([],A,A)).
+logen(eval/3,eval(skip,A,A)).
+logen(eval/3,eval(set(A,B),C,D)) :-
+        logen(unfold,store(C,A,B,D)).
+logen(eval/3,eval(print(A),B,B)) :-
+        logen(unfold,lookup(A,B,C)),
+        logen(rescall,print(C)),
+        logen(rescall,nl).
+logen(eval/3,eval(dec(A),B,C)) :-
+        logen(unfold,lookup(A,B,D)),
+        logen(rescall,E is D-1),
+        logen(unfold,store(B,A,E,C)).
+logen(eval/3,eval(inc(A),B,C)) :-
+        logen(unfold,lookup(A,B,D)),
+        logen(rescall,E is D+1),
+        logen(unfold,store(B,A,E,C)).
+logen(eval/3,eval(if_gt(A,B,C,D),E,F)) :-
+        logen(unfold,lookup(A,E,G)),
+        logen(unfold,lookup(B,E,H)),
+        resif(logen(rescall,G>H),logen(unfold,eval(C,E,F)),logen(unfold,eval(D,E,F))).
+logen(eval/3,eval(while_gt(A,B,C),D,E)) :-
+        logen(memo,eval_while(A,B,C,D,E)).
+logen(eval/3,eval([A|B],C,D)) :-
+        logen(unfold,eval(A,C,E)),
+        logen(unfold,eval(B,E,D)).
+logen(eval_while/5,eval_while(A,B,C,D,E)) :-
+        logen(unfold,lookup(A,D,F)),
+        logen(unfold,lookup(B,D,G)),
+        logen(rescall,F>G),
+        logen(rescall,!),
+        logen(unfold,eval([C,while_gt(A,B,C)],D,E)).
+logen(eval_while/5,eval_while(_,_,_,A,B)) :-
+        logen(unfold,eval(skip,A,B)).
+logen(test/1,test(A)) :-
+        logen(call,B=[set(zero,0),set(x,A),set(z,1),while_gt(x,zero,[dec(x),inc(z)]),print(z)]),
+        logen(unfold,eval(B,[],C)),
+        logen(rescall,print(C)),
+        logen(rescall,nl).
+:- type binding ---> struct('/',[static,online]).
+:- filter
+        eval_while(static,static,static,type(list(struct('/',[static,online]))),dynamic).
+%        eval_while(static,static,static,type(list(type(binding))),dynamic).
+:- filter
+        test(dynamic).

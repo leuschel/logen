@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>js test</title>
+<script type="text/javascript">
+// <![CDATA[
+
+function getText(element)
+{
+	var str = '';
+	var l = element.childNodes.length
+	for(var i = 0; i < l; ++i)
+	{
+		e = element.childNodes[i];
+		if(e.nodeType == 3)
+		{
+			str = str + e.nodeValue;
+		}
+		else if(e.nodeType == 1)
+		{
+			str = str + getText(e);
+		}
+	}
+	return str;
+}
+
+function submitAnnotations()
+{
+	filters_text = getText(document.getElementById("filters"));
+	alert(filters_text);
+
+	return true
+
+}
+function selecttext()
+{
+	selection = window.getSelection();
+	a = selection.anchorOffset;
+	b = selection.focusOffset;
+	if(a > b)
+	{
+		text = b + ',' + a;
+	}
+	else
+	{
+		text = a + ',' + b;
+	}
+
+	alert(text);
+}
+// ]]>
+</script>
+</head>
+<body>
+	<pre id="filters">
+:- <span class="filter">filter</span>
+	match(<span class="static">static</span>, <span class="dynamic">dynamic</span>).
+	</pre>
+
+	<input type="button" onclick="submitAnnotations()" value="click me">
+	<input type="button" onclick="selecttext()" value="click me too">
+</body>
+

@@ -1,0 +1,202 @@
+[Mottisfont:logen/examples/experiments] leuschel% logen lambdaint.pl "bench(X,Y)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 60.33299999548039 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for bench(_,_)
+
+/* bench(A,B) :- bench__0(A,B). */
+bench__0(A,B) :-
+        A>B,
+        print('Done'),
+        nl.
+bench__0(A,B) :-
+        A=<B,
+        eval__1(constr(A,[]),constr(C,_)), !,
+        print(fib(A)),
+        print(' == '),
+        print(C),
+        nl,
+        D is A+1,
+        bench__0(D,B).
+
+/* eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/B],A) :- eval__1(B,A). */
+eval__1(constr(0,[]),constr(1,[])) :- !.
+eval__1(constr(1,[]),constr(1,[])) :- !.
+eval__1(constr(A,[]),constr(B,[])) :-
+        C is A-1,
+        eval__1(constr(C,[]),constr(D,[])),
+        E is A-2,
+        eval__1(constr(E,[]),constr(F,[])),
+        B is D+F.
+/* Specialisation time 1.588999999815195 ms (runtime) */
+
+
+[Mottisfont:logen/examples/experiments] leuschel% logen lambdaint.pl "bench(X,Y)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 92.21099999309232 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for bench(_,_)
+
+/* bench(A,B) :- bench__0(A,B). */
+bench__0(A,B) :-
+        A>B,
+        print('Done'),
+        nl.
+bench__0(A,B) :-
+        A=<B,
+        eval__1(constr(A,[]),constr(C,_)), !,
+        print(fib(A)),
+        print(' == '),
+        print(C),
+        nl,
+        D is A+1,
+        bench__0(D,B).
+
+/* eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/B],A) :- eval__1(B,A). */
+eval__1(constr(0,[]),constr(1,[])) :- !.
+eval__1(constr(1,[]),constr(1,[])) :- !.
+eval__1(constr(A,[]),constr(B,[])) :-
+        C is A-1,
+        eval__1(constr(C,[]),constr(D,[])),
+        E is A-2,
+        eval__1(constr(E,[]),constr(F,[])),
+        B is D+F.
+/* Specialisation time 11.69599999890833 ms (runtime) */
+
+
+ON minimax:
+% logen lambdaint_nonterm2.pl "bench(1,20)" -w
+ % Generating GX File
+ % done
+ % Finished running cogen in 170.0399999897759 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for bench(1,20)
+
+
+<| HOMEOMORPHIC WARNING |> : UNFOLDING eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),
+ [x/constr(A,[])],constr(B,[])),
+History: [eval(apply(minus(var(x),cst(1)),fun(fib)),[x/constr(C,[])],constr(D,[])),
+ eval(plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))),[x/constr(E,[])],constr(F,G)),
+ eval_if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))),
+ [x/constr(H,[])],constr(I,J)),
+ eval(if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib)))),
+ [x/constr(K,[])],constr(L,M)),
+ eval_if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib)))),
+ [x/constr(N,[])],constr(O,P)),
+ eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/constr(Q,[])],constr(R,S)),
+ eval(apply(cst(T),fun(fib)),[x/T],constr(U,V)),
+ fib(W,X),
+ bench(Y,Z)]
+
+/* Specialisation time 31.26299999765811 ms (runtime) */
+
+
+
+ONLINE
+
+[Mottisfont:logen/examples/experiments] leuschel% logen lambdaint_online.pl "bench(X,Y)"
+ % Generating GX File
+ % done
+ % Finished running cogen in 86.28399999353641 ms (runtime)
+ % Compiling GX File
+ % Calling Compiled File
+ % Specialising for bench(_,_)
+ % Mixed Generalisation: 'generalise_online_mixed([static,(type list(struct(/,[static,online]))),online],eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/constr(_488,[])],constr(_659,_689)),eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/constr(_488,[])],constr(_659,_689)),bench__0(_545,_546))'.
+
+/* bench(A,B) :- bench__0(A,B). */
+bench__0(A,B) :-
+        A>B,
+        print('Done'),
+        nl.
+bench__0(A,B) :-
+        A=<B,
+        eval__1(A,C,_), !,
+        print(fib(A)),
+        print(' == '),
+        print(C),
+        nl,
+        D is A+1,
+        bench__0(D,B).
+
+/* eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/constr(A,[])],constr(B,C)) :- eval__1(A,B,C). */
+eval__1(0,1,[]) :- !.
+eval__1(1,1,[]) :- !.
+eval__1(A,B,[]) :-
+        C is A-1,
+        eval__1(C,D,[]),
+        E is A-2,
+        eval__1(E,F,[]),
+        B is D+F.
+/* Specialisation time 3.22299999969916 ms (runtime) */
+
+
+
+[Mottisfont:logen/examples/experiments] leuschel% mixtus
+% restoring /Volumes/Spearywell/Documents/Programming/tools/mixtus0.3.6/mixtus.sav...
+% /Volumes/Spearywell/Documents/Programming/tools/mixtus0.3.6/mixtus.sav restored in 10 msec 294616 bytes
+SICStus 3.12.2 (powerpc-darwin-7.9.0): Sun May 29 12:02:06 CEST 2005
+Licensed to ecs.soton.ac.uk
+Mixtus 0.3.6
+| ?- pconsult('lambdaint.pl').
+{consulting for mixtus: /Users/leuschel/svn_root/logen/examples/experiments/lambdaint.pl}
+yes
+| ?- statistics(runtime,_), pe(bench(X,Y)), statistics(runtime,[_,T2]), nl,print(T2),nl.
+bench(A, B) :-
+        bench1(A, B).
+
+% bench1(A,B):-bench(A,B)
+bench1(A, B) :-
+        B<A,
+        print('Done'),
+        nl.
+bench1(A, B) :-
+        A=<B,
+        (   A=0, !,
+            print(fib(0)),
+            print(' == '),
+            print(1),
+            nl,
+            bench1(1, B)
+        ;   A=1, !,
+            print(fib(1)),
+            print(' == '),
+            print(1),
+            nl,
+            bench1(2, B)
+        ;   evalapplyminusvarx1(A, C),
+            D is A-2,
+            evalifeqvarx3(D, E),
+            F is C+E, !,
+            print(fib(A)),
+            print(' == '),
+            print(F),
+            nl,
+            G is A+1,
+            bench1(G, B)
+        ).
+
+% evalapplyminusvarx1(A,B):-eval(apply(minus(var(x),cst(1)),fun(fib)),[x/constr(A,[])],constr(B,[]))
+evalapplyminusvarx1(A, B) :-
+        C is A-1,
+        evalifeqvarx3(C, B).
+
+% evalifeqvarx3(A,B):-eval(if(eq(var(x),cst(0)),cst(1),if(eq(var(x),cst(1)),cst(1),plus(apply(minus(var(x),cst(1)),fun(fib)),apply(minus(var(x),cst(2)),fun(fib))))),[x/constr(A,[])],constr(B,[]))
+evalifeqvarx3(0, A) :- !,
+        A=1.
+evalifeqvarx3(1, A) :- !,
+        A=1.
+evalifeqvarx3(A, B) :-
+        evalapplyminusvarx1(A, C),
+        D is A-2,
+        evalifeqvarx3(D, E),
+        B is C+E.
+160
+
+
+
+

@@ -1,0 +1,22 @@
+To check out:
+svn co svn+ssh://asap@134.99.112.234/home/mal/svnrootfsfs/logen/trunk logen
+
+Once downloaded you can test the installation with:
+make test
+
+Should finish without errors.
+
+To compile:
+make cogen
+
+To specialise:
+./cogen PlFile "goal(A,B)"
+
+For help:
+./cogen --help
+
+Output gx files should be standalone ciao executables.  So after
+specialising match.pl, match.pl.gx.cpx should be the executable.
+./match.pl.gx.cpx --help
+./match.pl.gx.cpx "match([a,a,b],R)"
+

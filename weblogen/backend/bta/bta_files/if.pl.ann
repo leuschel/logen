@@ -1,0 +1,18 @@
+(:-module(if,[])).
+logen(p, p(A,B)) :-
+        resif(logen(memo,if(A,B)), logen(memo,then(B)), logen(memo,else(A))).
+logen(if, if([],_)).
+logen(then, then([])).
+logen(then, then([_|A])) :-
+        logen(memo, then(A)).
+logen(else, else([])).
+logen(else, else([_|A])) :-
+        logen(memo, else(A)).
+:- filter
+        p(dynamic, dynamic).
+:- filter
+        if(dynamic, dynamic).
+:- filter
+        then(dynamic).
+:- filter
+        else(dynamic).

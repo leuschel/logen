@@ -1,0 +1,31 @@
+:- filter
+        def0(static, dynamic).
+:- filter
+        int(static, (type list(static)), (type list(online)), online).
+:- filter
+        lookup(static, (type list(static)), (type list(static)), online).
+:- filter
+        test(dynamic).
+(:-module(user,[])).
+logen(int, int(cst(A),_,_,A)).
+logen(int, int(var(A),B,C,D)) :-
+        logen(unfold, lookup(A,B,C,D)).
+logen(int, int(plus(A,B),C,D,E)) :-
+        logen(unfold, int(A,C,D,F)),
+        logen(unfold, int(B,C,D,G)),
+        logen(semicall, E is F+G).
+logen(int, int(minus(A,B),C,D,E)) :-
+        logen(unfold, int(A,C,D,F)),
+        logen(unfold, int(B,C,D,G)),
+        logen(semicall, E is F-G).
+logen(int, int(fun(A),B,C,D)) :-
+        logen(unfold, def0(A,E)),
+        logen(memo, int(E,B,C,D)).
+logen(def0, def0(one,cst(1))).
+logen(def0, def0(rec,fun(rec))).
+logen(lookup, lookup(A,[A|_],[B|_],B)).
+logen(lookup, lookup(A,[B|C],[_|D],E)) :-
+        logen(call, A\=B),
+        logen(unfold, lookup(A,C,D,E)).
+logen(test, test(A)) :-
+        logen(unfold, int(minus(plus(var(xx),cst(4)),var(zz)),[aa,bb,cc,dd,ee,ff,gg,zz,yy,xx],[0,0,0,0,0,0,0,1,2,3],A)).

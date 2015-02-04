@@ -1,0 +1,64 @@
+:- filter
+        rev(dynamic, dynamic).
+:- filter
+        revacc(dynamic, (type list(dynamic)), dynamic).
+:- filter
+        rev2(dynamic, dynamic).
+:- filter
+        rev3(dynamic, dynamic).
+(:-module(user,[])).
+logen(rev, rev(A,B)) :-
+        logen(unfold, revacc(A,[],B)).
+logen(revacc, revacc([],A,A)).
+logen(revacc, revacc([A|B],C,D)) :-
+        logen(memo, revacc(B,[A|C],D)).
+logen(rev2, rev2(A,B)) :-
+        logen(unfold, revacc2(A,[],B)).
+logen(revacc, revacc2([],A,A)).
+logen(revacc, revacc2([A|B],C,D)) :-
+        logen(unfold, revacc2(B,[A|C],D)).
+
+logen(rev3, rev3(A,B)) :-
+        logen(unfold, revacc3(A,[],B)).
+logen(revacc3, revacc3([],A,A)).
+logen(revacc3, revacc3(XX,C,D)) :-
+        hide_nf(resif(logen(call,XX=[A|B]),
+             logen(unfold, revacc3(B,[A|C],D)),
+             logen(rescall, fail)
+             )).
+
+:- filter
+        loop.       
+logen(loop/0, loop) :- logen(unfold,loop), logen(unfold,loop).
+:- filter
+        loop2(dynamic). 
+logen(loop2/1, loop2(X)) :- resfindall(X, logen(unfold,loop2(X)), R).
+
+:- filter
+        builtinerror(dynamic,dynamic). 
+logen(builtinerror/2,builtinerror(X,Y)) :- logen(rescall,nl),
+        logen(call,'=..'(X,Y)).
+
+:- filter
+        builtinerror2(dynamic,dynamic). 
+logen(builtinerror2/2,builtinerror2(X,Y)) :- logen(call,format(a,b)).
+
+:- filter  inf_nr(static).
+
+logen(inf_nr/1, inf_nr(X)) :- logen(call,X1 is X+1), logen(memo,inf_nr(X1)).
+:- filter  inf_nr2(static).
+
+logen(inf_nr2/1, inf_nr2(X)) :- logen(call,X1 is X+1), logen(unfold,inf_nr2(X1)).
+
+:- filter  filter_err(static).
+logen(filter_err/1,filter_err(X)) :- logen(rescall,X=Y), logen(memo,filter_err(Y)).
+
+:- filter  filter_err2(static,static,static).
+logen(filter_err2/3,filter_err2(2,X,Z)) :- logen(rescall,X=Y), logen(memo,filter_err2(2,Y,Z)).
+
+:- filter  if_err1(static,dynamic).
+logen(if_err1/2,if_err1(X,Y)) :- resif(logen(rescall,X=a), logen(call,Y=b), logen(rescall,Y=c)).
+
+:- filter  backprop_err(dynamic).
+
+logen(backprop_err/1, backprop_err(X)) :- logen(rescall,var(X)),logen(call,X=a).

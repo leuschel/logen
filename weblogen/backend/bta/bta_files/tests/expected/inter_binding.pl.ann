@@ -1,0 +1,32 @@
+(:-module(inter_binding,[])).
+logen(int, int(cst(A),_,A)).
+logen(int, int(var(A),B,C)) :-
+        logen(unfold, lookup(A,B,C)).
+logen(int, int(plus(A,B),C,D)) :-
+        logen(unfold, int(A,C,E)),
+        logen(unfold, int(B,C,F)),
+        logen(rescall, D is E+F).
+logen(int, int(minus(A,B),C,D)) :-
+        logen(unfold, int(A,C,E)),
+        logen(unfold, int(B,C,F)),
+        logen(rescall, D is E-F).
+logen(int, int(fun(A),B,C)) :-
+        logen(unfold, def0(A,D)),
+        logen(memo, int(D,B,C)).
+logen(def0, def0(one,cst(1))).
+logen(def0, def0(rec,fun(rec))).
+logen(def0, def0(big,fun(big(fun(big))))).
+logen(lookup, lookup(A,[A/B|_],B)).
+logen(lookup, lookup(A,[B/_|C],D)) :-
+        logen(call, A\=B),
+        logen(unfold, lookup(A,C,D)).
+logen(test, test(A,B)) :-
+        logen(unfold, int(minus(plus(var(xx),cst(4)),var(zz)),A,B)).
+:- filter
+        def0(static, dynamic).
+:- filter
+        int(static, (type list(struct(/,[static,dynamic]))), dynamic).
+:- filter
+        lookup(static, (type list(struct(/,[static,dynamic]))), dynamic).
+:- filter
+        test((type list(struct(/,[static,dynamic]))), dynamic).

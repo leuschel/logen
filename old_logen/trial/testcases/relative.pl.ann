@@ -1,0 +1,38 @@
+%% Logen Annotation File
+(:-module(relative,[])).
+logen(0, go(A)) :-
+        logen(unfold, relative(john,A)).
+logen(1, relative(A,B)) :-
+        logen(unfold, ancestor(C,A)),
+        logen(unfold, ancestor(C,B)).
+logen(2, ancestor(A,B)) :-
+        logen(unfold, parent(A,B)).
+logen(3, ancestor(A,B)) :-
+        logen(unfold, parent(A,C)),
+        logen(unfold, ancestor(C,B)).
+logen(4, parent(A,B)) :-
+        logen(unfold, father(A,B)).
+logen(5, parent(A,B)) :-
+        logen(unfold, mother(A,B)).
+logen(6, father(jap,carol)).
+logen(7, father(jap,jonas)).
+logen(8, father(jonas,maria)).
+logen(9, mother(carol,paulina)).
+logen(10, mother(carol,albertina)).
+logen(11, mother(albertina,peter)).
+logen(12, mother(maria,mary)).
+logen(13, mother(maria,jose)).
+logen(14, mother(mary,anna)).
+logen(15, mother(mary,john)).
+:- filter
+        ancestor(dynamic, dynamic).
+:- filter
+        father(dynamic, dynamic).
+:- filter
+        go(dynamic).
+:- filter
+        mother(dynamic, dynamic).
+:- filter
+        parent(dynamic, dynamic).
+:- filter
+        relative(static, dynamic).

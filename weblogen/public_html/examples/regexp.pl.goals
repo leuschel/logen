@@ -1,0 +1,3 @@
+generate(or(char(a),char(b)),X,[])
+generate(cat(char(a),char(b)),X,[])
+generate(star(char(a)),X,[])

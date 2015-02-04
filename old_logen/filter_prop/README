@@ -1,0 +1,27 @@
+To run the BTA.
+
+1. Start ciao
+2.  use_module(autobta).
+3.  ?- test.
+4.  Look at output in the files with .bta extension in Tests/
+5.  See autobta.pl file for examples of how to run the analysis.
+
+
+
+To compile the auto_bta for use with logen:
+
+[wlan-155:~/asap_cvs_root/Systems/bta] mal% ciaoc auto_bta                     
+ ==> generates the auto_bta executable
+ 
+[wlan-155:~/asap_cvs_root/Systems/bta] mal% ./auto_bta ~/cvs_root/cogen2/examples/match.pl.ann logen/logenbta.pl ~/out
+ :- filter static\==dynamic.
+ :- filter match1(static,dynamic,static,dynamic).
+ :- filter match(static,dynamic).
+
+To run the script call:
+python convert.py CIAO
+or 
+python convert.py SICS
+
+which will convert all source to either CIAO mode or SICSTUS mode.
+

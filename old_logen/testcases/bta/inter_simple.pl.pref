@@ -1,0 +1,5 @@
+norm=term
+goal=int(-(cst(10),-(+(cst(3),cst(4)),+(cst(3),cst(5)))),X)
+benchmark=int(-(cst(10),-(+(cst(3),cst(4)),+(cst(3),cst(5)))),X)
+iter=50000
+entry=:- filter int(static, dynamic).

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+
+
+
+
+
+Testname=$1
+Orig=$2
+Spec=$3
+Goal=$4
+shift
+shift
+shift 
+shift
+
+
+
+
+
+echo -n Running test case [$Testname]...
+
+if [ -n "$VERBOSE_LOGEN_TEST" ]
+then
+  echo -n $Orig...
+  ../logen $Orig -c -o $Testname.gx -vv -d"$@"
+else
+  ../logen $Orig -c -o $Testname.gx -s "$@"
+fi
+
+if [ $? != 0 ] 
+then
+  echo 'Generation of GX File failed! Test:'
+  echo 'Test:' $Testname
+  exit 1
+fi
+#ciao $Testname.gx "$Goal" -o $Spec --add_entry 
+./$Testname.gx.cpx "$Goal" -o $Spec --add_entry 
+if [ $? != 0 ] 
+then
+  echo 'Execution of GX File failed!'
+  echo 'Test:' $Testname
+  exit 1
+fi
+
+cat <<END > $Testname.pl
+main([Test]) :-
+	(Test == spec ->
+	  (ensure_loaded('$Spec'))
+	  ;
+	  (ensure_loaded('$Orig'))
+	  ),		 
+   statistics(runtime, [T1,_]),
+	Goal=$Goal,
+	findall(Goal, Goal, Ans), 
+	portray_clause(Ans), 
+   statistics(runtime, [T2,_]),
+   _Time is T2 - T1,
+   %format(user_error, "~NCompleted ~w in ~w ms~n", [Test,Time]),	
+	halt.
+
+END
+##
+
+rm -rf [$Testname].spec
+rm -rf [$Testname].orig
+
+if [ -n "$VERBOSE_LOGEN_TEST" ]
+then
+  echo Testing Specialized Program
+  echo "ciao $Testname.pl spec > $Testname.spec"
+fi
+ciao $Testname.pl spec > $Testname.spec
+if [ -n "$VERBOSE_LOGEN_TEST" ]
+then
+  echo Testing Original Program
+  echo "ciao $Testname.pl orig > $Testname.orig"
+fi
+ciao $Testname.pl orig >  $Testname.orig
+
+if diff -q $Testname.spec  $Testname.orig 
+then 
+echo OK
+exit 0
+else 
+echo FAIL $Testname
+exit 1
+fi 
+
+

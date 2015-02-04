@@ -1,0 +1,9 @@
+(:-module(op_library_test,[])).
+logen_module(gxspec, (:-use_module(library(lists)))).
+(:-op(750,fy,~)).
+logen(test, test(A,B)) :-
+        logen(call, append([~a,~b,~c],A,C)),
+        logen(rescall, append(C,[~c],D)),
+        logen(rescall, length(D,B)).
+:- filter
+        test(dynamic, dynamic).

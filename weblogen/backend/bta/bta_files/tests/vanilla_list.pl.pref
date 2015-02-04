@@ -1,0 +1,8 @@
+entry=:- filter solve((type list(dynamic))).
+goal=solve([app(X,Y,Z)])
+goal=solve([rev_app(X,Y,Z)])
+goal=solve_atom([ev_app(X,Y,Z))
+goal=solve_atom(rev_app(X,Y,Z))
+norm=list
+iter=:- filter solve((type list(dynamic))).
+benchmark=:- filter solve((type list(dynamic))).

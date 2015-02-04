@@ -1,0 +1,48 @@
+:-module(user,[]).
+logen(int,int(true,_)).
+logen(int,int(implies(A,B),C)) :-
+        logen(memo,int(or(not(A),B),C)).
+logen(int,int(and(A,B),C)) :-
+        logen(unfold,int(A,C)),
+        logen(unfold,int(B,C)).
+logen(int,int(or(A,_),B)) :-
+        logen(unfold,int(A,B)).
+logen(int,int(or(_,A),B)) :-
+        logen(unfold,int(A,B)).
+logen(int,int(not(A),B)) :-
+        logen(unfold,not_int(A,B)).
+logen(int,int(var(A),B)) :-
+        logen(unfold,member(A,B)).
+logen(not_int,not_int(false,_)).
+logen(not_int,not_int(implies(A,B),C)) :-
+        logen(memo,not_int(or(not(A),B),C)).
+logen(not_int,not_int(or(A,B),C)) :-
+        logen(unfold,not_int(A,C)),
+        logen(unfold,not_int(B,C)).
+logen(not_int,not_int(and(A,_),B)) :-
+        logen(unfold,not_int(A,B)).
+logen(not_int,not_int(and(_,A),B)) :-
+        logen(unfold,int(A,B)).
+logen(not_int,not_int(not(A),B)) :-
+        logen(unfold,int(A,B)).
+logen(not_int,not_int(var(A),B)) :-
+        logen(unfold,not_member(A,B)).
+logen(member,member(A,[A|_])).
+logen(member,member(A,[_|B])) :-
+        logen(memo,member(A,B)).
+logen(not_member,not_member(_,[])).
+logen(not_member,not_member(A,[B|C])) :-
+        logen(rescall,A\=B),
+        logen(memo,not_member(A,C)).
+logen(test,test(A)) :-
+        logen(unfold,int(implies(var(a),var(b)),[a,A])).
+:- filter
+        int(static,(type list(dynamic))).
+:- filter
+        not_int(static,(type list(dynamic))).
+:- filter
+        not_member(static,(type list(dynamic))).
+:- filter
+        member(static,(type list(dynamic))).
+:- filter
+        test(dynamic).

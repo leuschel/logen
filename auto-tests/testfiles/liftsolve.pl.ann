@@ -1,0 +1,41 @@
+(:-module(liftsolve,[])).
+logen(test, test(A,B,C)) :-
+        logen(unfold, solve([term(clause,[term(app,[term(null,[]),var(l),var(l)])]),term(clause,[term(app,[term(cons,[var(h),var(x)]),var(y),term(cons,[var(h),var(z)])]),term(app,[var(x),var(y),var(z)])])],[term(app,[A,B,C])])).
+logen(solve, solve(_,[])).
+logen(solve, solve(A,[B|C])) :-
+        logen(unfold, non_ground_member(term(clause,[B|D]),A)),
+        logen(memo, solve(A,D)),
+        logen(unfold, solve(A,C)).
+logen(non_ground_member, non_ground_member(A,[B|_])) :-
+        logen(unfold, make_non_ground(B,A)).
+logen(non_ground_member, non_ground_member(A,[_|B])) :-
+        logen(unfold, non_ground_member(A,B)).
+logen(make_non_ground, make_non_ground(A,B)) :-
+        logen(unfold, mkng(A,B,[],_)).
+logen(mkng, mkng(var(A),B,[],[sub(A,B)])).
+logen(mkng, mkng(var(A),B,[sub(A,B)|C],[sub(A,B)|C])).
+logen(mkng, mkng(var(A),B,[sub(C,D)|E],[sub(C,D)|F])) :-
+        logen(call, A\==C),
+        logen(unfold, mkng(var(A),B,E,F)).
+logen(mkng, mkng(term(A,B),term(A,C),D,E)) :-
+        logen(unfold, l_mkng(B,C,D,E)).
+logen(l_mkng, l_mkng([],[],A,A)).
+logen(l_mkng, l_mkng([A|B],[C|D],E,F)) :-
+        logen(unfold, mkng(A,C,E,G)),
+        logen(unfold, l_mkng(B,D,G,F)).
+:- filter
+        l_mkng(static, dynamic, (type list(dynamic)), dynamic).
+:- filter
+        make_non_ground(static, nonvar).
+:- filter
+        mkng(static, dynamic, (type list(dynamic)), dynamic).
+:- filter
+        non_ground_member(nonvar, (type list(static))).
+:- filter
+        solve((type list(static)), (type goal)).
+:- filter
+        test(dynamic, dynamic, dynamic).
+:- type
+        atom--->struct(term,[static,(type list(dynamic))]).
+:- type
+        goal--->(type list((type atom))).

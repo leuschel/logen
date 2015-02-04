@@ -1,0 +1,18 @@
+:- filter
+        claus(nonvar, dynamic).
+:- filter
+        solve(type(list(nonvar)), dynamic, dynamic).
+(:-module(user,[])).
+logen(solve, solve([],A,A)).
+logen(solve, solve([A|B],C,D)) :-
+        logen(unfold, claus(A,E)),
+        logen(unfold, solve(E,s(C),F)),
+        logen(unfold, solve(B,F,D)).
+logen(claus, claus(member(A,[A|_]),[])).
+logen(claus, claus(member(A,[_|B]),[member(A,B)])).
+logen(claus, claus(inboth(A,B,C),[member(A,B),member(A,C)])).
+logen(claus, claus(app([],A,A),[])).
+logen(claus, claus(app([A|B],C,[A|D]),[app(B,C,D)])).
+logen(claus, claus(delete(A,[A|B],B),[])).
+logen(claus, claus(delete(A,[B|C],[B|D]),[delete(A,C,D)])).
+logen(claus, claus(test(A,B,C,D),[inboth(A,B,C),delete(A,B,E),app(E,C,D)])).

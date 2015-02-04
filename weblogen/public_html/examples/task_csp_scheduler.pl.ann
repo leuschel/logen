@@ -1,0 +1,289 @@
+:-use_module(library(write)).
+:-use_module(library(lists)).
+:-use_module(library(sort)).
+:-use_package(assertions).
+%:-use_module(streamio).
+
+
+logen(doOutput/1,doOutput(Stream,V)) :-
+    logen(rescall,write(Stream)),
+    logen(rescall,write(' <= ')),
+    logen(rescall,write(V)),
+    logen(rescall,nl).
+    
+    
+logen(main/1,main(A)) :-
+        logen(unfold,simpleif(B)),
+        logen(unfold,execute(B,A)).
+logen(main2/1,main2(A)) :-
+        logen(unfold,ifalt(B)),
+        logen(unfold,execute(B,A)).
+logen(simplech/1,simplech([channel(a,1:10),channel(b,1:20)])).
+logen(simple/1,simple([process([input(a,x),output(b,x)])])).
+logen(simpleif/1,simpleif([process([input(a,x),if(x,output(b,x),output(b,x+10))])])).
+logen(simple2/1,simple2([process([input(a,x),write(c,x)]),process([read(c,y),output(b,y)])])).
+logen(simple3/1,simple3([process([input(a,x),write(c,x)]),process([read(c,y),write(d,y)]),process([read(d,z),output(b,z)])])).
+logen(simple4/1,simple4([process([input(a,x),write(c,x*x)]),process([read(c,y),output(b,y)])])).
+logen(alttest/1,alttest([process([input(a,x),write(c,x)]),process([input(b,y),write(d,y)]),process([alt(c,d,z),output(o,z)])])).
+logen(feedback/1,feedback([process([input(a,x),write(c,x),read(f,k)]),process([alt(e,c,y),output(o,y),write(d,y),alt(e,c,y),write(f,y)]),process([read(d,z),write(e,z)])])).
+logen(straight/1,straight([process([input(a,x),write(c,x),input(a,x),write(d,x)]),process([alt(c,d,y),output(o,y)])])).
+logen(ifalt/1,ifalt([process([input(a,x),if(x,write(c,x),write(d,x))]),process([read(c,y),write(e,255)]),process([read(d,z),write(f,0)]),process([alt(e,f,r),output(o,r)])])).
+logen(update/4,update(A,B,C,D)) :-
+        logen(unfold,stVars(A,E,A)),
+        logen(unfold,updateList(E,C,D,F)),
+        logen(unfold,stVars(A,F,B)).
+logen(updateList/4,updateList([(A,_)|B],C,D,E)) :-
+        logen(call,A==C),
+        logen(call,E=[(C,D)|B]).
+logen(updateList/4,updateList([(A,B)|C],D,E,[(A,B)|F])) :-
+        logen(call,A\==D),
+        logen(unfold,updateList(C,D,E,F)).
+logen(stTasks/3,stTasks(st(_,A,B),C,st(C,A,B))).
+logen(stChans/3,stChans(st(A,_,B),C,st(A,C,B))).
+logen(stVars/3,stVars(st(A,B,_),C,st(A,B,C))).
+logen(eval/3,eval(A,A,_)) :-
+        logen(call,num(A)).
+logen(eval/3,eval(A,B,C)) :-
+        logen(call,atom(A)),
+        logen(unfold,stVars(C,D,C)),
+        logen(call,member((A,B),D)).
+logen(eval/3,eval(A,B,C)) :-
+        logen(call,A=..[D,E,F]),
+        logen(unfold,eval(E,G,C)),
+        logen(unfold,eval(F,H,C)),
+        logen(call,I=..[D,G,H]),
+        logen(rescall,B is I).
+logen(getChannel/4,getChannel(A,B,C,D)) :-
+        logen(unfold,stChans(A,E,A)),
+        logen(unfold,updateCList(E,C,blocking,F,D)),
+        logen(unfold,stChans(A,F,B)).
+logen(setChannel/4,setChannel(A,B,C,D)) :-
+        logen(unfold,stChans(A,E,A)),
+        logen(unfold,updateCList(E,C,D,F,blocking)),
+        logen(unfold,stChans(A,F,B)).
+logen(updateCList/5,updateCList([channel(A,B)|C],A,D,[channel(A,D)|C],B)).
+logen(updateCList/5,updateCList([channel(A,B)|C],D,E,[channel(A,B)|F],G)) :-
+        logen(call,A\==D),
+        logen(unfold,updateCList(C,D,E,F,G)).
+logen(getReady/3,getReady(A,B,C)) :-
+        logen(unfold,stTasks(A,[C|D],A)),
+        logen(unfold,stTasks(A,D,B)).
+logen(putReady/3,putReady(A,B,task(C,D))) :-
+        logen(unfold,stTasks(A,E,A)),
+        logen(unfold,stTasks(A,[task(C,D)|E],B)).
+logen(putReady/3,putReady(A,A,blocked)).
+%logen(int/6,int(T1,T2,B1,B2,C1,C2)) :-
+%  logen(call,write(int(T1,T2,B1,B2,C1,C2))),logen(call,nl), logen(call,fail).
+logen(int/6,int(task([],A),task(A,A),B,B,C,C)).
+logen(int/6,int(task([if(A,B,C)|D],E),task([F|D],E),G,G,H,H)) :-
+        logen(unfold,stVars(H,I,H)),
+        logen(call,member((A,J),I)),
+        logen(unfold,select(J,B,C,F)).
+logen(int/6,int(task([poll(A)|B],C),task(B,C),D,D,E,F)) :-
+        logen(unfold,update(E,F,A,1)).
+logen(int/6,int(task([assign(A,B)|C],D),task(C,D),E,E,F,G)) :-
+        logen(unfold,eval(B,H,F)),
+        logen(unfold,update(F,G,A,H)).
+logen(int/6,int(task([output(A,B)|C],D),task(C,D),E,E,F,F)) :-
+        logen(unfold,eval(B,G,F)),
+        logen(unfold,doOutput(A,G)).
+logen(int/6,int(task([read(A,B)|C],D),task(C,D),E,E,F,G)) :-
+        logen(unfold,getChannel(F,H,A,writing(I,J))),
+        logen(unfold,putReady(H,K,I)),
+        logen(unfold,update(K,G,B,J)).
+logen(int/6,int(task([read(A,B)|C],D),blocked,E,E,F,G)) :-
+        logen(unfold,getChannel(F,_,A,blocking)),
+        logen(unfold,setChannel(F,G,A,reading(task(C,D),B))).
+logen(int/6,int(task([write(A,B)|C],D),task(C,D),E,E,F,G)) :-
+        logen(unfold,getChannel(F,H,A,reading(I,J))),
+        logen(unfold,putReady(H,K,I)),
+        logen(unfold,eval(B,L,K)),
+        logen(unfold,update(K,G,J,L)).
+logen(int/6,int(task([write(A,B)|C],D),blocked,E,E,F,G)) :-
+        logen(unfold,getChannel(F,F,A,blocking)),
+        logen(unfold,eval(B,H,F)),
+        logen(unfold,setChannel(F,G,A,writing(task(C,D),H))).
+logen(int/6,int(task([write(A,B)|C],D),task(C,D),E,E,F,G)) :-
+        logen(unfold,getChannel(F,H,A,alting(I,J,K))),
+        logen(unfold,putReady(H,L,I)),
+        logen(unfold,eval(B,M,L)),
+        logen(unfold,update(L,N,K,M)),
+        logen(unfold,getChannel(N,G,J,alting(I,A,K))).
+logen(int/6,int(task([alt(A,B,C)|D],E),F,G,G,H,I)) :-
+        logen(unfold,getChannel(H,J,A,K)),
+        logen(unfold,getChannel(J,L,B,M)),
+        logen(unfold,int_alt(K,M,A,B,C,D,E,F,L,I)).
+logen(int/6,int(task([input(A,B)|C],D),E,F,G,H,I)) :-
+        logen(unfold,advanceInput(F,G,J)),
+        logen(unfold,doOutput(A,J)),
+        logen(unfold,update(H,I,B,J)),
+        logen(call,E=task(C,D)).
+logen(advanceInput/3,advanceInput([stream(a,[A|B])],[stream(a,B)],A)).
+logen(select/4,select(A,_,B,B)) :-
+        logen(rescall,A=\=0).
+logen(select/4,select(A,B,_,B)) :-
+        logen(rescall,A=:=0).
+logen(int_alt/10,int_alt(blocking,blocking,A,B,C,D,E,F,G,H)) :-
+        logen(unfold,setChannel(G,I,A,alting(task(D,E),B,C))),
+        logen(unfold,setChannel(I,H,B,alting(task(D,E),A,C))),
+        logen(call,F=blocked).
+logen(int_alt/10,int_alt(blocking,writing(A,B),_,_,C,D,E,A,F,G)) :-
+        logen(unfold,update(F,H,C,B)),
+        logen(unfold,putReady(H,G,task(D,E))).
+logen(int_alt/10,int_alt(writing(A,B),C,_,D,E,F,G,A,H,I)) :-
+        logen(unfold,update(H,J,E,B)),
+        logen(unfold,putReady(J,K,task(F,G))),
+        logen(unfold,setChannel(K,I,D,C)).
+logen(intloop/2,intloop(A,B)) :-
+        logen(unfold,getReady(A,C,D)),
+        logen(unfold,int(D,E,B,F,C,G)),
+        logen(unfold,putReady(G,H,E)),
+        logen(memo,intloop(H,F)).
+logen(exprVars/2,exprVars(A,[])) :-
+        logen(call,num(A)).
+logen(exprVars/2,exprVars(A,[(A,-1)])) :-
+        logen(call,atom(A)).
+logen(exprVars/2,exprVars(A,B)) :-
+        logen(call,A=..[_,C,D]),
+        logen(unfold,exprVars(C,E)),
+        logen(unfold,exprVars(D,F)),
+        logen(call,append(E,F,B)).
+logen(taskVars/2,taskVars([],[])).
+logen(taskVars/2,taskVars([input(_,A)|B],[(A,-1)|C])) :-
+        logen(unfold,taskVars(B,C)).
+logen(taskVars/2,taskVars([write(_,A)|B],C)) :-
+        logen(unfold,exprVars(A,D)),
+        logen(unfold,taskVars(B,E)),
+        logen(call,append(D,E,C)).
+logen(taskVars/2,taskVars([read(_,A)|B],[(A,-1)|C])) :-
+        logen(unfold,taskVars(B,C)).
+logen(taskVars/2,taskVars([assign(A,B)|C],D)) :-
+        logen(unfold,exprVars(B,E)),
+        logen(unfold,taskVars(C,F)),
+        logen(call,append([A|E],F,D)).
+logen(taskVars/2,taskVars([output(_,A)|B],C)) :-
+        logen(unfold,exprVars(A,D)),
+        logen(unfold,taskVars(B,E)),
+        logen(call,append(D,E,C)).
+logen(taskVars/2,taskVars([alt(_,_,A)|B],[(A,-1)|C])) :-
+        logen(unfold,taskVars(B,C)).
+logen(taskVars/2,taskVars([if(A,B,C)|D],E)) :-
+        logen(unfold,exprVars(A,F)),
+        logen(unfold,taskVars([B],G)),
+        logen(unfold,taskVars([C],H)),
+        logen(unfold,taskVars(D,I)),
+        logen(call,append(F,G,J)),
+        logen(call,append(J,H,K)),
+        logen(call,append(K,I,E)).
+logen(vars/2,vars([],[])).
+logen(vars/2,vars([process(A)|B],C)) :-
+        logen(unfold,taskVars(A,D)),
+        logen(unfold,vars(B,E)),
+        logen(call,append(D,E,F)),
+        logen(call,sort(F,C)).
+logen(taskChannels/2,taskChannels([],[])).
+logen(taskChannels/2,taskChannels([input(_,_)|A],B)) :-
+        logen(unfold,taskChannels(A,B)).
+logen(taskChannels/2,taskChannels([write(A,_)|B],[channel(A,blocking)|C])) :-
+        logen(unfold,taskChannels(B,C)).
+logen(taskChannels/2,taskChannels([read(A,_)|B],[channel(A,blocking)|C])) :-
+        logen(unfold,taskChannels(B,C)).
+logen(taskChannels/2,taskChannels([assign(_,_)|A],B)) :-
+        logen(unfold,taskChannels(A,B)).
+logen(taskChannels/2,taskChannels([output(_,_)|A],B)) :-
+        logen(unfold,taskChannels(A,B)).
+logen(taskChannels/2,taskChannels([alt(A,B,_)|C],[channel(A,blocking),channel(B,blocking)|D])) :-
+        logen(unfold,taskChannels(C,D)).
+logen(taskChannels/2,taskChannels([if(_,A,B)|C],D)) :-
+        logen(unfold,taskChannels([A],E)),
+        logen(unfold,taskChannels([B],F)),
+        logen(unfold,taskChannels(C,G)),
+        logen(call,append(E,F,H)),
+        logen(call,append(H,G,D)).
+logen(channels/2,channels([],[])).
+logen(channels/2,channels([process(A)|B],C)) :-
+        logen(unfold,taskChannels(A,D)),
+        logen(unfold,channels(B,E)),
+        logen(call,append(D,E,F)),
+        logen(call,sort(F,C)).
+logen(tasks/2,tasks([],[])).
+logen(tasks/2,tasks([process(A)|B],[task([],A)|C])) :-
+        logen(unfold,tasks(B,C)).
+logen(initState/2,initState(A,st(B,C,D))) :-
+        logen(unfold,tasks(A,B)),
+        logen(unfold,vars(A,D)),
+        logen(unfold,channels(A,C)).
+logen(execute/2,execute(A,B)) :-
+        logen(unfold,initState(A,C)),
+        logen(unfold,wrapStreams(B,D)),
+        logen(unfold,intloop(C,D)).
+logen(wrapStreams/2,wrapStreams(A,B)) :-
+        logen(call,B=[stream(a,A)]).
+        
+:- type store ---> struct(st,[type(tasks),type(list(type(channel))),type(list(type(variable)))]).
+:- type tasks ---> static.
+:- type channel ---> struct(channel,[static,type(channel_store)]).
+:- type channel_store ---> (static ;
+                           struct(writing,[static,dynamic]) ;
+                           struct(reading,[static,dynamic]) ;
+                           struct(alting,[static,static,dynamic])).
+:- type variable ---> struct(',',[static,dynamic]).
+% online in subtypes does not seem to work; hence dynamic
+:- filter
+        main(dynamic).
+:- filter
+        main2(dynamic).
+:- filter
+        feedback(static).
+:- filter
+        straight(static).
+:- filter
+        ifalt(static).
+:- filter
+        update(static,static,static,static).
+:- filter
+        updateList(dynamic,static,dynamic,dynamic).
+:- filter
+        stTasks(static,static,static).
+:- filter
+        stChans(static,static,static).
+:- filter
+        stVars(static,static,static).
+:- filter
+        eval(static,static,static).
+:- filter
+        getChannel(static,static,static,static).
+:- filter
+        setChannel(static,static,static,static).
+:- filter
+        updateCList(static,static,static,static,static).
+:- filter
+        getReady(static,static,static).
+:- filter
+        putReady(static,static,static).
+:- filter
+        int(static,static,static,static,static,static).
+:- filter
+        advanceInput(static,static,static).
+:- filter
+        select(static,static,static,static).
+:- filter
+        int_alt(static,static,static,static,static,static,static,static,static,static).
+:- filter
+        intloop(type(store),dynamic).
+:- filter
+        exprVars(static,static).
+:- filter
+        taskVars(static,static).
+:- filter
+        vars(static,static).
+:- filter
+        taskChannels(static,static).
+:- filter
+        channels(static,static).
+:- filter
+        tasks(static,static).
+:- filter
+        initState(static,static).
+:- filter
+        wrapStreams(static,static).

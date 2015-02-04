@@ -1,0 +1,36 @@
+TODO
+~~~~
+(Introduction File)
+* Local install instructions etc
+
+
+(1. Open File)
+* Option pane - Novice/Expert modes
+
+(2. Annotate)
+* Stock Filters and Norms for Stock files - so user can see output of auto bta ffor stock files
+
+(3. Specialise)
+* Well technically on the specialise page you edit the annotations :-).  Maybe the annotated source code should be moved to Annotate?, and have the controls and annotated code on same page.  Default for page load could either be unannotated or simple bta.  It should also be possible to run the bta etc from an annotated program somehow (so the user can manually annotate bits but let auto bta do rest)
+* linenumbers for sourcecode? (useful for tutorials - i.e call on line 2...)
+
+(4. Result)
+Should be able to download all files?
+- PL file
+- Ann File
+- GX File
+- Specialised File
+- Perhaps a tar.gz package? (Could possibly allow loading of same package?)
+
+DONE
+~~~~
+
+Add entry box for user to type/paste in program
+Add header.php and footer.php - used for all pages
+stock goals
+Use new logen (cogen3) to do specialisation.
+Better error handling for malformed input.
+Check if annotations are uploaded before spec and edit filters.
+save annotations and pl file from each page (partially done)
+manual filters
+manual annotation

@@ -1,0 +1,4 @@
+goal=solve_file('/home/sjc02r/cvs_root/cogen2/examples/bta_benchmarks/global/convert.pl.ann')
+goal=solve_file('/home/sjc02r/cvs_root/cogen2/examples/bta_benchmarks/match.pl.ann')
+goal=solve_file('/home/sjc02r/cvs_root/cogen2/examples/bta_benchmarks/global/match.pl.ann')
+norm=list

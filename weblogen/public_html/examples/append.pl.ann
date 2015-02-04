@@ -1,0 +1,5 @@
+logen(append/3,append([],A,A)).
+logen(append/3,append([B|C],A,[B|D])) :-
+        logen(memo,append(C,A,D)).
+:- filter
+        append(dynamic,dynamic,dynamic).

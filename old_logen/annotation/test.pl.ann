@@ -1,0 +1,6 @@
+:- module('test',[]).
+logen(app, app([A],[B],C)) :-
+        logen(unfold, memo_me).
+logen(error, error(a,a)).
+logen(app, app([X|Xs],Y,[X|Zs])) :-
+        resif(hide_nf(logen(unfold,cond)), hide_nf(logen(unfold,then)), hide_nf(logen(unfold,else))).

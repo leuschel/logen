@@ -1,0 +1,46 @@
+/*  --------------------  */
+/*  GENERATING EXTENSION  */
+/*  --------------------  */
+
+mortgage_m(B,C,D,E,F,G) :- 
+  ((
+    find_pattern(mortgage(B,C,D,E,F),G)
+   ) -> (
+    true
+   ) ; (
+    ':'(cogen,generalise(mortgage(B,C,D,E,F),H)),
+    ':'(cogen,add_extra_argument([95,117],H,I,J)),
+    insert_pattern(H,K),
+    findall(L, (
+      J,
+      L = (clause(K,I))),M),
+  %  pp(M),
+	 printCLP(M),
+	 
+	 
+    find_pattern(mortgage(B,C,D,E,F),G)
+  )).
+mortgage_cm(N,O,P,Q,R,S) :- 
+  ((
+    find_clp_pattern(mortgage(N,O,P,Q,R),S)
+   ) -> (
+    true
+   ) ; (
+    ':'(cogen,generalise(mortgage(N,O,P,Q,R),T)),
+    ':'(cogen,add_extra_argument([95,117],T,U,V)),
+    insert_clp_pattern(T,W),
+    findall(X, (
+      V,
+      X = (clause(W,U))),Y),
+    printCLP(Y),
+    find_clp_pattern(mortgage(N,O,P,Q,R),S)
+  )).
+mortgage_u(B,C,D,E,F,G) :- 
+  constraintTest(G,[C = 0,F = B]).
+mortgage_u(H,I,J,K,L,','(M,N)) :- 
+  constraintTest(M,[H >= 0,I >= 1,O = (I - 1),P = ((H + (H * J)) - K)]),
+  mortgage_cm(P,O,J,K,L,N).
+
+/* no facts generated !! */
+
+/* GX file Generated in 10 ms */
