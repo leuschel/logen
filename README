@@ -1,22 +1,24 @@
-To check out:
-svn co svn+ssh://asap@134.99.112.234/home/mal/svnrootfsfs/logen/trunk logen
+LOGEN is an offline partial evaluation system for Prolog written using the so called "cogen approach".
+Basically, the cogen is a system which: based upon an annotated version of the program to be specialised produces a specialised partial evaluator for that program.
+This partial evaluator is called a generating extension the generating extension can be used to specialise the program in a very efficient manner.
 
 Once downloaded you can test the installation with:
-make test
+ make cogen
+ make test
 
-Should finish without errors.
+This should finish without errors.
 
 To compile:
-make cogen
+ make cogen
 
 To specialise:
-./cogen PlFile "goal(A,B)"
+ ./cogen PlFile "goal(A,B)"
 
 For help:
-./cogen --help
+ ./cogen --help
 
 Output gx files should be standalone ciao executables.  So after
 specialising match.pl, match.pl.gx.cpx should be the executable.
-./match.pl.gx.cpx --help
-./match.pl.gx.cpx "match([a,a,b],R)"
+ ./match.pl.gx.cpx --help
+ ./match.pl.gx.cpx "match([a,a,b],R)"
 
