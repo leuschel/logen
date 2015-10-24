@@ -39,11 +39,12 @@ print_gx_module_decl(S) :-
 /* ------- */
 
 cogen(Options) :-
-	add_message(cogen,2, "Starting cogen... (Cogen/1)", []),
+	add_message(cogen,2, "Starting cogen... (cogen/1)", []),
 	add_message(cogen,2, "Options: ~w", [Options]),
 	clear_cogen_data, reset_gen_clause_nr,
 	setup_relative_directory, 
 	pp_mnf(process_options(Options)),
+	add_message(cogen,2, "Importing files", []),
 	import_file_into_gx('runtime_checks.pl',[mnf/1,pp_mnf/1,add_postfix_to_pred/3]),
 	import_file_into_gx('tools/error_manager.pl',all),
 	import_file_into_gx('tools/ciao_tools.pl',[is_list_skel/1]),
@@ -136,10 +137,11 @@ on_exception(Ex, Goal, Hand) :-
 
 set_cogen_relative_dir(Dir) :-
    retractall(cogen3_relative_directory(_)),
+   add_message(cogen,2,"Setting LOGENDIR: ~w~n",Dir),
    assert(cogen3_relative_directory(Dir)).
 
 setup_relative_directory :-
-   (cogen3_relative_directory(_) -> fail ; true),
+   \+ cogen3_relative_directory(_),
    %retractall(cogen3_relative_directory(_)),
    !,
    on_exception(_Exc,absolute_file_name('cogen.pl',_File),
@@ -155,10 +157,9 @@ setup_relative_directory :-
         )
      )
     ).
-
 setup_relative_directory.    
 
- open_in_logen_source(FileName,Mode,Stream) :-
+open_in_logen_source(FileName,Mode,Stream) :-
     (cogen3_relative_directory(Dir) 
       -> (%atom_concat(Dir,FileName,AbsFile),
 	     absolute_file_name(FileName, '','', Dir,AbsFile, _,_),
@@ -166,7 +167,8 @@ setup_relative_directory.
                      (add_error(open_in_logen_source,"Cannot open file in directory: ~w",[(AbsFile,Exc)]),fail))
           )
       ;  on_exception(Exc2,open(FileName,Mode,Stream),
-                     (add_error(open_in_logen_source,"Cannot open file: ~w ",[(FileName,Exc2)]),fail))
+                     (add_error(open_in_logen_source,"Cannot open Logen source file (use -logen_dir option): ~w ",
+                       [(FileName,Exc2)]),fail))
     ).
 
 
@@ -222,7 +224,8 @@ process_option(Option) :-
 import_file_into_gx(File,Preds) :-
     pp_mnf(import_file_into_gx2(File,Preds)).
     
-import_file_into_gx2_pre(File,Preds) :- ground(File), ground(Preds), (Preds=all ; list(Preds)).
+import_file_into_gx2_pre(File,Preds) :- 
+    ground(File), ground(Preds), (Preds=all ; list(Preds)).
 import_file_into_gx2_post(_,_).
 
 import_file_into_gx2(File,Preds) :-

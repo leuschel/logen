@@ -41,14 +41,18 @@ main(Args) :-
 	      halt(1))).
 
 %% Simple bta entry point
-
+:- use_module(library(system),[current_env/2]). % corresponds to environ/2 in SICStus
 go(ArgV) :-
 	get_options(ArgV,Opts,_),
 	(member(verbose_mode(Level),Opts)
 	  -> set_verbosity_level(Level,_)
 	  ;  set_verbosity_level(1,_) %% default print
 	),
-	(member(logen_dir(Dir),Opts) -> set_cogen_relative_dir(Dir); true),
+	(member(logen_dir(Dir),Opts) -> set_cogen_relative_dir(Dir)
+	 ; current_env('LOGENDIR',Dir) -> set_cogen_relative_dir(Dir)
+	 ; current_env('LOGEN_DIR',Dir) -> set_cogen_relative_dir(Dir)
+	 ; current_env('LOGEN_HOME',Dir) -> set_cogen_relative_dir(Dir)
+	 ; add_message(ciao_entry,2,"No -logen_dir D option or LOGENDIR environment set",[])),
 	fail.
   
 go(ArgV) :-
@@ -336,7 +340,7 @@ show_stream(Stream) :- get_char(Stream,Char),
     ).
 
 
-
+%:- set_cogen_relative_dir(Dir).
 
 %% Needs to be mapped back to cogen..
 %build_specialization_entry_call(Query,_RenamedQuery,Call).
