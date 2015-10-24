@@ -9,13 +9,16 @@ Once downloaded you can test the installation with:
 This should finish without errors.
 
 To compile:
- make cogen
+ make
 
 To specialise:
- ./cogen PlFile "goal(A,B)"
+ bin/logen PlFile "goal(A,B)"
+You should also set the LOGEN_DIR (or LOGEN_HOME) environment variable to point to this
+directory (i.e., the one containing this README file). Alternatively, you can pass
+the --logen_dir D switch to logen.
 
 For help:
- ./cogen --help
+ bin/logen --help
 
 Output gx files should be standalone ciao executables.  So after
 specialising match.pl, match.pl.gx.cpx should be the executable.
