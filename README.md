@@ -5,27 +5,27 @@ This partial evaluator is called a generating extension the generating extension
 
 # Building and running logen
 Once downloaded you can test the installation with:
- make cogen
- make test
+    make cogen
+    make test
 
 This should finish without errors.
 
 To compile:
- make
+    make
 
 To specialise:
- bin/logen PlFile "goal(A,B)"
+    bin/logen PlFile "goal(A,B)"
 You should also set the LOGEN_DIR (or LOGEN_HOME) environment variable to point to this
 directory (i.e., the one containing this README file). Alternatively, you can pass
 the --logen_dir D switch to logen.
 
 For help:
- bin/logen --help
+    bin/logen --help
 
 Output gx files should be standalone ciao executables.  So after
 specialising match.pl, match.pl.gx.cpx should be the executable.
- ./match.pl.gx.cpx --help
- ./match.pl.gx.cpx "match([a,a,b],R)"
+    ./match.pl.gx.cpx --help
+    ./match.pl.gx.cpx "match([a,a,b],R)"
 
 Logen requires annotation files (ending with .ann) for every Prolog source file that has to be specialised.
 To generate annotation files you may want to use the binding-time analysis provided in another project: https://github.com/leuschel/logen-bta.
@@ -33,8 +33,8 @@ You can use the -w switch for logen to supervise specialisation and provide bett
 
 # Usage
 
-logen [Options] File.pl ["Atom."]
-  Possible Options are:
+    logen [Options] File.pl ["Atom."]
+      Possible Options are:
       --help: Prints this message
       -w: watch mode (supervise specialization); equivalent to -wb -wu -wm -wc
       -W: watch mode; like -w option but halt at first alarm (-w -w1)
