@@ -5,25 +5,31 @@ This partial evaluator is called a generating extension the generating extension
 
 # Building and running logen
 Once downloaded you can test the installation with:
+
     make cogen
     make test
 
 This should finish without errors.
 
 To compile:
+
     make
 
 To specialise:
+
     bin/logen PlFile "goal(A,B)"
+
 You should also set the LOGEN_DIR (or LOGEN_HOME) environment variable to point to this
 directory (i.e., the one containing this README file). Alternatively, you can pass
 the --logen_dir D switch to logen.
 
 For help:
+
     bin/logen --help
 
 Output gx files should be standalone ciao executables.  So after
 specialising match.pl, match.pl.gx.cpx should be the executable.
+
     ./match.pl.gx.cpx --help
     ./match.pl.gx.cpx "match([a,a,b],R)"
 
