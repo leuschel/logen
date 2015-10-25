@@ -4,3 +4,4 @@ auto-tests/*.spec
 auto-tests/*.orig
 auto-tests/*.cpx
 auto-tests/*.gx
+bin/logen

@@ -25,3 +25,5 @@ specialising match.pl, match.pl.gx.cpx should be the executable.
  ./match.pl.gx.cpx --help
  ./match.pl.gx.cpx "match([a,a,b],R)"
 
+Logen requires annotation files (ending with .ann) for every Prolog source file that has to be specialised.
+To generate annotation files you may want to use the binding-time analysis provided in another project: https://github.com/leuschel/logen.
