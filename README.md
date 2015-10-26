@@ -37,6 +37,41 @@ Logen requires annotation files (ending with .ann) for every Prolog source file 
 To generate annotation files you may want to use the binding-time analysis provided in another project: https://github.com/leuschel/logen-bta.
 You can use the -w switch for logen to supervise specialisation and provide better error feedback.
 
+# Research
+This system is based on research presented in
+
+http://stups.hhu.de/w/Special:Publication/LeJoVaBr04_20
+Michael Leuschel, Jesper Jørgensen, Wim Vanhoof, Maurice Bruynooghe
+Offline Specialisation in Prolog Using a Hand-Written Compiler Generator
+TPLP, 4(1-2): 139-191, 2004.
+
+http://stups.hhu.de/w/Special:Publication/JoLe96_82
+Jesper Jørgensen, Michael Leuschel
+Efficiently Generating Efficient Generating Extensions in Prolog
+In Dagstuhl Seminar on Partial Evaluation, volume 1110 of Lecture Notes in Computer Science, Springer-Verlag, 1996.
+
+http://stups.hhu.de/w/Special:Publication/CrGaLeHe04_15
+Stephen Craig, John Gallagher, Michael Leuschel, Kim S. Henriksen
+Fully Automatic Binding Time Analysis for Prolog [PDF] [Bibtex] [Old] [Upload] [Single Page]
+In LOPSTR, volume 3573 of Lecture Notes in Computer Science, Springer-Verlag, 2004.
+
+http://stups.hhu.de/w/Special:Publication/LeElVaCrFo06_140
+Michael Leuschel, Daniel Elphick, Mauricio Varea, Stephen Craig, Marc Fontaine
+The Ecce and Logen Partial Evaluators and their Web Interfaces
+In Proceedings PEPM 06, IBM Press, 2006.
+
+The following articles discuss using Logen:
+
+http://stups.hhu.de/w/Special:Publication/LeBr02_38
+Michael Leuschel, Maurice Bruynooghe
+Logic program specialisation through partial deduction: Control Issues
+Theory and Practice of Logic Programming, 2(4-5): 461-515, 2002.
+
+http://stups.hhu.de/w/Special:Publication/LeCrBrVa04_19
+Michael Leuschel, Stephen Craig, Maurice Bruynooghe, Wim Vanhoof
+Specializing Interpreters using Offline Partial Deduction
+In Program Development in Computational Logic, volume 3049 of Lecture Notes in Computer Science, Springer-Verlag, 2004.
+
 # Usage
 
     logen [Options] File.pl ["Atom."]
