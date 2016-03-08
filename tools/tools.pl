@@ -1,3 +1,5 @@
+% (c) 1996-2016 Michael Leuschel
+% see https://github.com/leuschel/logen for more details
 :- module(tools, [rev/3, member_nr/3, exact_member/2, exact_member_lookup/4,
                   remove/3, list_intersection/3, list_difference/3,
                   string_concatenate/3, is_upper_case_name/1,

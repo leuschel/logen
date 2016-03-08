@@ -1,3 +1,7 @@
+% (c) 1996-2016 Michael Leuschel
+% the original logen was developed by Jesper Jorgensen and Michael Leuschel
+% parts of the code contains contributions by Armin Rigo
+% see https://github.com/leuschel/logen for more details
 :- module(unit_test,[unit_test/1, unit_test_all/1]).
 
 % first tentative version at a unit testing package.

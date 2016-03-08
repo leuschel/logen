@@ -1,3 +1,7 @@
+% (c) 1996-2016 Michael Leuschel
+% the original logen was developed by Jesper Jorgensen and Michael Leuschel
+% parts of the code contains contributions by Armin Rigo
+% see https://github.com/leuschel/logen for more details
 
 :- module(runtime_checks,[mnf/1, pp_mnf/1, pp_call/1]).
 

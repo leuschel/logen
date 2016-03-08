@@ -72,6 +72,11 @@ Michael Leuschel, Stephen Craig, Maurice Bruynooghe, Wim Vanhoof
 Specializing Interpreters using Offline Partial Deduction
 In Program Development in Computational Logic, volume 3049 of Lecture Notes in Computer Science, Springer-Verlag, 2004.
 
+The initial version of Logen was developed by Jesper Jorgensen and Michael Leuschel.
+The current version also contains some additions by Armin Rigo for module support.
+Within the ASAP project several contributions from UPM were made so that logen could run on Ciao Prolog.
+The Weblogen frontend was developed mainly by Dan Elphick.
+
 # Usage
 
     logen [Options] File.pl ["Atom."]

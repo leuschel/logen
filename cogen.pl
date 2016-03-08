@@ -1,3 +1,8 @@
+% (c) 1996-2016 Michael Leuschel
+% the original logen was developed by Jesper Jorgensen and Michael Leuschel
+% parts of the code contains contributions by Armin Rigo
+% see https://github.com/leuschel/logen for more details
+
 :- module(cogen, [cogen_unittest/0, cogen_run/2, cogen_run/3,
   build_specialization_entry_call/4,flatten/2, set_cogen_relative_dir/1,
    check_specialisation_query/1]).

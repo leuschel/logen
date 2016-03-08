@@ -1,4 +1,5 @@
- /* file: self-check.pro */
+% (c) 1996-2016 Michael Leuschel
+% see https://github.com/leuschel/logen for more details
 
 
 :- module(self_check,

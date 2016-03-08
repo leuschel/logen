@@ -1,3 +1,5 @@
+% (c) 2005-2016 Michael Leuschel, Armin Rigo
+% see https://github.com/leuschel/logen for more details
 :- module(annmeta,[annmeta/5, 
 				   declmeta/3,
 				   cogenmeta/8,

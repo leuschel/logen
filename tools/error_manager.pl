@@ -1,3 +1,6 @@
+% (c) 1996-2016 Michael Leuschel
+% see https://github.com/leuschel/logen for more details
+
  :- module(error_manager,[reset_errors/0, reset_errors_from_source/1,
              add_error/3,
              add_message/4,

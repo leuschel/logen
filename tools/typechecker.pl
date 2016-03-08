@@ -1,3 +1,5 @@
+% (c) 1996-2016 Michael Leuschel
+% see https://github.com/leuschel/logen for more details
 
 :- module(typechecker,[type_check/2, term_is_of_type/2, term_is_of_type/3,
    type/1, check_types/0]).

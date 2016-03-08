@@ -1,3 +1,8 @@
+% (c) 1996-2016 Michael Leuschel
+% the original logen was developed by Jesper Jorgensen and Michael Leuschel
+% parts of the code contains contributions by Armin Rigo
+% see https://github.com/leuschel/logen for more details
+
 %%% This code will be copied into gx files for now
 :- dynamic memo_table/4.
 :- dynamic multiple_use/2.

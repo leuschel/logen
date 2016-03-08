@@ -1,3 +1,5 @@
+% (c) 1996-2016 Michael Leuschel
+% see https://github.com/leuschel/logen for more details
 
 :- use_module(library(strings),[get_line/2]).
 
