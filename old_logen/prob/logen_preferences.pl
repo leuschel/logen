@@ -208,7 +208,7 @@ is_of_type(X,ListOfCsts,X) :- ListOfCsts=[_|_], member(X,ListOfCsts).
 is_of_type(X,dot_shape,X) :- is_of_type(X,[triangle,ellipse,box,diamond,hexagon,octagon,house,
                                          invtriangle,invhouse,invtrapez,doubleoctagon]).
                                          
-is_of_type(X,rgb_color) :-
+is_of_type(X,rgb_color,X) :-
    member(X,[red,green,blue,yellow,black,white,gray,brown,violet,darkred,tomato,darkblue,
              darkgray,darkviolet,darkslateblue,lightblue])
    ;
