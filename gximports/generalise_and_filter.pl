@@ -177,5 +177,5 @@ add_id(H,Sym,NH) :-
 	append(H1S,SymS,NHS),
 	name(NH,NHS).
 
-same_length([],[]).
-same_length([_|T],[_|T2]) :- same_length(T,T2).
+%same_length([],[]).
+%same_length([_|T],[_|T2]) :- same_length(T,T2).
