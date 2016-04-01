@@ -10,7 +10,7 @@
 
 :- use_module('bta/simple_bta.pl').
 
-:- use_module('old_logen/logen_messages').
+:- use_module('tools/logen_messages').
 
 %:- use_module(library(pathnames),[path_basename/2]).
 %---
