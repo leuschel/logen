@@ -16,7 +16,7 @@
 /* mnf/1: calls a goal and checks that the goal does not fail */
 /* ---------------------------------------------------------- */
 
-:- meta_predicate mnf(goal).
+:- meta_predicate mnf(0).
 mnf(X) :- if(X,true,(add_error(runtime_checks,"Call failed: ~w~n",[X]),fail)).
 
 
@@ -28,7 +28,7 @@ mnf(X) :- if(X,true,(add_error(runtime_checks,"Call failed: ~w~n",[X]),fail)).
 /* if you check predicate P/N then you need P_pre/N and P_post/N
    to be defined */
 
-:- meta_predicate pp_mnf(goal).
+:- meta_predicate pp_mnf(0).
 
 pp_mnf(X) :- %print(pp_mnf(X)),nl,
     add_postfix_to_pred(X,'_pre',Pre),
@@ -46,7 +46,7 @@ pp_mnf(X) :- %print(pp_mnf(X)),nl,
 /* if you check predicate P/N then you need P_pre/N and P_post/N
    to be defined */
 
-:- meta_predicate pp_mnf(goal).
+:- meta_predicate pp_mnf(0).
 
 pp_call(X) :- %print(pp_mnf(X)),nl,
     add_postfix_to_pred(X,'_pre',Pre),
