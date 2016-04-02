@@ -387,7 +387,7 @@ annotation_args(findall(V,A,R),[A],[V,R]).
 annotation_args(true,[],[]).
 
 
-:- use_module('tools/ciao_tools.pl',[is_list_skel/1]).
+:- use_module('tools/tools.pl',[is_list_skel/1]).
 
 semi_call_primitive(Call, 
   (Cond -> (Call,SpecCode=true) ; SpecCode=Call),

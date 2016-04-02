@@ -12,9 +12,8 @@
 
 /* ===================================================== */
 
-%:- use_module(tools,'tools/tools.pl',[]).
 %:- use_module(self_check,'tools/self_check.pl',[assert_must_succeed/1,assert_must_fail/1]).
-%:- use_module('ciao_tools.pl').
+
 
 /* ===================================================== */
 

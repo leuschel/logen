@@ -14,7 +14,12 @@
 
 :- use_module(library(lists)).
 
-:- use_module('tools/ciao_tools.pl',[string_concatenate/3,environ/2,same_length/2]).
+:- use_module('tools/tools.pl',[string_concatenate/3,same_len/2]).
+:- if(current_prolog_flag(dialect, ciao)).
+:- use_module('tools/ciao_tools.pl',[environ/2]).
+:- else.
+:- use_module('tools/sics_tools.pl',[environ/2]).
+:- endif.
 
 %:- use_module('tools/self_check.pl',
 % [assert_must_succeed/1,assert_must_fail/1,mnf/1,perform_self_check/0]).
@@ -52,7 +57,7 @@ cogen(Options) :-
 	add_message(cogen,2, "Importing files", []),
 	import_file_into_gx('runtime_checks.pl',[mnf/1,pp_mnf/1,add_postfix_to_pred/3]),
 	import_file_into_gx('tools/error_manager.pl',all),
-	import_file_into_gx('tools/ciao_tools.pl',[is_list_skel/1]),
+	import_file_into_gx('tools/tools.pl',[is_list_skel/1]),
 	import_file_into_gx('op_decl.pl',all),
 	import_file_into_gx('gxmodules.pl',all),
 	import_file_into_gx('flatten.pl',all),
@@ -492,7 +497,7 @@ request_clause(clause(Head,Body)) :-
 	member(pred(Pred,Arity),Preds), functor(Call,Pred,Arity),
 	get_current_module(This),
 	Call =.. [Func|Args],  %% create new function call
-	same_length(Args,NewArgs),
+	same_len(Args,NewArgs),
 	NewCall =.. [Func|NewArgs],
 	logendata_varname(LOGENDATA),
 	build_request_call(NewCall, Requestor, ResCall,LOGENDATA, Head),
@@ -609,7 +614,7 @@ request_clause(clause(Head,Body)) :-
 
 new_call(Call, NCall) :-
 	Call =.. [F|Args],
-	same_length(Args, NArgs),
+	same_len(Args, NArgs),
 	NCall =.. [F|NArgs].
 
 

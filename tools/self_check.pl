@@ -18,7 +18,7 @@
 :- use_module(gensym).
 :- use_module(debug).
 %:- use_module(tools).   
-:- use_module('ciao_tools.pl').
+:- use_module('tools.pl').
 
 :- use_module(typechecker).
 :- use_module(error_manager).

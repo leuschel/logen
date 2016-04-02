@@ -6,7 +6,13 @@
 :- use_module('tools/error_manager.pl', [add_error/3, add_message/4,add_exception/4,
              count_errors_occured/1,set_verbosity_level/2]).
 :- use_module('cogen.pl', [cogen_run/3, set_cogen_relative_dir/1, check_specialisation_query/1]).
-:- use_module('tools/ciao_tools.pl', _).
+
+:- use_module('tools/tools.pl').
+:- if(current_prolog_flag(dialect, ciao)).
+:- use_module('tools/ciao_tools.pl').
+:- else.
+:- use_module('tools/sics_tools.pl').
+:- endif.
 
 :- use_module('bta/simple_bta.pl').
 

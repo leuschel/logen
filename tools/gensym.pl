@@ -7,7 +7,7 @@
 :- module(gensym,
     [gensym/2, gennum/1, reset_gennum/1]).
 
-:- use_module('ciao_tools.pl', [string_concatenate/3]).
+:- use_module('tools.pl', [string_concatenate/3]).
 
 /* ===================================================== */
 
