@@ -150,6 +150,14 @@ set_cogen_relative_dir(Dir) :-
    add_message(cogen,2,"Setting LOGENDIR: ~w~n",Dir),
    assert(cogen3_relative_directory(Dir)).
 
+:- if(current_prolog_flag(dialect,sicstus)).
+:- use_module(library(file_systems),[absolute_file_name/2]).
+absolute_file_name(FileName, '','', Dir,AbsFile, _,_) :- 
+    string_concatenate('/',FileName,F2),
+    string_concatenate(Dir,F2,RelFile),
+    absolute_file_name(RelFile,AbsFile).
+:- endif.
+
 setup_relative_directory :-
    \+ cogen3_relative_directory(_),
    %retractall(cogen3_relative_directory(_)),
@@ -182,7 +190,8 @@ open_in_logen_source(FileName,Mode,Stream) :-
     ).
 
 
-process_options_pre(X) :- ground(X), list(X).
+:- use_module('tools/tools.pl',[is_list_skel/1]).
+process_options_pre(X) :- ground(X), tools:is_list_skel(X).
 process_options_post(_).
 
 process_options([]).
@@ -235,7 +244,7 @@ import_file_into_gx(File,Preds) :-
     pp_mnf(import_file_into_gx2(File,Preds)).
     
 import_file_into_gx2_pre(File,Preds) :- 
-    ground(File), ground(Preds), (Preds=all ; list(Preds)).
+    ground(File), ground(Preds), (Preds=all ; tools:is_list_skel(Preds)).
 import_file_into_gx2_post(_,_).
 
 import_file_into_gx2(File,Preds) :-

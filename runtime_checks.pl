@@ -65,6 +65,8 @@ pp_call(X) :- %print(pp_mnf(X)),nl,
 
 add_postfix_to_pred('$:'(Call),Extension,'$:'(Post)) :- !,
   add_postfix_to_pred(Call,Extension,Post).
+add_postfix_to_pred(M:Call,Extension,M:Post) :- !,
+  add_postfix_to_pred(Call,Extension,Post).
 add_postfix_to_pred(Call,Extension,PostCall) :- 
   Call =.. [F|Args],
   atom_concat(F,Extension,PostF),

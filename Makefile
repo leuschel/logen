@@ -14,6 +14,9 @@ logen_linux:  *.pl gximports/*.pl bta/*.pl
 logen_win:  *.pl gximports/*.pl bta/*.pl
 	ciaoc -S -o cli_binaries/Windows/logen ciao_entry.pl
 
+sics_test:
+	rlwrap sicstus -l ciao_entry.pl --goal "go_cli." -- -vv tests/match.pl  "match([a,a,b],L)"
+
 
 clean:
 	find . -name "*.po"  -print -exec rm {} \;

@@ -1,4 +1,4 @@
-:- module(ciao_entry,[main/1]).
+:- module(ciao_entry,[main/1, go_cli/0]).
 
 /* Main entry file for Logen */
 /* use ciaoc -S ciao_entry.pl  to create a stand-alone version of Logen */
@@ -41,6 +41,13 @@ path_basename_(Path, Base) :-
 /* ------------------- */
 /* main/1: ENTRY POINT */
 /* ------------------- */
+:- if(current_prolog_flag(dialect, ciao)).
+go_cli :- main([]). % just to make compiler happy; will not be called; ArgV transferred differently in Ciao
+:- else.
+go_cli :-
+    prolog_flag(argv,ArgV),
+    main(ArgV).
+:- endif.
 
 main(Args) :-
 	catch(go(Args),E,
