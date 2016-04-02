@@ -6,12 +6,12 @@ This partial evaluator is called a generating extension the generating extension
 # Building and running logen
 Once downloaded you can test the installation with:
 
-    make cogen
+    make bin/logen
     make test
 
 This should finish without errors.
-
-To compile:
+The first line make bin/logen produces an executable version of logen in the bin folder.
+You can also simply type this to compile logen:
 
     make
 
@@ -134,25 +134,25 @@ where Abody has the grammar:
 
 Abody ::=  
     true |
-	(Abody,Abody) |   # conjunction
-	logen(call,BuiltinCall) |
-	logen(rescall,BuiltinCall) |
-	logen(semicall,BuiltinCall) |
-	logen(unfold,UserCall) |
-	logen(memo,UserCall) |
-	if(Abody,Abody,Abody) |  # some restrictions apply
-	resif(Abody,Abody,Abody) | # some restrictions apply
-	(Abody ; Abody) |
-	resdisj(Abody,Abody) |
-	not(Abody) | # some restrictions apply
-	resnot(Abody) | # some restrictions apply|
-	findall(Term,Abody,Term) | # some restrictions apply
-	resfindall(Term,Abody,Term) | # some restrictions apply
-	reswhen(Cond,Abody) | # some restrictions apply
-	when(Cond,Abody) | # some restrictions apply
-	reswhen(Cond,Abody) | # some restrictions apply
-	hide_nf(Abody) |
-	hide(Abody)
+    (Abody,Abody) |   # conjunction
+    logen(call,BuiltinCall) |
+    logen(rescall,BuiltinCall) |
+    logen(semicall,BuiltinCall) |
+    logen(unfold,UserCall) |
+    logen(memo,UserCall) |
+    if(Abody,Abody,Abody) |  # some restrictions apply
+    resif(Abody,Abody,Abody) | # some restrictions apply
+    (Abody ; Abody) |
+    resdisj(Abody,Abody) |
+    not(Abody) | # some restrictions apply
+    resnot(Abody) | # some restrictions apply|
+    findall(Term,Abody,Term) | # some restrictions apply
+    resfindall(Term,Abody,Term) | # some restrictions apply
+    reswhen(Cond,Abody) | # some restrictions apply
+    when(Cond,Abody) | # some restrictions apply
+    reswhen(Cond,Abody) | # some restrictions apply
+    hide_nf(Abody) |
+    hide(Abody)
 
 Additional annotations that are supported are:
      :- residual p/n.
