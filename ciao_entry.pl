@@ -24,15 +24,16 @@
 :- use_module(library(lists), [append/3, reverse/2]).
 path_basename(Path, Base) :-
 	atom_codes(Path, PathS),
-	path_basename_(PathS, _, BaseS),
+	path_basename_(PathS, BaseS),
 	atom_codes(Base, BaseS).
 
-path_basename_(Path, _, Base) :-
+path_basename_(Path, Base) :-
 	reverse(Path, R),
-	( append(BaseR, "/"||_, R) ->
+	( append(BaseR, [47|_], R) ->  % 47 is /  % append(BaseR, "/"||_, R) ->  % syntax error in SICStus
 	    reverse(BaseR, Base)
 	; Base = Path
 	).
+
 %---
 
 :- include(runtime_checks_perform).
@@ -47,7 +48,13 @@ main(Args) :-
 	      halt(1))).
 
 %% Simple bta entry point
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(system),[current_env/2]). % corresponds to environ/2 in SICStus
+:- else.
+:- use_module('tools/sics_tools.pl',[environ/2]).
+current_env(Key,T) :- environ(Key,T).
+:- endif.
+
 go(ArgV) :-
 	get_options(ArgV,Opts,_),
 	(member(verbose_mode(Level),Opts)

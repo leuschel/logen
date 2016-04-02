@@ -1,6 +1,8 @@
 %:- module(reportgen_xml,[reportgen/2]).
 
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(strings)).
+:- endif.
 
 reportgen(S, Tag) :-
 	% delimit the XML with << and >> on new lines. >> is used because it can
@@ -55,6 +57,7 @@ my_html_quoted_char(0'&) --> !, "&amp;".
 my_html_quoted_char(0'") --> !, "&quot;".
 my_html_quoted_char(C)   --> [C].
 
+:- if(current_prolog_flag(dialect, ciao)).
 write_to_chars(Term, String) :-
         copy_term(Term, Copy),
         prettyvars(Copy),
@@ -66,3 +69,8 @@ write_to_chars(Term, String) :-
         get_line(TmpIn, String),
         close(TmpIn),
         delete_file(TmpFile).
+:- else.
+:- use_module(library(codesio),         [write_term_to_codes/3]).
+write_to_chars(Term, String) :-
+   write_term_to_codes(Term,String,[quoted(true)]). %,numbervars(true)
+:- endif.

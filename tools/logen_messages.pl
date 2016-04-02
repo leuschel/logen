@@ -6,7 +6,10 @@
 	    print_indentation/0,
 	    increase_indentation/0, decrease_indentation/0]).
 
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(messages)).
+:- endif.
+
 :- dynamic indent_level/1.
 
 indent_level(0).

@@ -786,8 +786,11 @@ cogen_test(vanilla, Clauses) :-
 
 :- pp_mnf(cogen_run/3).
 
+
+:- if(current_prolog_flag(dialect, ciao)).
 :- pre cogen_run(A,F,O) : (ground(A), atomic(A), ground(F), atomic(F), ground(O)).
 :- post cogen_run(_,_,_) : true.
+:- endif.
 
 cogen_run(Ann,Gx) :-
 	cogen_run(Ann,Gx,[]).

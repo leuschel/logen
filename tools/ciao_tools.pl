@@ -17,6 +17,7 @@
 :- use_module(library(strings)).
 
 
+%:- use_module(library(system),[current_env/2]). % corresponds to environ/2 in SICStus
 environ(Key,Value) :-
 	getenvstr(Key,Value).
 
