@@ -3,7 +3,7 @@
 
 
 
-
+LOGEN=../bin/logen
 
 Testname=$1
 Orig=$2
@@ -23,9 +23,9 @@ echo -n Running test case [$Testname]...
 if [ -n "$VERBOSE_LOGEN_TEST" ]
 then
   echo -n $Orig...
-  ../cogen $Orig -c -o $Testname.gx -vv -d"$@"
+  $LOGEN $Orig -c -o $Testname.gx -vv -d"$@"
 else
-  ../cogen --logen_dir ../ $Orig -c -o $Testname.gx -s "$@"
+  $LOGEN --logen_dir ../ $Orig -c -o $Testname.gx -s "$@"
 fi
 
 if [ $? != 0 ] 
