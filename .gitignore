@@ -5,3 +5,13 @@ auto-tests/*.orig
 auto-tests/*.cpx
 auto-tests/*.gx
 bin/logen
+auto-tests/transpose.spec.pl
+auto-tests/transpose.pl
+auto-tests/multiple_filters.spec.pl
+auto-tests/multiple_filters.pl
+auto-tests/match.spec.pl
+auto-tests/match.pl
+auto-tests/lookup.spec.pl
+auto-tests/lookup.pl
+auto-tests/append.spec.pl
+auto-tests/append.pl
