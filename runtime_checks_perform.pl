@@ -9,8 +9,12 @@
 :- op(500,yfx,unit_test).
 
 :- use_module('tools/error_manager.pl', [add_error/3]).
-:- load_compilation_module('runtime_checks_perform_expand').
-%:- load_compilation_module('runtime_checks_ignore_expand').
 
+:- if(current_prolog_flag(dialect, ciao)).
+:- load_compilation_module('runtime_checks_perform_expand').
+%:- load_compilation_module('runtime_checks_ignore_expand')
 :- add_sentence_trans(runtime_checks_perform_expand:ignore_mnf/3,10).
+:- else.
+:- use_module(runtime_checks).
+:- endif.
 
