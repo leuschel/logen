@@ -108,6 +108,7 @@ The Weblogen frontend was developed mainly by Dan Elphick.
       --simple_bta ARG1 ARG2 ARG3: Run simple bta: --simple_bta unfold/memo PLfile AnnFile
       -d: debug mode for GX file
       -d2: even more debugging messages in GX file
+      --version: print logen version info
       --single_process: run cogen and gx in a single process - faster
       --xml: generate (some) diagnostic messages in xml
 

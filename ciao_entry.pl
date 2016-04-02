@@ -1,4 +1,4 @@
-:- module(ciao_entry,_).
+:- module(ciao_entry,[main/1]).
 
 /* Main entry file for Logen */
 /* use ciaoc -S ciao_entry.pl  to create a stand-alone version of Logen */
@@ -59,6 +59,9 @@ go(ArgV) :-
 	 ; current_env('LOGEN_DIR',Dir) -> set_cogen_relative_dir(Dir)
 	 ; current_env('LOGEN_HOME',Dir) -> set_cogen_relative_dir(Dir)
 	 ; add_message(ciao_entry,2,"No -logen_dir D option or LOGENDIR environment set",[])),
+	(member(print_version,Opts)
+	 -> format('Logen Version Information~nBuild Date: April 2nd, 2016~n',[])
+	  ; true),
 	fail.
   
 go(ArgV) :-
@@ -77,15 +80,11 @@ go(ArgV) :-
 	(member(help,Opts) -> fail; true),
 	generate_gx_file(FileName,Opts,GXFile),
 	
-	(member(cogen_only, Opts) ->
-	 true
+	(member(cogen_only, Opts) -> true
 	;
-	   ( (AX = [Query|RestArgv] ->	     
-	     get_adapted_query(Query,AQ,RestArgv)
-	    ;
-	     (print(user, 'Query to specialise =>'), 
-	      read(AQ)
-             )
+	   ( (AX = [Query|RestArgv]
+	      -> get_adapted_query(Query,AQ,RestArgv)
+	       ; print(user, 'Query to specialise =>'), read(AQ)
          ),
          check_specialisation_query(AQ),
 	     (delete(Opts,single_process,ROpts1) ->
@@ -97,8 +96,8 @@ go(ArgV) :-
     ),
 	count_errors_occured(NrOfErrors),
 	(NrOfErrors>0
-	 -> (nl,print('*** Warning: '), print(NrOfErrors), print(' Error(s) occurred!'),nl,
-	     halt(1))
+	 -> nl,print('*** Warning: '), print(NrOfErrors), print(' Error(s) occurred!'),nl,
+	    halt(1)
 	 ; true).		      		
 go(_) :- print_usage.
 
@@ -310,6 +309,7 @@ recognised_option('--simple_bta',simplebta(Type,Pl,Ann),[Type,Pl,Ann],'Run simpl
 recognised_option('-d',debug_mode,[],'debug mode for GX file').
 
 recognised_option('-d2',debug_mode_full,[],'even more debugging messages in GX file').
+recognised_option('--version',print_version,[],'print logen version info').
 
 recognised_option('--single_process',single_process,[],'run cogen and gx in a single process - faster').
 recognised_option('--xml',xml_report_mode,[],'generate (some) diagnostic messages in xml').
