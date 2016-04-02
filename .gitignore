@@ -15,3 +15,11 @@ auto-tests/lookup.spec.pl
 auto-tests/lookup.pl
 auto-tests/append.spec.pl
 auto-tests/append.pl
+auto-tests/op_library_test.spec.pl
+auto-tests/op_library_test.pl
+auto-tests/liftsolve.spec.pl
+auto-tests/liftsolve.pl
+auto-tests/lambdaint.spec.pl
+auto-tests/lambdaint.pl
+auto-tests/hidenf.pl
+auto-tests/hide_nf.spec.pl
