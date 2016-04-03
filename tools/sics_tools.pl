@@ -12,7 +12,9 @@
 format_to_chars(FString, FArgs, String) :- format_to_codes(FString,FArgs,String).
 
 :- use_module(library(codesio),[read_from_codes/2]).
-read_from_chars(A,B) :- read_from_codes(A,B).
+read_from_chars(A,B) :- %print(read(A)),nl,
+   atom_codes(A,AC), append(AC,".",ACC),
+   read_from_codes(ACC,B).
 
 :- use_module(library(codesio),         [write_term_to_codes/3]).
 write_to_chars(Term, String) :-

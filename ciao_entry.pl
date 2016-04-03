@@ -12,6 +12,9 @@
 :- use_module('tools/ciao_tools.pl').
 :- else.
 :- use_module('tools/sics_tools.pl').
+:- use_module(library(lists),[select/3]).
+delete(List,El,Rem) :- select(El,List,Rem).
+prettyvars(_). % numbervars ??
 :- endif.
 
 :- use_module('bta/simple_bta.pl').
@@ -94,9 +97,9 @@ go(ArgV) :-
 	(member(help,Opts) -> fail; true),
 	generate_gx_file(FileName,Opts,GXFile),
 	
-	(member(cogen_only, Opts) -> true
-	;
-	   ( (AX = [Query|RestArgv]
+	(member(cogen_only, Opts)
+	 -> true
+	 ;  (AX = [Query|RestArgv]
 	      -> get_adapted_query(Query,AQ,RestArgv)
 	       ; print(user, 'Query to specialise =>'), read(AQ)
          ),
@@ -106,7 +109,6 @@ go(ArgV) :-
 	     ;
 	       specialize_using_gx(GXFile,AQ,Opts)
 	     )
-        )
     ),
 	count_errors_occured(NrOfErrors),
 	(NrOfErrors>0

@@ -24,3 +24,5 @@ post_unfold_body('\+'(A),'\+'(PA)) :- !, post_unfold_body(A,PA).
 
 - add_message(cogen_run,3,"Generating Unfolder ~n for ~w.~n",[CNR,Call]),
 does not generate inconsistency error in Ciao
+
+- delete/3 built-in in Ciao and different from delete in library(lists)
