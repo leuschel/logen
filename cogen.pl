@@ -46,18 +46,24 @@ ground_var_names([N=V|R]) :-
 	ground_var(N,V),
 	ground_var_names(R).
 
+:- use_module('tools/tools.pl',[get_modulename_filename/2,get_tail_filename/2]).
+
 %% Output all the clauses in the clause DB ( cogen_data(clause,C))
-print_gx_clauses(Stream) :-
-	print_gx_module_decl(Stream),
-        cogen_data(clause,C),
+print_gx_clauses(Stream,GXFile) :-
+    get_tail_filename(GXFile,ModuleName),
+    %get_modulename_filename(GXFile,M0),get_modulename_filename(M0,ModuleName), % peel off .pl and .gx
+	print_gx_named_module_decl(Stream,ModuleName),
+    cogen_data(clause,C),
 	my_portray_clause(Stream,C),
 	fail.
-print_gx_clauses(_).
+print_gx_clauses(_,_).
 
 print_gx_module_decl(S) :-
 	%get_current_module(Mod),
 	vAR('_',US),
-	my_portray_clause(S,(:- module(US, [main/1,main_gx/1]))).
+	print_gx_named_module_decl(S,US).
+print_gx_named_module_decl(S,ModuleName) :- 
+	my_portray_clause(S,(:- module(ModuleName, [main/1,main_gx/1]))).
 
 
 /* ------- */
@@ -99,7 +105,7 @@ cogen(Options) :-
 	collect_and_assert_clauses("Type Clause", type_clause(_)),
 	((member(watch(_),Options);member(watch_once(_),Options);online_filters_exist)
 	 -> collect_and_assert_clauses("Static Functor Facts", static_functor_fact(_)) ; true), 
-	(member(display_gx_file,Options) -> print_gx_clauses(user) ; true),
+	(member(display_gx_file,Options) -> print_gx_clauses(user,'_') ; true),
 	add_message(cogen_run,3,"Finished running cogen.~n",[]).
 
 
@@ -765,7 +771,7 @@ cogen_test(match,Clauses) :-
 	cogen([watch(all)]),	
 	findall(C,cogen_data(clause,C), Clauses),
         open_in_logen_source('tests/match.gx.pl', write,S),
-	print_gx_clauses(S),
+	print_gx_clauses(S,'match'),
 	close(S).
 cogen_test(append_online, Clauses) :-
 	%use_module(annloader,[load_annfile/1]),  % commented out by Michael
@@ -773,7 +779,7 @@ cogen_test(append_online, Clauses) :-
 	cogen([]),	
 	findall(C,cogen_data(clause,C), Clauses),
 	open_in_logen_source('tests/append_online.gx.pl', write,S),
-	print_gx_clauses(S),
+	print_gx_clauses(S,'append_onlinepl'),
 	close(S).
 cogen_test(append, Clauses) :-
 	%use_module(annloader,[load_annfile/1]),  % commented out by Michael
@@ -781,7 +787,7 @@ cogen_test(append, Clauses) :-
 	cogen([watch(all)]),	
 	findall(C,cogen_data(clause,C), Clauses),
 	open_in_logen_source('tests/append.gx.pl', write,S),
-	print_gx_clauses(S),
+	print_gx_clauses(S,'append'),
 	close(S).
 cogen_test(rev, Clauses) :-
 	%use_module(annloader,[load_annfile/1]),  % commented out by Michael
@@ -789,7 +795,7 @@ cogen_test(rev, Clauses) :-
 	cogen([]),	
 	findall(C,cogen_data(clause,C), Clauses),
 	open_in_logen_source('tests/rev.gx.pl', write,S),
-	print_gx_clauses(S),
+	print_gx_clauses(S,'rev'),
 	close(S).	
 cogen_test(vanilla, Clauses) :-
 	%use_module(annloader,[load_annfile/1]),  % commented out by Michael
@@ -797,7 +803,7 @@ cogen_test(vanilla, Clauses) :-
 	cogen([watch(all)]),	
 	findall(C,cogen_data(clause,C), Clauses),
 	open_in_logen_source('tests/vanilla_list.gx.pl', write,S),
-	print_gx_clauses(S),
+	print_gx_clauses(S,'vanilla_list'),
 	close(S).
 	
 	
@@ -824,7 +830,7 @@ cogen_run(AnnFilename,GXFile,Options) :-
 	
 	add_message(cogen_run,3,"Printing Clauses to GX File: '~w'.~n",[GXFile]),
 	open(GXFile, write,S),
-	mnf(cogen:print_gx_clauses(S)),
+	mnf(cogen:print_gx_clauses(S,GXFile)),
 	close(S).
 
 
