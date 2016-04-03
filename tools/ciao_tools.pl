@@ -1,5 +1,6 @@
-:- module(ciao_tools, [ read_from_chars/2, environ/2,
-	write_to_chars/2, format_to_chars/3]).
+:- module(ciao_tools, [read_from_chars/2, environ/2,
+	                   write_to_chars/2, format_to_chars/3,
+                       compile_gx_with_ciao/4]).
 
 
 :- set_prolog_flag(multi_arity_warnings,off).
@@ -58,4 +59,9 @@ read_from_chars(String, Term) :-
 	delete_file(TmpFile).
         %print(read_from_chars(String,Term)),nl.
 
-
+:- use_module(error_manager,[add_message/4]).
+compile_gx_with_ciao(Ciaoc,GxCpFile,GXFile,ExitCode) :-
+	   format_to_chars("~w -o ~w ~w", [Ciaoc,GxCpFile,GXFile], CompileCmdS),
+	   add_message(ciao_entry,3, "cmdLine: ~s",[CompileCmdS]),
+	   name(CompileCmd, CompileCmdS),
+	   system(CompileCmd,R1).
