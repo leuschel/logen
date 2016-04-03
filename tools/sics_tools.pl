@@ -1,6 +1,7 @@
 :- module(sics_tools, [environ/2, 
                        read_from_chars/2, write_to_chars/2, format_to_chars/3,
-                       compile_gx_with_ciao/4]).
+                       compile_gx_with_ciao/4,
+                       call_compiled_gx/3, call_compiled_gx_with_spec_file/4]).
 
 
 
@@ -29,16 +30,29 @@ system_call(Command,Options,ExitCode) :-
     on_exception(E,
           process:process_create(Command, Options,[process(Process)]),
 		  (add_error(system_call,"Could not execute command ~w due to exception ~w~n",[Command,E]),fail)),
-	process_wait(Process,ExitCode).
+	process_wait(Process,EX),
+	(EX=exit(ExitCode) -> true ; ExitCode=EX).
 
 :- use_module(error_manager,[add_message/4]).
 compile_gx_with_ciao(Ciaoc,GxCpFile,GXFile,ExitCode) :-
 	   format_to_chars("~w -o ~w ~w", [Ciaoc,GxCpFile,GXFile], CompileCmdS),
 	   add_message(ciao_entry,3, "cmdLine: ~s",[CompileCmdS]),
-	   system_call(Ciaoc,['-o',GxCpFile,GXFile],EX),
-	   (EX=exit(ExitCode) -> true ; ExitCode=EX).
+	   system_call(Ciaoc,['-o',GxCpFile,GXFile],ExitCode).
+
+call_compiled_gx(GXFilePath,Query,ExitCode) :-
+       write_to_chars(Query,QS), atom_codes(QA,QS), % process_create cannot deal with terms only atoms
+	   format_to_chars("~w '~w'", [GXFilePath,QA], ExecCmdS),
+	   add_message(ciao_entry,3, "cmdLine: ~s",[ExecCmdS]),
+	   system_call(GXFilePath,[QA],ExitCode).
+	
+call_compiled_gx_with_spec_file(GXFilePath,Query,SpecFile,ExitCode) :-
+       write_to_chars(Query,QS), atom_codes(QA,QS), % process_create cannot deal with terms only atoms
+	   format_to_chars("~w '~w' -o ~w", [GXFilePath,QA,SpecFile], ExecCmdS),
+	   add_message(ciao_entry,3, "cmdLine: ~s",[ExecCmdS]),
+	   system_call(GXFilePath,[QA,'-o', SpecFile],ExitCode).
+	
 	   
-	   
+   
 % --- possibly useful
 
 system_call(Command,Options,ErrorTextAsCodeList,ExitCode) :-

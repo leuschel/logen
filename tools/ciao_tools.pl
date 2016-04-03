@@ -1,6 +1,7 @@
 :- module(ciao_tools, [read_from_chars/2, environ/2,
 	                   write_to_chars/2, format_to_chars/3,
-                       compile_gx_with_ciao/4]).
+                       compile_gx_with_ciao/4,
+                       call_compiled_gx/3, call_compiled_gx_with_spec_file/4]).
 
 
 :- set_prolog_flag(multi_arity_warnings,off).
@@ -65,3 +66,16 @@ compile_gx_with_ciao(Ciaoc,GxCpFile,GXFile,ExitCode) :-
 	   add_message(ciao_entry,3, "cmdLine: ~s",[CompileCmdS]),
 	   name(CompileCmd, CompileCmdS),
 	   system(CompileCmd,R1).
+
+call_compiled_gx(GxCpFile,Query,ExitCode) :- 
+   format_to_chars("~w '~w'", [GxCpFile,Query], CmdS),
+	add_message(ciao_entry,3, "Cmd line: ~s",[CmdS]),
+	name(Cmd,CmdS),
+	system(Cmd, ExitCode).
+	
+call_compiled_gx_with_spec_file(GxCpFile,Query,SpecFile,ExitCode) :- 
+    format_to_chars("~w '~w' -o ~w", [GxCpFile,Query, SpecFile],CmdS),
+	add_message(ciao_entry,3, "Cmd line: ~s",[CmdS]),
+	name(Cmd,CmdS),
+	system(Cmd, ExitCode).
+

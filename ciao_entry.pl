@@ -14,7 +14,7 @@
 :- use_module('tools/sics_tools.pl').
 :- use_module(library(lists),[select/3]).
 delete(List,El,Rem) :- select(El,List,Rem).
-prettyvars(_). % numbervars ??
+prettyvars(A) :- numbervars(A,0,_).
 :- endif.
 
 :- use_module('bta/simple_bta.pl').
@@ -160,6 +160,13 @@ get_gx_filename(File, GxFile) :-
 
 get_compiled_gx_filename(GxFile, GxCpFile) :-
 	atom_concat(GxFile, '.cpx', GxCpFile).
+get_compiled_gx_filename_to_execute(GxFile, ExecGxCpFile) :-
+    get_compiled_gx_filename(GxFile,GxCpFile),
+	name(GxCpFile,GXString),
+	(GXString=[47|_]  /* starts with /: no need to prefix with . */
+	 -> ExecGxCpFile = GxCpFile
+	 ;  string_concatenate('./',GxCpFile,ExecGxCpFile)
+	).
 
 
 generate_gx_file(File,Options,GXFile) :- 
@@ -224,27 +231,19 @@ specialise_using_gx_from_module(GXFile, Query,Opts) :-
 specialize_using_gx(GXFile,Query,Opts) :-	
 	%(member(compile_gx, Opts) ->
 	%% now always compile!
-	name(GXFile,GXString),
-	(GXString=[47|_]  /* starts with /: no need to prefix with . */
-	 -> format_to_chars("~w.cpx '~w'", [GXFile,Query], SpecCmdS)
-	 ;  format_to_chars("./~w.cpx '~w'", [GXFile,Query], SpecCmdS)
-	),
-
-	 (member(spec_file(File),Opts) ->
-	 format_to_chars("~s -o ~w", [SpecCmdS, File],CmdS)
-	;
-	    CmdS = SpecCmdS
-	),
-	name(Cmd, CmdS),
+	get_compiled_gx_filename_to_execute(GXFile,GxCpFile),
+	add_message(ciao_entry,2, "Calling Compiled File (~w)",[GxCpFile]),
 	copy_term(Query, QueryC),
 	prettyvars(QueryC),
-	add_message(ciao_entry,2, "Calling Compiled File",[]),
 	add_message(ciao_entry,2, "Specialising for ~w",[QueryC]),
-	add_message(ciao_entry,3, "Cmd line: ~w",[Cmd]),	
-	system(Cmd, R),
-	(R==0 -> true
-	      ;  (add_error(ciao_entry,"Executing gx file failed with error: ~w~n",[R]),
-	          halt(1))
+	
+	(member(spec_file(SpecFile),Opts)
+	  -> call_compiled_gx_with_spec_file(GxCpFile,QueryC,SpecFile,ExitCode)
+	  ;  call_compiled_gx(GxCpFile,QueryC,ExitCode)
+	),
+	(ExitCode==0 -> true
+	      ;  add_error(ciao_entry,"Executing gx file failed with error: ~w~n",[ExitCode]),
+	          halt(1)
 	).
 
 
