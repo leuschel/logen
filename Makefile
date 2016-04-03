@@ -15,7 +15,7 @@ logen_win:  *.pl gximports/*.pl bta/*.pl
 	ciaoc -S -o cli_binaries/Windows/logen ciao_entry.pl
 
 sics_test:
-	rlwrap sicstus -l ciao_entry.pl --goal "go_cli." -- -vv tests/match.pl  "match([a,a,b],L)"
+	rlwrap sicstus -l ciao_entry.pl --goal "go_cli." -- -vv tests/match.pl  "match([a,a,b],L)" --ciao_path /usr/local/bin/
 
 
 clean:

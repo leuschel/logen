@@ -6,3 +6,21 @@ than loop. Check that Ciao at least throws an exception.
 
 * In watchdog mode: homemorphic does not compute static and dynamic functors;
 hence all functors are assumed static which could endanger termination
+
+
+
+Differences between Ciao and SICStus:
+-------------------------------------
+
+- cannot re-export imported predicate in module in Ciao
+
+- quoting:
+
+SICSTUS:
+! Syntax error in read_term/3
+! incorrect_escape_char
+
+post_unfold_body('\+'(A),'\+'(PA)) :- !, post_unfold_body(A,PA).
+
+- add_message(cogen_run,3,"Generating Unfolder ~n for ~w.~n",[CNR,Call]),
+does not generate inconsistency error in Ciao

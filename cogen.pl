@@ -30,18 +30,34 @@
 %:- use_module(runtime_checks).
 :- include(runtime_checks_perform).
 
+vAR(X,'$VAR'(X)).
+ground_var(N,V) :- '$VAR'(N)=V.
+:- if(current_prolog_flag(dialect,ciao)).
+my_portray_clause(S,C) :- portray_clause(S,C).
+:- else.
+%vAR(X,X).
+%ground_var(_,_).
+my_portray_clause(S,C) :- %portray_clause(C),
+   write_term(S,C,[legacy_numbervars(true),quoted(true)]), write_term(S,'.',[]),nl(S).
+:- endif.
+
+ground_var_names([]).
+ground_var_names([N=V|R]) :-
+	ground_var(N,V),
+	ground_var_names(R).
 
 %% Output all the clauses in the clause DB ( cogen_data(clause,C))
 print_gx_clauses(Stream) :-
 	print_gx_module_decl(Stream),
         cogen_data(clause,C),
-	portray_clause(Stream,C),
+	my_portray_clause(Stream,C),
 	fail.
 print_gx_clauses(_).
 
 print_gx_module_decl(S) :-
 	%get_current_module(Mod),
-	portray_clause(S,(:- module('$VAR'('_'), [main/1,main_gx/1]))).
+	vAR('_',US),
+	my_portray_clause(S,(:- module(US, [main/1,main_gx/1]))).
 
 
 /* ------- */
@@ -147,7 +163,7 @@ on_exception(Ex, Goal, Hand) :-
 
 set_cogen_relative_dir(Dir) :-
    retractall(cogen3_relative_directory(_)),
-   add_message(cogen,2,"Setting LOGENDIR: ~w~n",Dir),
+   add_message(cogen,2,"Setting LOGENDIR: ~w~n",[Dir]),
    assert(cogen3_relative_directory(Dir)).
 
 :- if(current_prolog_flag(dialect,sicstus)).
@@ -303,9 +319,8 @@ type_clause(clause(usertypedef(Type,Def),true)) :-
 
 %% Makes the entry point for gx based on module name
 entry_clause(clause(Entry,Body)) :-
-	Opts = '$VAR'('Opts'),
-	Goal = '$VAR'('Goal'), 
-	ResCall = '$VAR'('ResCall'),
+    vAR('Opts',Opts), vAR('Goal',Goal), vAR('ResCall',ResCall), vAR('REQ',REQ),
+%	Opts = '$VAR'('Opts'),	Goal = '$VAR'('Goal'), 	ResCall = '$VAR'('ResCall'),
     mnf(build_specialization_entry_call(Goal, ResCall,Opts,Entry)),
 	LOGENDATA = [[],entry],
 	(cogen_data(print_memo_table,true) -> PM = print_memo_table(user) ; PM = true),
@@ -318,10 +333,10 @@ entry_clause(clause(Entry,Body)) :-
 		   ),
 
 		 statistics(runtime,[T1,_]),
-		 mnf(build_request_call('$VAR'('Goal'),crossmodule,'$VAR'('ResCall'),LOGENDATA,'$VAR'('REQ'))),
+		 mnf(build_request_call(Goal,crossmodule,ResCall,LOGENDATA,REQ)),
 		 
-		 '$VAR'('REQ'),
-		 add_entry_point('$VAR'('ResCall'),'$VAR'('Goal')),  /* just register the entry point; for post-unfolding */
+		 REQ,
+		 add_entry_point(ResCall,Goal),  /* just register the entry point; for post-unfolding */
 		 mnf(spec_driver),
 		 PM,
 		 mnf(print_clauses(Stream)),
@@ -330,7 +345,7 @@ entry_clause(clause(Entry,Body)) :-
 		 PStats,
 		 
 		 (member(add_entry, Opts) -> 
-		  portray_clause(Stream, (Goal:-ResCall))
+		  portray_clause(Stream, (Goal:-ResCall)) % my_portray_clause ?
 		 ;
 		     true
 		   ),
@@ -406,9 +421,9 @@ reset_gen_clause_nr :-
 %% Specialised unfolders
 unfold_clause(clause(NewCall, FullGxBody)) :-
 	ann_clause(_,Call, Body),
-	%portray_clause(body(Body)),
+	%my_portray_clause(body(Body)),
 	mnf(cogen:get_new_clause_nr(CNR)),
-	add_message(cogen_run,3,"Generating Unfolder ~n for ~w.~n",[CNR,Call]),
+	add_message(cogen_run,3,"Generating Unfolder ~w for ~w.~n",[CNR,Call]),
 	logendata_varname(LOGENDATA),
 	mnf(build_unfold_call(Call, SpecBody, LOGENDATA, NewCall)),
 	functor(Call,Pred,Arity),
@@ -601,11 +616,12 @@ request_clause(clause(Head,Body)) :-
 	               
 	),
 	MSG = 'A memoised call is not covered by its filter declaration and could not be specialized.',
-	GCall = '$VAR'('GenCall'),
-	Requestor = '$VAR'('Requestor'),
-	ResCall = '$VAR'('ResidualCall'),
-	History = '$VAR'('History'),
-	ParentID = '$VAR'('ParentID').
+	vAR('GenCall',GCall),
+	vAR('Requestor',Requestor),
+	vAR('ResidualCall',ResCall),
+	vAR('History',History),
+	vAR('ParentID',ParentID).
+	%GCall = '$VAR'('GenCall'),Requestor = '$VAR'('Requestor'),ResCall = '$VAR'('ResidualCall'),History = '$VAR'('History'),ParentID = '$VAR'('ParentID').
 
 	
 	% correctfilt([make_dynamic(N),...]),PP) Res=<make_dynamic>1</make_dynamic>
@@ -664,7 +680,7 @@ flatten(Conj, NA) :-
 flatten(A,A).
 
 
-logendata_varname('$VAR'('__LOGENDATA')).
+logendata_varname(VL) :- vAR('__LOGENDATA',VL). %'$VAR'('__LOGENDATA')).
 
 %%% load all the clauses from +Filename into -Clauses that meet pattern Preds ([f/1]) or specal all
 get_clauses_from_file(Filename, Clauses, Preds) :-
@@ -707,10 +723,6 @@ ignore_clause_import(Clause, Preds) :-
 	functor(H,F,Arity),!, \+(member(F/Arity,Preds)).
 
 
-ground_var_names([]).
-ground_var_names([N=V|R]) :-
-	'$VAR'(N)=V,
-	ground_var_names(R).
 
 
 build_unfold_call(Call, SpecCode, LogenData,UnfoldCall) :-

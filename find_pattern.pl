@@ -131,7 +131,7 @@ my_exact_member(X,[Y|T]) :-
 post_unfold_body(','(A,B),','(PA,PB)) :- !, post_unfold_body(A,PA), post_unfold_body(B,PB).
 post_unfold_body(';'(A,B),';'(PA,PB)) :- !, post_unfold_body(A,PA), post_unfold_body(B,PB).
 post_unfold_body('->'(A,B),'->'(PA,PB)) :- !, post_unfold_body(A,PA), post_unfold_body(B,PB).
-post_unfold_body('\+'(A),'\+'(PA)) :- !, post_unfold_body(A,PA).
+post_unfold_body(\+(A),\+(PA)) :- !, post_unfold_body(A,PA).
 post_unfold_body(Call,Res) :- deterministic(Call,F,N), \+ multiple_use(F,N),
    % print(det(Call)),nl,
     (spec_data(aggressive_post_unfold,true) -> true  % TO DO: check for side-effects + allow instantiation if ok

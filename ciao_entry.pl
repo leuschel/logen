@@ -90,7 +90,7 @@ go(ArgV) :-
 
 go(ArgV) :-	
 	get_options(ArgV,Opts,[FileName|AX]),
-	add_message(ciao_entry,2, "Options: ~w",Opts),
+	add_message(ciao_entry,2, "Options: ~w",[Opts]),
 	(member(help,Opts) -> fail; true),
 	generate_gx_file(FileName,Opts,GXFile),
 	
@@ -156,6 +156,9 @@ get_ann_filename(File, AnnFile) :-
 get_gx_filename(File, GxFile) :-
 	atom_concat(File, '.gx', GxFile).
 
+get_compiled_gx_filename(GxFile, GxCpFile) :-
+	atom_concat(GxFile, '.cpx', GxCpFile).
+
 
 generate_gx_file(File,Options,GXFile) :- 
 	add_message('ciao_entry', 2,"Generating GX File~n", []),
@@ -175,25 +178,18 @@ generate_gx_file(File,Options,GXFile) :-
 	add_message(cogen_entry,2, "Finished running cogen in ~w ms (runtime)",[Time]),
 	%% compile by default now ciao and compiled ciao behaviour can differ!!
 	
-        (member(single_process,Options) ->
-	 add_message(ciao_entry,2, "No compilation - single process mode",[])
-	;(
-          add_message(ciao_entry,2, "Compiling GX File",[]),
-	  (member(ciao_path(CiaoPath), Options) ->
-		atom_concat(CiaoPath, '/ciaoc', Ciaoc)
-	  ;
-	      Ciaoc = 'ciaoc'
-	  ),	
-	  format_to_chars("~w -o ~w.cpx ~w", [Ciaoc,GXFile,GXFile], CompileCmdS),
-	  add_message(ciao_entry,3, "cmdLine: ~s",[CompileCmdS]),
-	  name(CompileCmd, CompileCmdS),
-	  system(CompileCmd,R1),
-	  (R1 = 0 ->
-	    true
-	  ;
-	    add_error(ciao_entry, "Compiling gx file failed",[]),
-	    fail
-	 ))).
+    (member(single_process,Options)
+	 -> add_message(ciao_entry,2, "No compilation - single process mode",[])
+	 ; add_message(ciao_entry,2, "Compiling GX file",[]),
+	   (member(ciao_path(CiaoPath), Options) -> atom_concat(CiaoPath, '/ciaoc', Ciaoc)
+	    ; Ciaoc = 'ciaoc'
+	   ),
+	   get_compiled_gx_filename(GXFile, GxCpFile),
+	   compile_gx_with_ciao(Ciaoc,GxCpFile,GXFile,ExitCode),
+	   (ExitCode = 0 -> add_message(ciao_entry,2,"Compilation of GX file ~w successful",[GXFile])
+	    ; add_error(ciao_entry, "Compiling GX file ~w failed (~w)",[GXFile,ExitCode]),
+	      fail
+	 )).
 generate_gx_file(File,Options,GXFile) :-
 	add_error(ciao_entry, "Generation of GX File failed", []),
 	add_error(ciao_entry, " GX call: ~w", [generate_gx_file(File,Options,GXFile)]),
