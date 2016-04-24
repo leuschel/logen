@@ -92,7 +92,7 @@ go(ArgV) :-
 	
 
 go(ArgV) :-	
-	get_options(ArgV,Opts,[FileName|AX]),
+	get_cli_options(ArgV,Opts,[FileName|AX]),
 	add_message(ciao_entry,2, "Options: ~w",[Opts]),
 	(member(help,Opts) -> fail; true),
 	generate_gx_file(FileName,Opts,GXFile),
@@ -189,7 +189,7 @@ generate_gx_file(File,Options,GXFile) :-
 	
     (member(single_process,Options)
 	 -> add_message(ciao_entry,2, "No compilation - single process mode",[])
-	 ; add_message(ciao_entry,2, "Compiling GX file",[]),
+	 ;  add_message(ciao_entry,2, "Compiling GX file",[]),
 	   (member(ciao_path(CiaoPath), Options) -> atom_concat(CiaoPath, '/ciaoc', Ciaoc)
 	    ; Ciaoc = 'ciaoc'
 	   ),
@@ -206,6 +206,7 @@ generate_gx_file(File,Options,GXFile) :-
 
 
 specialise_using_gx_from_module(GXFile, Query,Opts) :-
+	add_message(ciao_entry,2, "Using Module ~w",[GXFile]),
 	use_module(GXFile,[main_gx/1]),
 	path_basename(GXFile,Module),
 	 (member(spec_file(File),Opts) ->
@@ -216,13 +217,14 @@ specialise_using_gx_from_module(GXFile, Query,Opts) :-
 	
 	copy_term(Query, QueryC),
 	prettyvars(QueryC),
-	add_message(ciao_entry,2, "Calling Module directly",[]),
+	add_message(ciao_entry,2, "Calling Module ~w directly",[Module]),
 	add_message(ciao_entry,2, "Specialising for ~w",[QueryC]),
+	%trace,
 	
-	(Module:main_gx(Args)->
-	 true;
-	 (add_error(ciao_entry,"Executing gx module file failed",[]),
-	          halt(1))
+	(Module:main_gx(Args)
+	  -> true
+	  ;  add_error(ciao_entry,"Executing gx module ~w file failed",[Module]),
+	     halt(1)
 	).
 	
 	
@@ -275,6 +277,17 @@ add_dot([],".").
 add_dot(".",".") :- !.
 add_dot([A|T],[A|R]) :- add_dot(T,R).
 
+get_cli_options(ArgV,AllOpts,[FileName|AX]) :- get_options(ArgV,Opts,[FileName|AX]),
+    add_default_options(Opts,AllOpts).
+
+:- if(current_prolog_flag(dialect, ciao)).
+add_default_options(Opts,Opts).
+:- else.
+add_default_options(Opts,AllOpts) :- member(single_process,Opts), nonmember(target_prolog(_),Opts),!,
+   AllOpts = [target_prolog(sicstus)|Opts].
+add_default_options(Opts,Opts).
+:- endif.
+
 get_options([],[],[]).
 get_options([X|T],Options,OtherArgs) :-
    (recognised_option(X,Opt,Values,_) ->       
@@ -310,6 +323,7 @@ recognised_option('-ap',aggressive_post_unfold,[],'aggressive post-unfolding').
 recognised_option('-g',display_gx_file,[],'display gx file').
 recognised_option('--logen_dir', logen_dir(Dir),[Dir],'path to logen files'). 
 recognised_option('-o', gx_file(Dir),[Dir],'GX filename'). 
+recognised_option('--target_sicstus', target_prolog(sicstus),[],'gx files are to be run with SICStus Prolog'). 
 recognised_option('--spec_file', spec_file(File),[File],'Spec filename'). 
 recognised_option('--ciao_path', ciao_path(CiaoPath),[CiaoPath],'Ciao binary directory'). 
 %recognised_option('--prolog', prolog(System),[System],'Target Prolog for GX file (sicstus,xsb,ciao)'). 

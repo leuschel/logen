@@ -26,7 +26,9 @@ wcall_exc(X,PP,Exc) :-
                 abort_specialization.
    
 
-:- use_module(library(when)). 
+:- if(current_prolog_flag(dialect, ciao)).
+:- use_module(library(when)).
+:- endif.
 
 wcatch_backprops(X,PP,Once) :-              /* TO DO: will also be triggered by NUMBER VARS !! */
         varset(X,Vars), copy_term(X,CopyX),
@@ -48,7 +50,11 @@ wconnective_error(Call,Error,PP,Once) :-
                              warning,connective_warning,[call(Call)],correctann([add_hide_nf([])],PP)),
         confirm_user_simple(Once).
 
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(terms_vars),[varset/2]). /* term_variables in SICStus */
+:- else.
+varset(A,B) :- term_variables(A,B).
+:- endif.
 
 watch_gx_if_conjunction(If,Th,El,Code1,Code2,Code3,PP,Once,IfOrigCode,ThOrigCode,ElOrigCode) :-
   varset((El,Code3),V3),
@@ -118,8 +124,9 @@ check_var([V|T]) :-
     check_var(T).
 
 
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(strings),[get_line/2]).
-
+:- endif.
 
 :- dynamic ignore_watchdog_warnings/0.
 	

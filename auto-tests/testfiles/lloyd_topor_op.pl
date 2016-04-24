@@ -99,7 +99,9 @@ not_solve_literal(A) :- is_built_in(A),
 %use_co_routining(yes).
 
 :- use_module(library(terms)).
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(when)).
+:- endif.
 
 force_not_solve_literal(Formula) :- use_co_routining(yes),
     get_free_variables(Formula,[],[],Vars),

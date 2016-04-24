@@ -30,7 +30,7 @@ mnf(X) :- if(X,true,(add_error(runtime_checks,"Call failed: ~w~n",[X]),fail)).
 
 :- meta_predicate pp_mnf(0).
 
-pp_mnf(X) :- %print(pp_mnf(X)),nl,
+pp_mnf(X) :-  print(pp_mnf(X)),nl,
     add_postfix_to_pred(X,'_pre',Pre),
     %print(checking_pre(Pre)),nl,
     (Pre -> true ; add_error(runtime_checks,"Pre Condition failed: ~w~n",[Pre])),
@@ -48,7 +48,7 @@ pp_mnf(X) :- %print(pp_mnf(X)),nl,
 
 :- meta_predicate pp_mnf(0).
 
-pp_call(X) :- %print(pp_mnf(X)),nl,
+pp_call(X) :-  print(pp_mnf(X)),nl,
     add_postfix_to_pred(X,'_pre',Pre),
     %print(checking_pre(Pre)),nl,
     (Pre -> true ; add_error(runtime_checks,"Pre Condition failed: ~w~n",[Pre])),

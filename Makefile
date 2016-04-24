@@ -16,8 +16,14 @@ logen_win:  *.pl gximports/*.pl bta/*.pl
 
 sics_test:
 	rlwrap sicstus -l ciao_entry.pl --goal "go_cli." -- -vv tests/match.pl  "match([a,a,b],L)" --ciao_path /usr/local/bin/
+sics_test2:
+	rlwrap sicstus -l ciao_entry.pl --goal "go_cli." -- -vv tests/match.pl  "match([a,a,b],L)" --single_process -v
 
 
+cclean:
+	find . -name "*.po"  -print -exec rm {} \;
+	find . -name "*.itf" -print -exec rm {} \;
+	find . -name "*.ast" -print -exec rm {} \;
 clean:
 	find . -name "*.po"  -print -exec rm {} \;
 	find . -name "*.itf" -print -exec rm {} \;

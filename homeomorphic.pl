@@ -190,7 +190,9 @@ l_term_nesting_level([H|T],N,S) :-
 
 
 :- use_module(library(terms)).
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(terms_check)).
+:- endif.
 :- use_module(library(lists)).
 
 /* ---------- */

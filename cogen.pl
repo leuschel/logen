@@ -245,9 +245,14 @@ process_option(cogen_only) :- !. /* already dealt with earlier */
 process_option(single_process) :- !. /* already dealt with earlier */
 process_option(ciao_path(_)) :- !. /* already dealt with earlier */
 process_option(spec_file(_)) :- !. /* already dealt with earlier */
+process_option(target_prolog(P)) :- !, 
+     retractall(target_prolog_system(_)), format('Targeting ~w system~n',[P]),
+     assert(target_prolog_system(P)).
 process_option(Option) :-
      format(user_error,"% *** Unknown command-line option: ~w ***~n",[Option]),
      add_message(cogen,4,"Unknown cogen option: ~w.",[Option]). %% unknown option - ignore
+
+:- dynamic target_prolog_system/1.
 
 
 /* ---------------------------- */
@@ -261,6 +266,10 @@ process_option(Option) :-
 %%     could cause multiple imports
 %import_file_into_gx(File) :-
 %	import_file_into_gx(File,all).
+
+import_lge_dep_file_into_gx(_CiaoFile,SICSFile,Preds) :- target_prolog_system(sicstus),!,
+   import_file_into_gx(SICSFile,Preds).
+import_lge_dep_file_into_gx(CiaoFile,_SICSFile,Preds) :- import_file_into_gx(CiaoFile,Preds).
 
 import_file_into_gx(File,Preds) :-
     pp_mnf(import_file_into_gx2(File,Preds)).
@@ -368,7 +377,7 @@ entry_clause(clause(main_gx(Args), Body)) :-
 	Goal = '$VAR'('Goal'),
 	Opts = '$VAR'('Opts'),
 	build_specialization_entry_call('$VAR'('Goal'), '$VAR'('_Res'),Opts,CallEntry),
-	import_file_into_gx('tools/ciao_tools.pl',[read_from_chars/2]),
+	import_lge_dep_file_into_gx('tools/ciao_tools.pl','tools/sics_tools.pl',[read_from_chars/2]),
 	import_file_into_gx('ciao_entry.pl',[get_options/3,print_options/0,print_option_args/2,print_usage/0]),
 	import_file_into_gx('gx_options.pl',all),
 

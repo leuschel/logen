@@ -9,7 +9,12 @@
 :- dynamic spec_clause/2.
 
 :- use_module(library(terms)).
+
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(terms_check)).
+:- else.
+prettyvars(A) :- numbervars(A,0,_).
+:- endif.
 
 
 find_pattern(ID, Call, ResCall, _Requestor) :-
@@ -83,6 +88,7 @@ print_memo_table(S) :-
     format(S,"/* ~w. */~n",[memo_table(A,B,C,D)]),
     fail.
 print_memo_table(_).
+
 
 print_clauses(S) :-
     spec_data(declaration,Decl),

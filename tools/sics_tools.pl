@@ -13,6 +13,8 @@
 format_to_chars(FString, FArgs, String) :- format_to_codes(FString,FArgs,String).
 
 :- use_module(library(codesio),[read_from_codes/2]).
+read_from_chars(A,B) :- compound(A),!, print(reading_compound(A)),nl,
+   copy_term(A,B).
 read_from_chars(A,B) :- %print(read(A)),nl,
    atom_codes(A,AC), append(AC,".",ACC),
    read_from_codes(ACC,B).

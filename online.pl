@@ -1,8 +1,9 @@
 % (c) 1996-2016 Michael Leuschel
 % see https://github.com/leuschel/logen for more details
 
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(strings),[get_line/2]).
-
+:- endif.
 
 %:- use_module(runtime_checks).
 
@@ -187,7 +188,11 @@ get_history(ID, [History|Hs]) :-
 
 %........
 	
+:- if(current_prolog_flag(dialect, ciao)).
 :- use_module(library(terms_vars),[varset/2]). /* term_variables in SICStus */
+:- else.
+varset(A,B) :- term_variables(A,B).
+:- endif.
 
 filter_online(_Call, GenCall, ResCall) :-
 	varset(GenCall, Variables),
