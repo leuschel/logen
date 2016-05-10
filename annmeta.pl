@@ -148,8 +148,10 @@ declmeta(module(Module,_), module, Module).
 declmeta(module(Module), module, Module).
 declmeta(op(Prio,Assoc,Op),op,op(Prio,Assoc,Op)).
 declmeta(dynamic(Pred),dynamic,dynamic(Pred)).
-declmeta(use_module(library(X)),use_library,use_module(library(X))).
-declmeta(use_module(library(X),Preds),use_library,use_module(library(X),Preds)).
+declmeta(use_module(library(X)),ID,use_module(library(X))) :-
+  (sics_only_library(X) -> ID = use_sics_library ; ID = use_library).
+declmeta(use_module(library(X),Preds),ID,use_module(library(X),Preds)) :-
+  (sics_only_library(X) -> ID = use_sics_library ; ID = use_library).
 declmeta(use_module(X),use_module,use_module(X)) :- \+(X=library(_)).
 declmeta(use_module(X,Preds),use_module,use_module(X,Preds)) :- \+(X=library(_)).
 declmeta(use_package(X),use_library,use_package(X)).
@@ -158,6 +160,9 @@ declmeta(table(Pred),table, table(Pred)). /* XSB Prolog */
 
 display_in_filters(type).
 display_in_filters(filter).
+
+sics_only_library(avl).
+% TO DO: extend
 
 %% Code generation
 %% cogenmeta(Annotation, Cogen, Gx, Spec, Map,GxMap,SpecMap)

@@ -133,12 +133,16 @@ generate_spec_header.
 
 declaration_ids_to_include_in_gx(op).
 declaration_ids_to_include_in_gx(use_library).  /* may need to be refined ! */
+declaration_ids_to_include_in_gx(use_sics_library) :- 
+  (current_prolog_flag(dialect, sicstus) -> true
+    ; print('Not importing SICStus libraries into gx file'),nl,fail).
 declaration_ids_to_include_in_gx(use_module).
 declaration_ids_to_include_in_gx(ensure_loaded).
 declaration_ids_to_include_in_gx(dynamic). % TO DO: may need to be adapted if pred has been specialised !!
 
 declaration_ids_to_include_in_spec(op).
 declaration_ids_to_include_in_spec(use_library).
+declaration_ids_to_include_in_spec(use_sics_library).
 declaration_ids_to_include_in_spec(use_module). 
 declaration_ids_to_include_in_spec(dynamic). /* may need to be refined ! */
 declaration_ids_to_include_in_spec(ensure_loaded).
