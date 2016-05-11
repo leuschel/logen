@@ -57,7 +57,7 @@ higher_order_gui_info(7, unknown_findall, [findall, resfindall]).
 %% Ann structure, internal structure, original code, Higher Order map, Higher Order map, CONSUMES ANN
 higher_order_ann((A,B),(NA,NB),(NA,NB),[A,B],[NA,NB], 1).
 higher_order_ann(if(A,B,C),if(NA,NB,NC),(NA->NB;NC),[A,B,C],[NA,NB,NC], 3). % TO DO: in SICStus if/3 is built-in and is different from ( -> ; ) !!
-higher_order_ann((A->B;C),resif(NA,NB,NC),(NA->NB;NC),[A,B,C],[NA,NB,NC], 3). % TO DO: interpret this as static if
+higher_order_ann((A->B;C),if(NA,NB,NC),(NA->NB;NC),[A,B,C],[NA,NB,NC], 3).
 higher_order_ann(resif(A,B,C),resif(NA,NB,NC),(NA->NB;NC),[A,B,C],[NA,NB,NC], 3).
 higher_order_ann(resdisj(A,B),resdisj(NA,NB),(NA;NB),[A,B],[NA,NB], 2).
 higher_order_ann(';'(A,B),';'(NA,NB),(NA;NB),[A,B],[NA,NB], 2).
