@@ -23,3 +23,7 @@ auto-tests/lambdaint.spec.pl
 auto-tests/lambdaint.pl
 auto-tests/hidenf.pl
 auto-tests/hide_nf.spec.pl
+/examples/cps_int/cps_int.pl.gx.cpx
+/examples/cps_int/cps_int.pl.gx
+/examples/cps_int/cps_int_spec.pl
+/tests/match.pl.gx.cpx
