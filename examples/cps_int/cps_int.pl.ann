@@ -1,0 +1,18 @@
+
+
+ :- filter test_dcg(dynamic).
+ :- filter cps_dcg(type(list(nonvar)),static).
+logen(cps_dcg,cps_dcg(A,B)) :- 
+   logen(call,=(B,A)).
+logen(cps_dcg,cps_dcg(A,B)) :- 
+   logen(call,=(A,'.'(C,D))), logen(unfold,cl3(C,D,E)), logen(memo,cps_dcg(E,B)).
+logen(cps_dcg,cps_dcg(A)) :- 
+   logen(memo,cps_dcg(A,[])).
+logen(test_dcg,test_dcg('.'(A,'.'(B,'.'(C,'.'(D,[])))))) :- 
+   logen(unfold,cps_dcg('.'(dapp(A,B,C,D),[]))).
+logen(cl3,cl3(app([],A,A),B,C)) :- 
+   logen(call,=(C,B)).
+logen(cl3,cl3(app('.'(A,B),C,'.'(A,D)),E,F)) :- 
+   logen(call,=(F,'.'(app(B,C,D),E))).
+logen(cl3,cl3(dapp(A,B,C,D),E,F)) :- 
+   logen(call,=(F,'.'(app(B,C,G),'.'(app(A,G,D),E)))).
