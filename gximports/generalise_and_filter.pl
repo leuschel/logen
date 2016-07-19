@@ -93,6 +93,8 @@ l_gen_fil(X, _, _,_,_,_,_,_,_,_) :- \+(X=[]),\+(X=[_|_]),
 	
 
 gen_fil(static, A, G,[A|G], F,F,O,O,OM,OM) :- ground(A).
+gen_fil(number, A, G,[A|G], F,F,O,O,OM,OM) :- number(A).
+gen_fil(atom, A, G,[A|G], F,F,O,O,OM,OM) :- atom(A).
 gen_fil(static_nf, A, G,[A|G], F,[A|F],O,O,OM,OM) :- ground(A).  /* static_nf = no filter */
 
 gen_fil(online, A, G,[Var|G], F,F,O,[A|O],OM,[Var|OM]).
@@ -145,6 +147,8 @@ basic_binding_type(dynamic).
 basic_binding_type(nonvar).
 basic_binding_type(online).
 basic_binding_type(static_nf).
+basic_binding_type(number).
+basic_binding_type(atom).
 
 
 
