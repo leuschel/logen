@@ -25,12 +25,12 @@ confirm_user(online_unsafe_unfold(Once), [Call,History],Return,PP) :-
 	(Once==yes
 	  ->  abort_specialization
 	  ;   (get_user_key(Return),
-			(Return=="c" -> true
-				 ; (Return=="F"
+			(append("c",_,Return) -> true
+				 ; (append("F",_,Return)
 					 -> (format(user_error,"*** WARNING: User forced a branch to fail! ***~n*** Generated code is probably incorrect! ***~n~n",[]),
 						 add_gx_error(unfolding_stopped),
 						 fail)
-					 ; (Return=="C"
+					 ; (append("C",_,Return)
 						 -> assert(ignore_homeo_warnings)
 						 ; abort_specialization)))
 	      )
@@ -49,12 +49,12 @@ confirm_user(online_unsafe_memo(Once), [Call,History],Return,PP) :-
 	(Once==yes
 	  ->  abort_specialization
 	  ;   (get_user_key(Return),
-			(Return=="c" -> true
-				 ; (Return=="F"
+			(append("c",_,Return) -> true
+				 ; (append("F",_,Return)
 					 -> (format(user_error,"*** WARNING: User prevented a memo entry being added! ***~n*** Generated code is probably incorrect! ***~n~n",[]),
 						 add_gx_error(memo_entry_not_added),
 						 fail)
-					 ; (Return=="C"
+					 ; (append("C",_,Return)
 						 -> assert(ignore_homeo_warnings)
 						 ;  abort_specialization)))
 	      )

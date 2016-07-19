@@ -135,8 +135,8 @@ confirm_user_simple(_) :- ignore_watchdog_warnings,!.
 confirm_user_simple(_) :-
    format(user_error,"~nType 'c' to continue specialisation, 'C' to continue without further intervention, anything else to abort:~n",[]),
     get_line(user,Return),
-	(Return=="c" -> true
-				 ; (Return=="C"
+	(append("c",_,Return) -> true
+				 ; (append("C",_,Return)
 						 -> assert(ignore_watchdog_warnings)
 						 ;  abort_specialization)
 	).
