@@ -77,7 +77,7 @@ go(ArgV) :-
 	 ; current_env('LOGEN_HOME',Dir) -> set_cogen_relative_dir(Dir)
 	 ; add_message(ciao_entry,2,"No -logen_dir D option or LOGENDIR environment set",[])),
 	(member(print_version,Opts)
-	 -> format('Logen Version Information~nBuild Date: April 2nd, 2016~n',[])
+	 -> format('Logen Version Information~nBuild Date: July 19th, 2016~n',[])
 	  ; true),
 	fail.
   
