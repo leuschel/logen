@@ -252,6 +252,7 @@ process_option(spec_file(_)) :- !. /* already dealt with earlier */
 process_option(target_prolog(P)) :- !, 
      retractall(target_prolog_system(_)), format('Targeting ~w system~n',[P]),
      assert(target_prolog_system(P)).
+process_option(print_version) :- !.
 process_option(Option) :-
      format(user_error,"% *** Unknown command-line option: ~w ***~n",[Option]),
      add_message(cogen,4,"Unknown cogen option: ~w.",[Option]). %% unknown option - ignore
